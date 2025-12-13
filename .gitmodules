@@ -1,0 +1,3 @@
+[submodule "production-frontend"]
+	path = production-frontend
+	url = /Users/cope/EnGardeHQ/production-frontend

@@ -1,0 +1,213 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ENGUARDE DATABASE RELATIONSHIPS: USERS, BRANDS, AND TENANTS
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         ORGANIZATION (Optional)                             │
+│                    Top-level entity (e.g., Agency)                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ 1:N
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              TENANT                                         │
+│                    Data Isolation Boundary (RLS)                            │
+│                                                                             │
+│  Example: "EnGarde Media" (default-tenant-001)                            │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  TENANT-SCOPED RESOURCES (Shared across all brands)                │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │   │
+│  │  │ AI Agents    │  │ Workflows   │  │ Data Sources │             │   │
+│  │  │ (11 agents)  │  │ (11)        │  │              │             │   │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘             │   │
+│  │                                                                     │   │
+│  │  All brands in this tenant share these resources                   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ 1:N
+                                    ▼
+        ┌───────────────────────────┼───────────────────────────┐
+        │                           │                           │
+        ▼                           ▼                           ▼
+┌───────────────┐         ┌───────────────┐         ┌───────────────┐
+│   BRAND 1     │         │   BRAND 2     │         │   BRAND 3     │
+│ Demo Brand    │         │Demo E-commerce│         │EnGarde Platform│
+│               │         │               │         │               │
+│ ┌───────────┐ │         │ ┌───────────┐ │         │ ┌───────────┐ │
+│ │Campaigns  │ │         │ │Campaigns  │ │         │ │Campaigns  │ │
+│ │(66)       │ │         │ │(64)       │ │         │ │(66)       │ │
+│ └───────────┘ │         │ └───────────┘ │         │ └───────────┘ │
+│               │         │               │         │               │
+│ Brand-specific│         │ Brand-specific│         │ Brand-specific│
+│ resources     │         │ resources     │         │ resources     │
+└───────────────┘         └───────────────┘         └───────────────┘
+        │                           │                           │
+        │                           │                           │
+        └───────────────────────────┼───────────────────────────┘
+                                    │
+                                    │ N:M (via BrandMember)
+                                    ▼
+                            ┌───────────────┐
+                            │     USER       │
+                            │ demo@engarde   │
+                            │    .com        │
+                            └───────────────┘
+                                    │
+                                    │ 1:1 (via UserActiveBrand)
+                                    ▼
+                            ┌───────────────┐
+                            │ ACTIVE BRAND  │
+                            │  Demo Brand   │
+                            │               │
+                            │ Determines    │
+                            │ tenant context│
+                            └───────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+                          JUNCTION TABLES
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          TenantUser (User ↔ Tenant)                        │
+│                                                                             │
+│  Controls which tenants a user can access                                   │
+│                                                                             │
+│  ┌─────────────┐      ┌──────────────┐      ┌─────────────┐               │
+│  │   User      │──────│ TenantUser   │──────│   Tenant    │               │
+│  │             │      │              │      │             │               │
+│  │ user_id     │      │ user_id (FK)  │      │ tenant_id   │               │
+│  │             │      │ tenant_id(FK)│      │             │               │
+│  │             │      │ role_id (FK) │      │             │               │
+│  └─────────────┘      └──────────────┘      └─────────────┘               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         BrandMember (User ↔ Brand)                         │
+│                                                                             │
+│  Controls which brands within a tenant a user can access                   │
+│                                                                             │
+│  ┌─────────────┐      ┌──────────────┐      ┌─────────────┐               │
+│  │   User      │──────│ BrandMember  │──────│   Brand     │               │
+│  │             │      │              │      │             │               │
+│  │ user_id     │      │ user_id (FK)  │      │ brand_id    │               │
+│  │             │      │ brand_id (FK)│      │ tenant_id   │               │
+│  │             │      │ tenant_id(FK)│      │             │               │
+│  │             │      │ role         │      │             │               │
+│  └─────────────┘      └──────────────┘      └─────────────┘               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      UserActiveBrand (User → Active Brand)                 │
+│                                                                             │
+│  Tracks which brand is currently selected in the UI                        │
+│                                                                             │
+│  ┌─────────────┐      ┌──────────────┐      ┌─────────────┐               │
+│  │   User      │──────│UserActiveBrand│──────│   Brand     │               │
+│  │             │      │              │      │             │               │
+│  │ user_id     │      │ user_id (FK)  │      │ brand_id    │               │
+│  │             │      │ brand_id (FK) │      │ tenant_id   │               │
+│  │             │      │ tenant_id(FK)│      │             │               │
+│  │             │      │ recent_brands│      │             │               │
+│  └─────────────┘      └──────────────┘      └─────────────┘               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+                          DATA SCOPING PATTERNS
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TENANT-SCOPED (Shared Across Brands)                    │
+│                                                                             │
+│  Table: ai_agents                                                          │
+│  Foreign Key: tenant_id                                                    │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │  Tenant: default-tenant-001                                          │  │
+│  │    ├── Brand: Demo Brand ────────────┐                              │  │
+│  │    ├── Brand: Demo E-commerce ───────┼──→ All share 11 agents      │  │
+│  │    └── Brand: EnGarde Platform ──────┘                              │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│  Examples:                                                                  │
+│    • ai_agents (11 agents shared)                                          │
+│    • workflow_definitions (11 workflows shared)                            │
+│    • ai_executions (execution history shared)                              │
+│    • data_sources (data connections shared)                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    BRAND-SCOPED (Brand-Specific)                           │
+│                                                                             │
+│  Table: campaigns                                                          │
+│  Foreign Keys: tenant_id + brand_id                                        │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │  Tenant: default-tenant-001                                          │  │
+│  │    ├── Brand: Demo Brand ────────────→ 66 campaigns                 │  │
+│  │    ├── Brand: Demo E-commerce ───────→ 64 campaigns                 │  │
+│  │    └── Brand: EnGarde Platform ──────→ 66 campaigns                 │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│  Examples:                                                                  │
+│    • campaigns (brand-specific marketing activities)                        │
+│    • brand_members (brand team memberships)                                │
+│    • brand_invitations (brand invitation system)                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+                          RLS (Row-Level Security) FLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+  1. User makes API request
+     │
+     ▼
+  2. Authenticate user → Get user_id
+     │
+     ▼
+  3. Query user_active_brands → Get active brand_id
+     │
+     ▼
+  4. Query brands table → Get tenant_id from active brand
+     │
+     ▼
+  5. Set PostgreSQL session variables:
+     │   SET app.current_tenant_id = tenant_id
+     │   SET app.current_user_id = user_id
+     │
+     ▼
+  6. Execute query → RLS policies automatically filter by tenant_id
+     │
+     ▼
+  7. Application filters brand-specific resources by brand_id (if needed)
+
+═══════════════════════════════════════════════════════════════════════════════
+                          DEMO USER EXAMPLE
+═══════════════════════════════════════════════════════════════════════════════
+
+User: demo@engarde.com
+│
+├── Tenant Membership (TenantUser)
+│   └── EnGarde Media (default-tenant-001)
+│
+├── Brand Memberships (BrandMember)
+│   ├── Demo Brand (owner)
+│   └── Demo E-commerce (owner)
+│
+├── Active Brand (UserActiveBrand)
+│   └── Demo Brand
+│
+└── Tenant Resources (default-tenant-001)
+    │
+    ├── Tenant-Scoped (Shared):
+    │   ├── 11 AI Agents ← All 3 brands see these
+    │   ├── 11 Workflows ← All 3 brands see these
+    │   └── Data Sources ← Shared
+    │
+    └── Brand-Scoped (Separate):
+        ├── Demo Brand: 66 campaigns
+        ├── Demo E-commerce: 64 campaigns
+        └── EnGarde Platform: 66 campaigns
+
+═══════════════════════════════════════════════════════════════════════════════

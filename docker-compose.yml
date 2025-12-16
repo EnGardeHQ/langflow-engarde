@@ -1,0 +1,360 @@
+version: '3.8'
+
+# This docker-compose file uses the root .env file for configuration
+# Service-specific .env files in each repo extend these values
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: engarde_postgres
+    environment:
+      POSTGRES_DB: engarde
+      POSTGRES_USER: engarde_user
+      POSTGRES_PASSWORD: engarde_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Schema initialization scripts (executed in order)
+      - ./production-backend/scripts/init_schemas.sql:/docker-entrypoint-initdb.d/01-init-schemas.sql
+      - ./production-backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/02-init-db.sql
+      - ./production-backend/scripts/init-langflow-schema.sql:/docker-entrypoint-initdb.d/03-init-langflow-schema.sql
+    networks:
+      - engarde_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U engarde_user -d engarde"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: engarde_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - engarde_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Service (Python FastAPI)
+  backend:
+    image: engardehq-backend:latest
+    build:
+      context: ./production-backend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        VERSION: ${VERSION:-1.0.0}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
+    container_name: engarde_backend
+    env_file:
+      - ./.env
+      - ./production-backend/.env
+    environment:
+      # Database Configuration
+      DATABASE_URL: postgresql://engarde_user:engarde_password@postgres:5432/engarde
+      REDIS_URL: redis://redis:6379/0
+      
+      # Application Settings
+      DEBUG: "false"
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-here-change-in-production}
+      
+      # CORS Settings for Frontend
+      CORS_ORIGINS: '["http://localhost:3001","http://frontend:3000","http://127.0.0.1:3001","http://localhost:3000","http://127.0.0.1:3000"]'
+      
+      # Marketplace Configuration
+      MARKETPLACE_ENABLED: "true"
+      MARKETPLACE_COMMISSION_RATE: "0.15"
+      MARKETPLACE_CREDIT_USD_RATE: "0.01"
+      MARKETPLACE_CSV_UPLOAD_PATH: /app/marketplace/csv_imports
+      MARKETPLACE_MAX_FILE_SIZE: 50MB
+
+      # Logo Cache Configuration
+      LOGO_CACHE_DIR: /app/static/cached_logos
+      LOGO_REFRESH_INTERVAL_DAYS: "7"
+      LOGO_CACHE_MAX_SIZE_MB: "500"
+      LOGO_CACHE_ENABLED: "true"
+      
+      # Feature Toggle Settings
+      FEATURE_TOGGLES_CACHE_TTL: "300"
+      FEATURE_TOGGLES_ENABLED: "true"
+      
+      # Payment Integration Settings
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      PAYPAL_WEBHOOK_SECRET: ${PAYPAL_WEBHOOK_SECRET:-}
+      
+      # Agent Publishing Settings
+      AGENT_APPROVAL_REQUIRED_THRESHOLD: "100"
+      AGENT_AUTO_APPROVE_FREE: "true"
+      AGENT_MAX_TAGS: "10"
+      
+      # AI Service Keys (Add your actual keys)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+
+      # Demo Data Seeding
+      SEED_DEMO_DATA: "true"
+
+      # Gunicorn Configuration
+      GUNICORN_KEEP_ALIVE: "65"
+      GUNICORN_WORKERS: "4"
+      GUNICORN_TIMEOUT: "120"
+      GUNICORN_MAX_REQUESTS: "1000"
+      GUNICORN_WORKER_CONNECTIONS: "1000"
+      GUNICORN_ACCESSLOG: "-"
+      GUNICORN_ERRORLOG: "-"
+      GUNICORN_LOGLEVEL: "info"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - engarde_network
+    volumes:
+      # Development mode: Mount backend code for instant changes
+      - ./production-backend:/app
+      - /app/__pycache__
+      - /app/.pytest_cache
+      # Persistent data directories
+      - ./production-backend/uploads:/app/uploads
+      - ./production-backend/marketplace:/app/marketplace
+      # Static file serving - logo cache
+      - ./production-backend/app/static:/app/static
+      - cached_logos:/app/static/cached_logos
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Service (Next.js)
+  frontend:
+    build:
+      context: ./production-frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        NODE_VERSION: "18"
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_APP_NAME: Engarde
+        NEXT_PUBLIC_APP_VERSION: ${VERSION:-1.0.0}
+        VERSION: ${VERSION:-1.0.0}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
+      # Build performance optimizations
+      shm_size: '2gb'
+    container_name: engarde_frontend
+    # Resource limits for better performance
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+          cpus: '2.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    env_file:
+      - ./.env
+      - ./production-frontend/.env
+    environment:
+      # API Configuration
+      NEXT_PUBLIC_API_URL: /api
+      BACKEND_URL: http://backend:8000  # Docker internal network URL for server-side API calls
+      NEXT_PUBLIC_APP_NAME: Engarde
+      NEXT_PUBLIC_APP_VERSION: "1.0.0"
+
+      # Server Configuration - CRITICAL: Prevent ERR_INSUFFICIENT_RESOURCES
+      # 65 seconds matches backend Gunicorn keep-alive and allows browser to
+      # efficiently reuse connections when loading 30+ JavaScript chunks
+      KEEP_ALIVE_TIMEOUT: "65000"
+
+      # Docker Environment Detection
+      DOCKER_CONTAINER: "true"
+      
+      # Authentication
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-your-nextauth-secret-here-change-in-production}
+      NEXTAUTH_URL: http://localhost:3001
+      NEXT_PUBLIC_AUTH_PROVIDER: supabase
+      
+      # Database URL (if frontend needs direct DB access)
+      DATABASE_URL: postgresql://engarde_user:engarde_password@postgres:5432/engarde
+      
+      # Feature Flags - AuthContext Fix Deployment
+      NEXT_PUBLIC_ENABLE_AUTH_INIT_FIX: ${NEXT_PUBLIC_ENABLE_AUTH_INIT_FIX:-true}
+      NEXT_PUBLIC_AUTH_FIX_ROLLOUT_PERCENTAGE: ${NEXT_PUBLIC_AUTH_FIX_ROLLOUT_PERCENTAGE:-10}
+      NEXT_PUBLIC_AUTH_CIRCUIT_BREAKER_THRESHOLD: ${NEXT_PUBLIC_AUTH_CIRCUIT_BREAKER_THRESHOLD:-5}
+      NEXT_PUBLIC_ENABLE_AUTH_MONITORING: ${NEXT_PUBLIC_ENABLE_AUTH_MONITORING:-true}
+
+      # Feature Flags - General
+      NEXT_PUBLIC_ENABLE_ANALYTICS: "false"
+      NEXT_PUBLIC_ENABLE_SENTRY: ${ENABLE_SENTRY:-false}
+      NEXT_PUBLIC_ENABLE_PWA: "true"
+      NEXT_PUBLIC_ENABLE_OFFLINE: "true"
+      NEXT_PUBLIC_ENABLE_PERFORMANCE_MONITORING: ${NEXT_PUBLIC_ENABLE_PERFORMANCE_MONITORING:-true}
+
+      # Monitoring & Error Tracking
+      NEXT_PUBLIC_SENTRY_DSN: ${SENTRY_DSN:-}
+      NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${NODE_ENV:-production}
+      NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.1}
+
+      # DataDog RUM (Optional)
+      NEXT_PUBLIC_DATADOG_APPLICATION_ID: ${DATADOG_APPLICATION_ID:-}
+      NEXT_PUBLIC_DATADOG_CLIENT_TOKEN: ${DATADOG_CLIENT_TOKEN:-}
+      NEXT_PUBLIC_DATADOG_SITE: ${DATADOG_SITE:-datadoghq.com}
+      NEXT_PUBLIC_DATADOG_SERVICE: engarde-frontend
+      NEXT_PUBLIC_DATADOG_ENV: ${NODE_ENV:-production}
+      NEXT_PUBLIC_ENABLE_DATADOG: ${ENABLE_DATADOG:-false}
+
+      # Performance Thresholds
+      NEXT_PUBLIC_AUTH_INIT_TIMEOUT_MS: ${AUTH_INIT_TIMEOUT_MS:-3000}
+      NEXT_PUBLIC_LOGIN_TIMEOUT_MS: ${LOGIN_TIMEOUT_MS:-10000}
+      NEXT_PUBLIC_DASHBOARD_LOAD_TARGET_MS: ${DASHBOARD_LOAD_TARGET_MS:-2000}
+
+      # Analytics (Optional)
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
+
+      # Deployment Information
+      NEXT_PUBLIC_BUILD_ID: ${BUILD_ID:-docker-local}
+      NEXT_PUBLIC_COMMIT_SHA: ${COMMIT_SHA:-unknown}
+      NEXT_PUBLIC_DEPLOY_TIME: ${DEPLOY_TIME:-unknown}
+      
+      # Development
+      NODE_ENV: ${NODE_ENV:-production}
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    networks:
+      - engarde_network
+    # volumes:
+      # Development volumes disabled for production build
+      # - ./production-frontend:/app
+      # - /app/node_modules
+      # - /app/.next
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Langflow Service
+  langflow:
+    build:
+      context: ./production-backend
+      dockerfile: Dockerfile.langflow
+    container_name: engarde_langflow
+    env_file:
+      - ./.env
+      - ./production-backend/.env.langflow
+    environment:
+      # Langflow Core Configuration
+      LANGFLOW_AUTO_LOGIN: "true"
+      LANGFLOW_SUPERUSER: ${LANGFLOW_SUPERUSER:-admin}
+      LANGFLOW_SUPERUSER_PASSWORD: ${LANGFLOW_SUPERUSER_PASSWORD:-admin}
+
+      # Database Configuration - Using SQLite for development
+      # PostgreSQL schema-based approach has migration issues with Langflow 1.0.18
+      # Uncomment below for PostgreSQL (requires migration fixes):
+      # LANGFLOW_DATABASE_URL: postgresql://langflow_user:langflow_password@postgres:5432/engarde?options=-c%20search_path=langflow,public
+      # LANGFLOW_POOL_SIZE: ${LANGFLOW_POOL_SIZE:-10}
+      # LANGFLOW_MAX_OVERFLOW: ${LANGFLOW_MAX_OVERFLOW:-20}
+      # LANGFLOW_SCHEMA: langflow
+      # POSTGRES_SCHEMA: langflow
+
+      # Custom Components
+      LANGFLOW_COMPONENTS_PATH: /app/custom_components
+
+      # API Configuration
+      LANGFLOW_CORS_ORIGINS: '["http://localhost:3001","http://frontend:3000","http://backend:8000"]'
+
+      # Storage Configuration - Using SQLite (default) stored in /app/data volume
+      LANGFLOW_STORE_ENVIRONMENT_VARIABLES: "true"
+      LANGFLOW_SAVE_DB_IN_CONFIG_DIR: "true"
+
+      # Performance Settings
+      LANGFLOW_WORKER_TIMEOUT: ${LANGFLOW_WORKER_TIMEOUT:-300}
+      LANGFLOW_WORKERS: ${LANGFLOW_WORKERS:-1}
+
+      # Cache Configuration (using Redis)
+      LANGFLOW_CACHE_TYPE: redis
+      LANGFLOW_REDIS_URL: redis://redis:6379/1
+
+      # Logging
+      LANGFLOW_LOG_LEVEL: ${LANGFLOW_LOG_LEVEL:-info}
+      LANGFLOW_LOG_FILE: /app/logs/langflow.log
+
+      # Feature Flags
+      LANGFLOW_AUTO_SAVING: "true"
+      LANGFLOW_STORE_FLOWS: "true"
+    ports:
+      - "7860:7860"
+    depends_on:
+      redis:
+        condition: service_healthy
+    entrypoint: []
+    command: ["python", "-m", "langflow", "run", "--host", "0.0.0.0", "--port", "7860"]
+    networks:
+      - engarde_network
+    volumes:
+      - ./production-backend/custom_components:/app/custom_components
+      - langflow_logs:/app/logs
+      - langflow_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7860/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (Optional - for production-like setup)
+  nginx:
+    image: nginx:alpine
+    container_name: engarde_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - engarde_network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  langflow_logs:
+    driver: local
+  langflow_data:
+    driver: local
+  cached_logos:
+    driver: local
+
+networks:
+  engarde_network:
+    driver: bridge

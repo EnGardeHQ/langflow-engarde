@@ -1,0 +1,91 @@
+{
+  "timestamp": "2025-10-01T00:07:08.688Z",
+  "tests": [
+    {
+      "name": "CSP Configuration Without Analytics",
+      "passed": true,
+      "details": {
+        "description": "Verifies CSP does not include unsafe-eval when analytics are disabled",
+        "analyticsCheckFound": true,
+        "conditionalUnsafeEvalFound": true,
+        "properConditioningFound": true
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    },
+    {
+      "name": "CSP Configuration With Analytics",
+      "passed": true,
+      "details": {
+        "description": "Verifies CSP includes unsafe-eval and GA domains when analytics are enabled",
+        "googleAnalyticsDomainsFound": true,
+        "unsafeEvalConditionFound": true,
+        "analyticsConditionFound": true
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    },
+    {
+      "name": "Environment Detection Logic",
+      "passed": true,
+      "details": {
+        "description": "Verifies proper environment detection for analytics enablement",
+        "productionCheckFound": true,
+        "analyticsEnvCheckFound": true,
+        "environmentFunctionFound": true
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    },
+    {
+      "name": "Security Documentation",
+      "passed": true,
+      "details": {
+        "description": "Verifies proper security documentation and rationale",
+        "securityTradeOffFound": true,
+        "googleAnalyticsExplanationFound": true,
+        "alternativesDocumentationFound": true,
+        "securityStrategyFound": true
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    },
+    {
+      "name": "CSP Directive Structure",
+      "passed": true,
+      "details": {
+        "description": "Verifies all required CSP directives are present",
+        "requiredDirectives": 10,
+        "foundDirectives": 10,
+        "missingDirectives": []
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    },
+    {
+      "name": "CSP Security Checks",
+      "passed": false,
+      "details": {
+        "description": "Verifies CSP configuration follows security best practices",
+        "unsafeInlineFound": true,
+        "unsafeEvalFound": true,
+        "wildcardSourceFound": true,
+        "dataURIFound": true
+      },
+      "warnings": [
+        "'unsafe-inline' directive found - consider using nonces for better security",
+        "Wildcard source '*' found - this may be too permissive"
+      ],
+      "timestamp": "2025-10-01T00:07:08.691Z"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 5,
+    "failed": 1,
+    "warnings": 2
+  },
+  "environment": {
+    "nodeEnv": "development"
+  }
+}

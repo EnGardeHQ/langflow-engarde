@@ -1,0 +1,111 @@
+version: '3.8'
+
+# Production overrides for docker-compose.yml
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  frontend:
+    build:
+      context: ./production-frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        NODE_VERSION: "18"
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8000}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-Engarde}
+        NEXT_PUBLIC_APP_VERSION: ${NEXT_PUBLIC_APP_VERSION:-1.0.0}
+      # Production build optimizations
+      shm_size: '1gb'
+
+    # Tighter resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+    # Production environment
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      NODE_OPTIONS: "--max-old-space-size=512"
+
+    # Enhanced health check for production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    # Restart policy for production
+    restart: unless-stopped
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    # Enhanced health check for backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    restart: unless-stopped
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    restart: unless-stopped
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    restart: unless-stopped
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  langflow:
+    restart: unless-stopped
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Production volumes with better performance
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/engarde_postgres_data
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/engarde_redis_data

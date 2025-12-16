@@ -1,0 +1,663 @@
+{
+  "test_summary": {
+    "timestamp": "2025-09-15T21:47:41.573597",
+    "total_tests": 64,
+    "successful_tests": 0,
+    "failed_tests": 64,
+    "success_rate": 0.0,
+    "unique_endpoints_tested": 50,
+    "average_response_time_ms": 2.64,
+    "base_url": "http://localhost:8000"
+  },
+  "status_code_distribution": {
+    "0": 64
+  },
+  "working_endpoints": [],
+  "problematic_endpoints": [],
+  "authentication": {
+    "token_obtained": false,
+    "token_length": 0
+  },
+  "detailed_results": [
+    {
+      "timestamp": "2025-09-15T21:47:41.412717",
+      "endpoint": "/health",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 9.49,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.415044",
+      "endpoint": "/api/health",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.3,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.417241",
+      "endpoint": "/status",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.18,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.418912",
+      "endpoint": "/api/status",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.65,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.421843",
+      "endpoint": "/ping",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.9,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.425655",
+      "endpoint": "/api/ping",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 3.79,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.428173",
+      "endpoint": "/",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.49,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.430389",
+      "endpoint": "/api/",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.2,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.432368",
+      "endpoint": "/docs",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.97,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.434879",
+      "endpoint": "/api/docs",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.49,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.438136",
+      "endpoint": "/swagger",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 3.24,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.440210",
+      "endpoint": "/api/swagger",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.05,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.442501",
+      "endpoint": "/api/auth/login",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 2.27,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.448146",
+      "endpoint": "/api/auth/register",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 5.63,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.450116",
+      "endpoint": "/api/auth/check",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.95,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.451584",
+      "endpoint": "/api/auth/logout",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.45,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.452990",
+      "endpoint": "/api/auth/refresh",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.38,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.454671",
+      "endpoint": "/auth/login",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.67,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.459716",
+      "endpoint": "/auth/register",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 5.03,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.461672",
+      "endpoint": "/users/login",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.92,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.464194",
+      "endpoint": "/users/register",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 2.51,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.465743",
+      "endpoint": "/login",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.51,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.467386",
+      "endpoint": "/register",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 1.62,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.469032",
+      "endpoint": "/api/auth/check",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.6,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.471251",
+      "endpoint": "/api/auth/me",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.2,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.475058",
+      "endpoint": "/api/users/me",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 3.79,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.477727",
+      "endpoint": "/auth/check",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.65,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.479480",
+      "endpoint": "/users/me",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.73,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.481273",
+      "endpoint": "/api/auth/check",
+      "method": "OPTIONS",
+      "status_code": 0,
+      "response_time_ms": 1.77,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.482726",
+      "endpoint": "/api/users/me",
+      "method": "OPTIONS",
+      "status_code": 0,
+      "response_time_ms": 1.44,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.484803",
+      "endpoint": "/api/campaigns",
+      "method": "OPTIONS",
+      "status_code": 0,
+      "response_time_ms": 2.06,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.487756",
+      "endpoint": "/health",
+      "method": "OPTIONS",
+      "status_code": 0,
+      "response_time_ms": 2.93,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.494409",
+      "endpoint": "/api/users",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 6.63,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.497262",
+      "endpoint": "/api/user",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.83,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.499637",
+      "endpoint": "/users",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.35,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.501393",
+      "endpoint": "/api/campaigns",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.74,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.503060",
+      "endpoint": "/api/campaign",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.64,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.504982",
+      "endpoint": "/campaigns",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.9,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.506550",
+      "endpoint": "/api/integrations",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.55,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.508236",
+      "endpoint": "/api/integration",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.67,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.511683",
+      "endpoint": "/integrations",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 3.43,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.513457",
+      "endpoint": "/api/dashboard",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.75,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.515176",
+      "endpoint": "/api/analytics",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.7,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.516699",
+      "endpoint": "/api/stats",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.48,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.518431",
+      "endpoint": "/dashboard",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.72,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.521259",
+      "endpoint": "/api/marketplace",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.81,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.529502",
+      "endpoint": "/marketplace",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 8.22,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.531424",
+      "endpoint": "/api/workflows",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.89,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.533199",
+      "endpoint": "/workflows",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.75,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.534829",
+      "endpoint": "/api/ai/generate",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.61,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.537789",
+      "endpoint": "/api/ai/analyze",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.94,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.540847",
+      "endpoint": "/api/automation",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 3.04,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.543162",
+      "endpoint": "/api/webhooks",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.28,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.545186",
+      "endpoint": "/webhooks",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.01,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.547293",
+      "endpoint": "/api/users",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 2.09,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.548951",
+      "endpoint": "/api/campaigns",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.64,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.550692",
+      "endpoint": "/api/integrations",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.72,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.554826",
+      "endpoint": "/api/dashboard",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 4.1,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.556692",
+      "endpoint": "/api/stats",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.85,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.558798",
+      "endpoint": "/health",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 2.07,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.561152",
+      "endpoint": "/health",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 2.32,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.568139",
+      "endpoint": "/health",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 6.95,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.571541",
+      "endpoint": "/health",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 3.37,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    },
+    {
+      "timestamp": "2025-09-15T21:47:41.573509",
+      "endpoint": "/api/../../../etc/passwd",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 1.95,
+      "success": false,
+      "error": "Connection error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "response_data": null
+    }
+  ]
+}

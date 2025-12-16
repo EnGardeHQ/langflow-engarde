@@ -1,0 +1,452 @@
+{
+  "relevantLinks": [],
+  "pageStructure": {
+    "body": {
+      "tagName": "body",
+      "id": null,
+      "classes": [
+        "chakra-ui-light"
+      ],
+      "childCount": 25,
+      "textContent": "!function(){try{var d=document.documentElement,c=d",
+      "children": [
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "!function(){try{var d=document.documentElement,c=d"
+        },
+        {
+          "tagName": "div",
+          "id": null,
+          "classes": [
+            "css-1mxh28k"
+          ],
+          "childCount": 4,
+          "textContent": "Skip to main contentHomeAbout UsCareersPrivacyLog ",
+          "children": [
+            {
+              "tagName": "a",
+              "id": null,
+              "classes": [
+                "chakra-link",
+                "css-8ikwi3"
+              ],
+              "childCount": 0,
+              "textContent": "Skip to main content"
+            },
+            {
+              "tagName": "header",
+              "id": null,
+              "classes": [
+                "css-0"
+              ],
+              "childCount": 1,
+              "textContent": "HomeAbout UsCareersPrivacyLog InGet StartedHomeAbo",
+              "children": [
+                {
+                  "tagName": "nav",
+                  "id": null,
+                  "classes": [
+                    "css-468we1"
+                  ],
+                  "childCount": 1,
+                  "textContent": "HomeAbout UsCareersPrivacyLog InGet StartedHomeAbo"
+                }
+              ]
+            },
+            {
+              "tagName": "main",
+              "id": "main-content",
+              "classes": [
+                "css-0"
+              ],
+              "childCount": 6,
+              "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin",
+              "children": [
+                {
+                  "tagName": "section",
+                  "id": null,
+                  "classes": [
+                    "css-n7a5bn"
+                  ],
+                  "childCount": 1,
+                  "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin"
+                },
+                {
+                  "tagName": "section",
+                  "id": "features",
+                  "classes": [
+                    "css-w5u7uv"
+                  ],
+                  "childCount": 1,
+                  "textContent": "Everything you need to scale your marketingFrom AI"
+                },
+                {
+                  "tagName": "section",
+                  "id": null,
+                  "classes": [
+                    "css-1btt3ag"
+                  ],
+                  "childCount": 1,
+                  "textContent": "Trusted by marketing teams worldwideJoin thousands"
+                },
+                {
+                  "tagName": "section",
+                  "id": "pricing",
+                  "classes": [
+                    "css-w5u7uv"
+                  ],
+                  "childCount": 1,
+                  "textContent": "Simple, transparent pricingChoose the plan that fi"
+                },
+                {
+                  "tagName": "section",
+                  "id": "integrations",
+                  "classes": [
+                    "css-10vtz79"
+                  ],
+                  "childCount": 1,
+                  "textContent": "Seamless Data IntegrationsWe improve your outcomes"
+                },
+                {
+                  "tagName": "section",
+                  "id": null,
+                  "classes": [
+                    "css-w5u7uv"
+                  ],
+                  "childCount": 1,
+                  "textContent": "Ready to transform your marketing?Join thousands o"
+                }
+              ]
+            },
+            {
+              "tagName": "footer",
+              "id": null,
+              "classes": [
+                "css-12j5544"
+              ],
+              "childCount": 1,
+              "textContent": "The AI-powered marketing platform that transforms ",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-container",
+                    "css-f9g0o2"
+                  ],
+                  "childCount": 2,
+                  "textContent": "The AI-powered marketing platform that transforms "
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "span",
+          "id": "__chakra_env",
+          "classes": [],
+          "childCount": 0,
+          "textContent": null
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": null
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "(self.__next_f=self.__next_f||[]).push([0]);self._"
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "self.__next_f.push([1,\"1:HL[\\\"/_next/static/css/cd"
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "self.__next_f.push([1,\"3:I[33728,[],\\\"\\\"]\\n5:I[299"
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "self.__next_f.push([1,\"6:I[73994,[\\\"70\\\",\\\"static/"
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "self.__next_f.push([1,\"7:I[1815,[\\\"70\\\",\\\"static/c"
+        },
+        {
+          "tagName": "script",
+          "id": null,
+          "classes": [],
+          "childCount": 0,
+          "textContent": "self.__next_f.push([1,\"8:I[34436,[\\\"70\\\",\\\"static/"
+        }
+      ]
+    },
+    "main": {
+      "tagName": "main",
+      "id": "main-content",
+      "classes": [
+        "css-0"
+      ],
+      "childCount": 6,
+      "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin",
+      "children": [
+        {
+          "tagName": "section",
+          "id": null,
+          "classes": [
+            "css-n7a5bn"
+          ],
+          "childCount": 1,
+          "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 1,
+              "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "css-1sv6tnh"
+                  ],
+                  "childCount": 2,
+                  "textContent": "🚀 Supercharge Your Brand with AI-Powered Marketin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "section",
+          "id": "features",
+          "classes": [
+            "css-w5u7uv"
+          ],
+          "childCount": 1,
+          "textContent": "Everything you need to scale your marketingFrom AI",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 2,
+              "textContent": "Everything you need to scale your marketingFrom AI",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-stack",
+                    "css-1kbjzu4"
+                  ],
+                  "childCount": 2,
+                  "textContent": "Everything you need to scale your marketingFrom AI"
+                },
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "css-1pu8s7e"
+                  ],
+                  "childCount": 6,
+                  "textContent": "AI-Powered InsightsGet actionable recommendations "
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "section",
+          "id": null,
+          "classes": [
+            "css-1btt3ag"
+          ],
+          "childCount": 1,
+          "textContent": "Trusted by marketing teams worldwideJoin thousands",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 3,
+              "textContent": "Trusted by marketing teams worldwideJoin thousands",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-stack",
+                    "css-1kbjzu4"
+                  ],
+                  "childCount": 2,
+                  "textContent": "Trusted by marketing teams worldwideJoin thousands"
+                },
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "css-1rqcnov"
+                  ],
+                  "childCount": 3,
+                  "textContent": "“En Garde transformed our marketing operations. We"
+                },
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "css-1i3konl"
+                  ],
+                  "childCount": 4,
+                  "textContent": "10K+Active Users$2.5B+Ad Spend Managed40%Average R"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "section",
+          "id": "pricing",
+          "classes": [
+            "css-w5u7uv"
+          ],
+          "childCount": 1,
+          "textContent": "Simple, transparent pricingChoose the plan that fi",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 2,
+              "textContent": "Simple, transparent pricingChoose the plan that fi",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-stack",
+                    "css-1kbjzu4"
+                  ],
+                  "childCount": 2,
+                  "textContent": "Simple, transparent pricingChoose the plan that fi"
+                },
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "css-1yyq8oa"
+                  ],
+                  "childCount": 3,
+                  "textContent": "Starter$99/monthPerfect for small businesses and s"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "section",
+          "id": "integrations",
+          "classes": [
+            "css-10vtz79"
+          ],
+          "childCount": 1,
+          "textContent": "Seamless Data IntegrationsWe improve your outcomes",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 1,
+              "textContent": "Seamless Data IntegrationsWe improve your outcomes",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-stack",
+                    "css-95z36r"
+                  ],
+                  "childCount": 2,
+                  "textContent": "Seamless Data IntegrationsWe improve your outcomes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tagName": "section",
+          "id": null,
+          "classes": [
+            "css-w5u7uv"
+          ],
+          "childCount": 1,
+          "textContent": "Ready to transform your marketing?Join thousands o",
+          "children": [
+            {
+              "tagName": "div",
+              "id": null,
+              "classes": [
+                "chakra-container",
+                "css-f9g0o2"
+              ],
+              "childCount": 1,
+              "textContent": "Ready to transform your marketing?Join thousands o",
+              "children": [
+                {
+                  "tagName": "div",
+                  "id": null,
+                  "classes": [
+                    "chakra-stack",
+                    "css-6vt6jy"
+                  ],
+                  "childCount": 4,
+                  "textContent": "Ready to transform your marketing?Join thousands o"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "url": "http://localhost:3001/"
+  },
+  "timestamp": "2025-09-16T23:39:43.853Z"
+}

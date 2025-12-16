@@ -1,0 +1,55 @@
+{
+  "tests": [
+    {
+      "name": "Backend Health",
+      "status": "PASS",
+      "details": "{\"status\":\"healthy\",\"service\":\"engarde-backend\",\"version\":\"2.0.0\",\"timestamp\":1758042934.716679,\"routers_loaded\":11,\"available_endpoints\":[{\"path\":\"/openapi.json\",\"methods\":[\"GET\",\"HEAD\"]},{\"path\":\"/d"
+    },
+    {
+      "name": "Frontend Accessibility",
+      "status": "PASS",
+      "details": "Elements: email=false, password=false, button=false, apiUrl=false"
+    },
+    {
+      "name": "Direct Login (JSON)",
+      "status": "RESPONDED",
+      "details": "Status: 422, Body: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"username\"],\"msg\":\"Field required\",\"input\":null},{\"type\":\"missing\",\"loc\":[\"body\",\"password\"],\"msg\":\"Field required\",\"input\":null}]}"
+    },
+    {
+      "name": "Form Data Login",
+      "status": "RESPONDED",
+      "details": "Status: 200, Body: {\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiZXhwIjoxNzU4MDQ0NzM1fQ.BTo1myvbuZXuzwai7TOFFInCEKofCIVMYXTtVtVy4sY\",\"token_type\":\"bearer\",\"expires_in\":1800,\"u"
+    },
+    {
+      "name": "CORS Test",
+      "status": "RESPONDED",
+      "details": "Status: 200, CORS headers present: true"
+    },
+    {
+      "name": "OPTIONS Preflight",
+      "status": "RESPONDED",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Header Test (application/json)",
+      "status": "RESPONDED",
+      "details": "Status: 422"
+    },
+    {
+      "name": "Header Test (application/x-www-form-urlencoded)",
+      "status": "RESPONDED",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Header Test (multipart/form-data boundary)",
+      "status": "RESPONDED",
+      "details": "Status: 200"
+    }
+  ],
+  "findings": [
+    "Token endpoint available with methods: POST",
+    "Backend accepts form data and returns tokens"
+  ],
+  "errors": [],
+  "apiCalls": []
+}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear EnGarde Tokens - Fix Authentication</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+        button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .details {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .steps {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .steps ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Clear EnGarde Authentication Tokens</h1>
+        <div class="subtitle">Fix "Could not validate credentials" error</div>
+
+        <div class="status info">
+            <strong>Why is this needed?</strong><br>
+            The JWT secret key was updated on the backend. All existing tokens were created with the old secret and are now invalid. Clearing them will force a fresh login with the new secret.
+        </div>
+
+        <div class="steps">
+            <strong>What this tool does:</strong>
+            <ol>
+                <li>Checks for stored authentication tokens</li>
+                <li>Removes tokens from localStorage</li>
+                <li>Clears session cookies (if any)</li>
+                <li>Shows you what was cleared</li>
+            </ol>
+        </div>
+
+        <div id="currentStatus"></div>
+
+        <button onclick="checkTokens()">Check Current Tokens</button>
+        <button onclick="clearTokens()">Clear All Tokens</button>
+        <button onclick="redirectToLogin()">Go to Login</button>
+
+        <div id="details"></div>
+    </div>
+
+    <script>
+        function checkTokens() {
+            const statusDiv = document.getElementById('currentStatus');
+            const detailsDiv = document.getElementById('details');
+
+            const tokens = {
+                localStorage: {},
+                sessionStorage: {},
+                cookies: document.cookie
+            };
+
+            // Check localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                tokens.localStorage[key] = localStorage.getItem(key);
+            }
+
+            // Check sessionStorage
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                tokens.sessionStorage[key] = sessionStorage.getItem(key);
+            }
+
+            // Specific EnGarde tokens
+            const engardeTokens = localStorage.getItem('engarde_tokens');
+            const hasTokens = engardeTokens !== null;
+
+            if (hasTokens) {
+                statusDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ <strong>Found stored tokens!</strong><br>
+                        These tokens were created with the old JWT secret and need to be cleared.
+                    </div>
+                `;
+
+                try {
+                    const parsed = JSON.parse(engardeTokens);
+                    detailsDiv.innerHTML = `
+                        <div class="details">
+Token Data:
+${JSON.stringify(parsed, null, 2)}
+
+Access Token (first 50 chars):
+${parsed.accessToken ? parsed.accessToken.substring(0, 50) + '...' : 'N/A'}
+
+Refresh Token (first 50 chars):
+${parsed.refreshToken ? parsed.refreshToken.substring(0, 50) + '...' : 'N/A'}
+
+Expires At:
+${parsed.expiresAt ? new Date(parsed.expiresAt).toLocaleString() : 'N/A'}
+                        </div>
+                    `;
+                } catch (e) {
+                    detailsDiv.innerHTML = `
+                        <div class="details">
+Raw Token Data:
+${engardeTokens}
+                        </div>
+                    `;
+                }
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="status success">
+                        ✅ <strong>No EnGarde tokens found!</strong><br>
+                        Your browser storage is clean. You can proceed to login.
+                    </div>
+                `;
+                detailsDiv.innerHTML = '';
+            }
+        }
+
+        function clearTokens() {
+            const statusDiv = document.getElementById('currentStatus');
+            const detailsDiv = document.getElementById('details');
+
+            const clearedItems = [];
+
+            // Clear specific EnGarde tokens
+            if (localStorage.getItem('engarde_tokens')) {
+                clearedItems.push('localStorage: engarde_tokens');
+                localStorage.removeItem('engarde_tokens');
+            }
+
+            // Clear any auth-related items
+            const authKeys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('auth') || key.includes('token') || key.includes('session'))) {
+                    authKeys.push(key);
+                }
+            }
+
+            authKeys.forEach(key => {
+                clearedItems.push(`localStorage: ${key}`);
+                localStorage.removeItem(key);
+            });
+
+            // Clear sessionStorage
+            sessionStorage.clear();
+            clearedItems.push('sessionStorage: (all cleared)');
+
+            // Clear cookies (best effort)
+            document.cookie.split(";").forEach(c => {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                clearedItems.push(`cookie: ${c.split('=')[0]}`);
+            });
+
+            statusDiv.innerHTML = `
+                <div class="status success">
+                    ✅ <strong>Tokens cleared successfully!</strong><br>
+                    Cleared ${clearedItems.length} items. You can now login with fresh credentials.
+                </div>
+            `;
+
+            detailsDiv.innerHTML = `
+                <div class="details">
+Cleared Items:
+${clearedItems.join('\n')}
+
+Next Steps:
+1. Close this page
+2. Go to https://app.engarde.media/login
+3. Login with your credentials
+4. New tokens will be created with the updated JWT secret
+                </div>
+            `;
+        }
+
+        function redirectToLogin() {
+            if (confirm('Redirect to EnGarde login page?')) {
+                window.location.href = 'https://app.engarde.media/login';
+            }
+        }
+
+        // Auto-check on load
+        window.onload = checkTokens;
+    </script>
+</body>
+</html>

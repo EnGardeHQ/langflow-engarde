@@ -1,0 +1,113 @@
+{
+  "timestamp": "2025-10-01T00:10:17.194Z",
+  "baseUrl": "http://localhost:3000",
+  "tests": [
+    {
+      "name": "CSP Header Presence",
+      "passed": true,
+      "details": {
+        "description": "Verifies Content-Security-Policy header is present in HTTP response",
+        "statusCode": 200,
+        "cspHeaderFound": true,
+        "cspHeaderValue": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://font..."
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:10:17.265Z"
+    },
+    {
+      "name": "CSP Without Analytics",
+      "passed": true,
+      "details": {
+        "description": "Verifies CSP does not include unsafe-eval when analytics are disabled",
+        "statusCode": 200,
+        "unsafeEvalFound": false,
+        "googleDomainsFound": false,
+        "defaultSrcFound": true,
+        "scriptSrcFound": true,
+        "cspHeader": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' http://localhost:8000 http://backend:* https://backend:* http://host.docker.internal:* https://host.docker.internal:*; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; manifest-src 'self'; child-src 'none'"
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:10:17.287Z"
+    },
+    {
+      "name": "Security Headers",
+      "passed": true,
+      "details": {
+        "description": "Verifies presence and configuration of security headers",
+        "statusCode": 200,
+        "foundHeaders": 6,
+        "totalExpected": 6,
+        "missingHeaders": [],
+        "headerValues": {
+          "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' http://localhost:8000 http://backend:* https://backend:* http://host.docker.internal:* https://host.docker.internal:*; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; manifest-src 'self'; child-src 'none'",
+          "x-frame-options": "DENY",
+          "x-content-type-options": "nosniff",
+          "x-xss-protection": "1; mode=block",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "permissions-policy": "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+        }
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:10:17.307Z"
+    },
+    {
+      "name": "CSP Consistency",
+      "passed": false,
+      "details": {
+        "description": "Verifies CSP headers are consistently applied across different routes",
+        "testedRoutes": 4,
+        "successfulRequests": 4,
+        "averageCSPLength": 507,
+        "maxVariation": 0,
+        "routeResults": [
+          {
+            "route": "/",
+            "statusCode": 200,
+            "cspPresent": true,
+            "cspLength": 507
+          },
+          {
+            "route": "/login",
+            "statusCode": 200,
+            "cspPresent": true,
+            "cspLength": 507
+          },
+          {
+            "route": "/dashboard",
+            "statusCode": 200,
+            "cspPresent": true,
+            "cspLength": 507
+          },
+          {
+            "route": "/api/health",
+            "statusCode": 200,
+            "cspPresent": false,
+            "cspLength": 0
+          }
+        ]
+      },
+      "warnings": [
+        "CSP header missing for route: /api/health"
+      ],
+      "timestamp": "2025-10-01T00:10:19.586Z"
+    },
+    {
+      "name": "Development Headers",
+      "passed": true,
+      "details": {
+        "description": "Verifies appropriate development headers are present/absent",
+        "statusCode": 200,
+        "foundDevHeaders": 0,
+        "devHeaderValues": {}
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:10:19.619Z"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 4,
+    "failed": 1,
+    "warnings": 1
+  }
+}

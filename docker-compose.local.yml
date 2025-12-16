@@ -1,0 +1,194 @@
+version: '3.8'
+
+# Docker Compose Override for Local Development
+# This file extends docker-compose.yml with development-specific configurations
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.local.yml up
+
+services:
+  # PostgreSQL - Development Configuration
+  postgres:
+    environment:
+      # Enable detailed logging for debugging
+      POSTGRES_LOG_STATEMENT: all
+      POSTGRES_LOG_DURATION: "on"
+    volumes:
+      # Mount init scripts for automatic setup
+      - ./production-backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis - Development Configuration
+  redis:
+    command: redis-server --loglevel verbose --save 60 1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backend - Development Configuration
+  backend:
+    build:
+      context: ./production-backend
+      dockerfile: Dockerfile
+      target: development  # Use development stage with hot-reload
+    environment:
+      # Development-specific settings
+      DEBUG: "true"
+      LOG_LEVEL: debug
+
+      # Enable hot-reload
+      RELOAD: "true"
+
+      # Development CORS (more permissive)
+      CORS_ORIGINS: '["http://localhost:3001","http://frontend:3000","http://127.0.0.1:3001","http://localhost:3000","http://127.0.0.1:3000","http://localhost:8000"]'
+      CORS_ALLOW_CREDENTIALS: "true"
+
+      # Disable rate limiting for development
+      RATE_LIMIT_ENABLED: "false"
+
+      # Development secrets (not for production!)
+      SECRET_KEY: "dev-secret-key-change-in-production-abc123"
+      NEXTAUTH_SECRET: "dev-nextauth-secret-change-in-production-xyz789"
+
+      # Development AI API Keys (optional - add your own)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+
+      # Database pool settings for development
+      DB_POOL_SIZE: "5"
+      DB_MAX_OVERFLOW: "10"
+
+      # Development feature flags
+      FEATURE_TOGGLES_ENABLED: "true"
+      MARKETPLACE_ENABLED: "true"
+
+      # Email settings (use console backend for dev)
+      EMAIL_BACKEND: "console"
+
+      # File upload settings
+      MAX_UPLOAD_SIZE: "100MB"
+
+      # Session settings
+      SESSION_EXPIRE_MINUTES: "1440"  # 24 hours
+    volumes:
+      # Mount source code for hot-reload
+      - ./production-backend/app:/app/app:ro
+      - ./production-backend/alembic:/app/alembic:ro
+      - ./production-backend/scripts:/app/scripts:ro
+
+      # Mount uploads directory for persistent storage
+      - ./production-backend/uploads:/app/uploads
+      - ./production-backend/marketplace:/app/marketplace
+
+      # Mount logs for easy debugging
+      - ./production-backend/logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        labels: "service=backend,environment=local"
+
+  # Frontend - Development Configuration
+  frontend:
+    build:
+      context: ./production-frontend
+      dockerfile: Dockerfile
+      target: development  # Use development stage
+      args:
+        NODE_VERSION: "18"
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_APP_NAME: Engarde
+        NEXT_PUBLIC_APP_VERSION: "1.0.0-dev"
+    environment:
+      # Development mode
+      NODE_ENV: development
+
+      # Hot-reload settings
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+
+      # API configuration
+      # CRITICAL: BACKEND_URL is the primary env var for Docker backend communication
+      # This tells the middleware where to proxy API requests in the Docker network
+      BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_API_URL: /api
+
+      # Development URLs
+      NEXTAUTH_URL: http://localhost:3001
+
+      # Disable telemetry
+      NEXT_TELEMETRY_DISABLED: "1"
+
+      # Enable source maps
+      GENERATE_SOURCEMAP: "true"
+
+      # Development feature flags
+      NEXT_PUBLIC_ENABLE_ANALYTICS: "false"
+      NEXT_PUBLIC_ENABLE_SENTRY: "false"
+      NEXT_PUBLIC_DEBUG: "true"
+
+      # Authentication
+      NEXT_PUBLIC_AUTH_PROVIDER: supabase
+      NEXTAUTH_SECRET: "dev-nextauth-secret-change-in-production-xyz789"
+
+      # Performance monitoring
+      NEXT_PUBLIC_PERFORMANCE_MONITORING: "true"
+    volumes:
+      # Mount entire project directory for hot-reload (simpler and allows Next.js to write to root)
+      - ./production-frontend:/app
+
+      # Preserve container-built node_modules and .next directory
+      - /app/node_modules
+      - /app/.next
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        labels: "service=frontend,environment=local"
+
+  # Langflow - Development Configuration
+  langflow:
+    environment:
+      # Development settings
+      LANGFLOW_LOG_LEVEL: DEBUG
+      LANGFLOW_DEV_MODE: "true"
+
+      # Auto-login for convenience
+      LANGFLOW_AUTO_LOGIN: "true"
+      LANGFLOW_SUPERUSER: admin
+      LANGFLOW_SUPERUSER_PASSWORD: admin
+
+      # Database configuration
+      LANGFLOW_DATABASE_URL: postgresql://engarde_user:engarde_password@postgres:5432/engarde
+
+      # Custom components
+      LANGFLOW_COMPONENTS_PATH: /app/custom_components
+    volumes:
+      # Mount custom components for hot-reload
+      - ./production-backend/custom_components:/app/custom_components:ro
+
+      # Persist Langflow data
+      - langflow_data:/app/langflow
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+
+# Additional volumes for development
+volumes:
+  langflow_data:
+    driver: local
+
+# Network configuration (inherits from docker-compose.yml)
+networks:
+  engarde_network:
+    driver: bridge

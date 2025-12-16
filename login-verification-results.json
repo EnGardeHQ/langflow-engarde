@@ -1,0 +1,7 @@
+{
+  "loginAttempted": true,
+  "loginSuccessful": false,
+  "dashboardAccessible": false,
+  "currentURL": "http://localhost:3001/",
+  "errors": []
+}

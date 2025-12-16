@@ -1,0 +1,38 @@
+{
+  "name": "engarde-playwright-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive end-to-end testing suite for EnGarde fencing tournament management platform using Playwright MCP server",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:auth": "playwright test tests/auth/",
+    "test:tournaments": "playwright test tests/tournaments/",
+    "test:scoring": "playwright test tests/scoring/",
+    "start:mcp": "./start-mcp-server.sh",
+    "install:browsers": "playwright install"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "fencing",
+    "tournament",
+    "mcp",
+    "engarde"
+  ],
+  "author": "EnGarde Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  },
+  "dependencies": {
+    "@playwright/mcp": "^0.0.37"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

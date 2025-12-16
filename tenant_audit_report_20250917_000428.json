@@ -1,0 +1,219 @@
+{
+  "timestamp": "2025-09-17T04:04:28.540219",
+  "database_path": "/Users/cope/EnGardeHQ/production-backend/engarde.db",
+  "total_users": 1,
+  "total_tenants": 1,
+  "users_with_tenants": 1,
+  "users_without_tenants": 0,
+  "orphaned_users": [],
+  "users_by_type": {
+    "brand": 1
+  },
+  "tenants_by_status": {
+    "1": 1
+  },
+  "access_control_issues": [
+    {
+      "type": "missing_tenant_users_table",
+      "severity": "high",
+      "description": "No tenant_users table found - multi-tenant isolation may be compromised",
+      "recommendation": "Create proper tenant_users association table"
+    },
+    {
+      "type": "missing_tenant_roles_table",
+      "severity": "high",
+      "description": "No tenant_roles table found - role-based access control not implemented",
+      "recommendation": "Create tenant_roles table with proper permission definitions"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "critical",
+      "category": "database_schema",
+      "title": "Implement proper multi-tenant schema",
+      "description": "Create missing tables: tenant_users, tenant_roles",
+      "sql_fix": "\n                -- Create tenant_users association table\n                CREATE TABLE tenant_users (\n                    id TEXT PRIMARY KEY,\n                    tenant_id TEXT NOT NULL,\n                    user_id TEXT NOT NULL,\n                    role_id TEXT,\n                    permissions TEXT DEFAULT '{}',\n                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE,\n                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,\n                    FOREIGN KEY (role_id) REFERENCES tenant_roles(id),\n                    UNIQUE(tenant_id, user_id)\n                );\n\n                -- Create tenant_roles table\n                CREATE TABLE tenant_roles (\n                    id TEXT PRIMARY KEY,\n                    tenant_id TEXT NOT NULL,\n                    name TEXT NOT NULL,\n                    permissions TEXT NOT NULL,\n                    is_system_role BOOLEAN DEFAULT 0,\n                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE,\n                    UNIQUE(tenant_id, name)\n                );\n                "
+    },
+    {
+      "priority": "medium",
+      "category": "role_management",
+      "title": "Create default tenant roles",
+      "description": "Create standard roles (admin, editor, viewer) for each tenant",
+      "sql_fix": "\n            -- Create default roles for each tenant\n            INSERT INTO tenant_roles (id, tenant_id, name, permissions, is_system_role)\n            SELECT\n                hex(randomblob(16)) || '-admin',\n                t.id,\n                'admin',\n                '{\"campaigns\": [\"create\", \"read\", \"update\", \"delete\"], \"users\": [\"create\", \"read\", \"update\"], \"settings\": [\"read\", \"update\"]}',\n                1\n            FROM tenants t;\n\n            INSERT INTO tenant_roles (id, tenant_id, name, permissions, is_system_role)\n            SELECT\n                hex(randomblob(16)) || '-editor',\n                t.id,\n                'editor',\n                '{\"campaigns\": [\"create\", \"read\", \"update\"], \"users\": [\"read\"], \"settings\": [\"read\"]}',\n                1\n            FROM tenants t;\n\n            INSERT INTO tenant_roles (id, tenant_id, name, permissions, is_system_role)\n            SELECT\n                hex(randomblob(16)) || '-viewer',\n                t.id,\n                'viewer',\n                '{\"campaigns\": [\"read\"], \"users\": [\"read\"], \"settings\": [\"read\"]}',\n                1\n            FROM tenants t;\n            "
+    }
+  ],
+  "database_schema": {
+    "users": [
+      {
+        "name": "id",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": true
+      },
+      {
+        "name": "email",
+        "type": "TEXT",
+        "not_null": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "hashed_password",
+        "type": "TEXT",
+        "not_null": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "first_name",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "last_name",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "is_active",
+        "type": "BOOLEAN",
+        "not_null": false,
+        "default": "1",
+        "primary_key": false
+      },
+      {
+        "name": "is_superuser",
+        "type": "BOOLEAN",
+        "not_null": false,
+        "default": "0",
+        "primary_key": false
+      },
+      {
+        "name": "user_type",
+        "type": "TEXT",
+        "not_null": false,
+        "default": "'brand'",
+        "primary_key": false
+      },
+      {
+        "name": "tenant_id",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "not_null": false,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "not_null": false,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      },
+      {
+        "name": "ui_preferences",
+        "type": "TEXT",
+        "not_null": false,
+        "default": "'{}'",
+        "primary_key": false
+      },
+      {
+        "name": "notification_settings",
+        "type": "TEXT",
+        "not_null": false,
+        "default": "'{}'",
+        "primary_key": false
+      },
+      {
+        "name": "theme_preferences",
+        "type": "TEXT",
+        "not_null": false,
+        "default": "'{}'",
+        "primary_key": false
+      }
+    ],
+    "tenants": [
+      {
+        "name": "id",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": true
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "not_null": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "subdomain",
+        "type": "TEXT",
+        "not_null": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "is_active",
+        "type": "BOOLEAN",
+        "not_null": false,
+        "default": "1",
+        "primary_key": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "not_null": false,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "not_null": false,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      }
+    ]
+  },
+  "detailed_data": {
+    "users": [
+      {
+        "id": "a6617579-5fd1-4889-a228-f6de89b21229",
+        "email": "test@example.com",
+        "first_name": "Test",
+        "last_name": "User",
+        "user_type": "brand",
+        "is_active": 1,
+        "is_superuser": 0,
+        "tenant_id": "default-tenant",
+        "created_at": "2025-09-16T03:31:48.561577",
+        "updated_at": "2025-09-16T03:31:48.561772"
+      }
+    ],
+    "tenants": [
+      {
+        "id": "default-tenant",
+        "name": "Default Tenant",
+        "subdomain": "default",
+        "is_active": 1,
+        "created_at": "2025-09-16T03:31:48.562251",
+        "updated_at": "2025-09-16T03:31:48.562254"
+      }
+    ],
+    "tenant_user_associations": [],
+    "tenant_roles": []
+  }
+}

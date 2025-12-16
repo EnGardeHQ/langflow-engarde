@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear EnGarde Auth Tokens</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        ul {
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Clear EnGarde Auth Tokens</h1>
+
+        <div class="info">
+            <strong>Why clear tokens?</strong>
+            <p>After updating the JWT_SECRET_KEY in Railway, old tokens created with the placeholder secret will no longer work. Clearing them forces a fresh login with the new secure secret.</p>
+        </div>
+
+        <div id="currentStatus" class="status warning">
+            <strong>Current Status:</strong> Checking localStorage...
+        </div>
+
+        <button onclick="checkTokens()">🔍 Check Current Tokens</button>
+        <button onclick="clearTokens()">🗑️ Clear All Auth Tokens</button>
+        <button onclick="clearAndRedirect()">🚀 Clear Tokens & Go to Login</button>
+
+        <div class="info" style="margin-top: 30px;">
+            <strong>Manual Steps:</strong>
+            <ol>
+                <li>Set JWT_SECRET_KEY in Railway (see AUTHENTICATION_TOKEN_REFRESH_FIX.md)</li>
+                <li>Click "Clear All Auth Tokens" above</li>
+                <li>Wait for Railway deployment to complete</li>
+                <li>Log in at <a href="https://app.engarde.media/login">app.engarde.media/login</a></li>
+            </ol>
+        </div>
+
+        <div class="code">
+            <strong>Or paste this in browser console:</strong><br>
+            localStorage.removeItem('engarde_tokens');<br>
+            localStorage.removeItem('auth_state');<br>
+            console.log('✅ Auth tokens cleared');<br>
+            location.reload();
+        </div>
+    </div>
+
+    <script>
+        function checkTokens() {
+            const tokens = localStorage.getItem('engarde_tokens');
+            const authState = localStorage.getItem('auth_state');
+            const statusDiv = document.getElementById('currentStatus');
+
+            if (!tokens && !authState) {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '<strong>✅ No tokens found</strong><br>LocalStorage is clean. You can proceed to login.';
+                return;
+            }
+
+            let message = '<strong>🔍 Found tokens:</strong><ul>';
+
+            if (tokens) {
+                try {
+                    const parsed = JSON.parse(tokens);
+                    const expiresAt = parsed.expiresAt ? new Date(parsed.expiresAt).toLocaleString() : 'Unknown';
+                    const isExpired = parsed.expiresAt ? Date.now() >= parsed.expiresAt : true;
+
+                    message += `<li><strong>engarde_tokens:</strong><br>`;
+                    message += `  - Has Access Token: ${!!parsed.accessToken ? '✅' : '❌'}<br>`;
+                    message += `  - Has Refresh Token: ${!!parsed.refreshToken ? '✅' : '❌'}<br>`;
+                    message += `  - Expires: ${expiresAt}<br>`;
+                    message += `  - Status: ${isExpired ? '🔴 Expired' : '🟢 Valid'}</li>`;
+                } catch (e) {
+                    message += '<li><strong>engarde_tokens:</strong> Present (parse error)</li>';
+                }
+            }
+
+            if (authState) {
+                message += '<li><strong>auth_state:</strong> Present</li>';
+            }
+
+            message += '</ul>';
+            statusDiv.className = 'status warning';
+            statusDiv.innerHTML = message;
+        }
+
+        function clearTokens() {
+            try {
+                localStorage.removeItem('engarde_tokens');
+                localStorage.removeItem('auth_state');
+
+                const statusDiv = document.getElementById('currentStatus');
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '<strong>✅ Tokens Cleared Successfully!</strong><br>All auth tokens have been removed from localStorage. You can now login with fresh credentials.';
+
+                console.log('✅ Auth tokens cleared successfully');
+
+                // Recheck after 1 second to confirm
+                setTimeout(checkTokens, 1000);
+            } catch (error) {
+                const statusDiv = document.getElementById('currentStatus');
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `<strong>❌ Error:</strong><br>${error.message}`;
+                console.error('❌ Failed to clear tokens:', error);
+            }
+        }
+
+        function clearAndRedirect() {
+            clearTokens();
+
+            setTimeout(() => {
+                window.location.href = 'https://app.engarde.media/login';
+            }, 1500);
+        }
+
+        // Auto-check on page load
+        window.addEventListener('load', checkTokens);
+    </script>
+</body>
+</html>

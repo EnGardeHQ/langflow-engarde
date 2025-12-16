@@ -1,0 +1,91 @@
+{
+  "login": true,
+  "navigationTests": [
+    {
+      "name": "Dashboard",
+      "found": true,
+      "clickable": true,
+      "navigated": true,
+      "error": null
+    },
+    {
+      "name": "Campaigns",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    },
+    {
+      "name": "Analytics",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    },
+    {
+      "name": "Workflows",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    },
+    {
+      "name": "Agents",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    },
+    {
+      "name": "Settings",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    },
+    {
+      "name": "Profile",
+      "found": false,
+      "clickable": false,
+      "navigated": false,
+      "error": "Navigation element not found"
+    }
+  ],
+  "errors": {
+    "console": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "getCampaigns error: {message: Network error occurred, status: 0, details: Object}"
+    ],
+    "network": [
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065925320&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_s=1&tag_exp=101509157~103116026~103200004~103233427~104527907~104528500~104573694~104630779~104630781~104684208~104684211~104948813~105359937~105367987~105367989~105426769~105426771~115480710~115616986~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2F&sid=1758065925&sct=1&seg=0&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=502",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065925320&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AEAAAAQ&_s=2&tag_exp=101509157~103116026~103200004~103233427~104527907~104528500~104573694~104630779~104630781~104684208~104684211~104948813~105359937~105367987~105367989~105426769~105426771~115480710~115616986~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2Flogin&dr=http%3A%2F%2Flocalhost%3A3001%2F&sid=1758065925&sct=1&seg=1&en=page_view&_et=4192&tfd=4739",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065925320&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AEEAAAQ&_s=3&tag_exp=101509157~103116026~103200004~103233427~104527907~104528500~104573694~104630779~104630781~104684208~104684211~104948813~105359937~105367987~105367989~105426769~105426771~115480710~115616986~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2F&sid=1758065925&sct=1&seg=1&dr=http%3A%2F%2Flocalhost%3A3001%2F&en=form_start&ep.form_id=&ep.form_name=&ep.form_destination=http%3A%2F%2Flocalhost%3A3001%2Flogin&epn.form_length=5&ep.first_field_id=email&ep.first_field_name=&ep.first_field_type=email&epn.first_field_position=1&_et=42&tfd=6901",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065925320&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AEAAAAQ&_s=4&tag_exp=101509157~103116026~103200004~103233427~104527907~104528500~104573694~104630779~104630781~104684208~104684211~104948813~105359937~105367987~105367989~105426769~105426771~115480710~115616986~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2F&dr=http%3A%2F%2Flocalhost%3A3001%2Flogin&sid=1758065925&sct=1&seg=1&en=page_view&_et=2159&tfd=8511",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065925320&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AAAAAAQ&_s=5&tag_exp=101509157~103116026~103200004~103233427~104527907~104528500~104573694~104630779~104630781~104684208~104684211~104948813~105359937~105367987~105367989~105426769~105426771~115480710~115616986~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2F&sid=1758065925&sct=1&seg=1&dr=http%3A%2F%2Flocalhost%3A3001%2Flogin&en=user_engagement&_et=1608&tfd=8511",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065933639&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AAAAAAQ&_s=1&tag_exp=101509157~103116026~103200004~103233427~104527906~104528501~104573694~104630779~104630781~104684208~104684211~104948813~105367987~105367989~105426769~105426771~115480710~115616985~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2Fdashboard&sid=1758065925&sct=1&seg=1&en=page_view&_ee=1&tfd=380",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-8QQRP6KX75&gtm=45je59f1v9226476176za200zd9226476176&_p=1758065933639&gcd=13l3l3l3l1l1&npa=0&dma=0&cid=1757051256.1758065925&ul=en-us&sr=1280x720&uaa=arm&uab=64&uafvl=Not%253DA%253FBrand%3B24.0.0.0%7CChromium%3B140.0.7339.16&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=AEAAAAQ&_s=2&tag_exp=101509157~103116026~103200004~103233427~104527906~104528501~104573694~104630779~104630781~104684208~104684211~104948813~105367987~105367989~105426769~105426771~115480710~115616985~115688283~115688285&dt=EnGarde%20-%20AI-Powered%20Marketing%20Platform%20%7C%20Unify%20Campaigns%20%26%20Scale%20Growth&dl=http%3A%2F%2Flocalhost%3A3001%2Fdashboard&sid=1758065925&sct=1&seg=1&en=scroll&epn.percent_scrolled=90&_et=4&tfd=579",
+        "failure": "net::ERR_ABORTED"
+      }
+    ],
+    "navigation": []
+  }
+}

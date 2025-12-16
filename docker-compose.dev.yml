@@ -1,0 +1,366 @@
+# Modern Development Docker Compose Configuration
+# Optimized for hot-reload with Docker Compose v2 Watch Mode
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build
+#   docker compose -f docker-compose.dev.yml watch
+#
+# Requirements:
+#   - Docker Compose v2.22.0+ (for watch mode support)
+#   - Docker Desktop or Docker Engine with BuildKit enabled
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database - Development Configuration
+  postgres:
+    image: postgres:15-alpine
+    container_name: engarde_postgres_dev
+    environment:
+      POSTGRES_DB: engarde
+      POSTGRES_USER: engarde_user
+      POSTGRES_PASSWORD: engarde_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+      # Enable detailed logging for debugging
+      POSTGRES_LOG_STATEMENT: all
+      POSTGRES_LOG_DURATION: "on"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      # Schema initialization scripts (executed in order)
+      - ./production-backend/scripts/init_schemas.sql:/docker-entrypoint-initdb.d/01-init-schemas.sql:ro
+      - ./production-backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/02-init-db.sql:ro
+      - ./production-backend/scripts/init-langflow-schema.sql:/docker-entrypoint-initdb.d/03-init-langflow-schema.sql:ro
+    networks:
+      - engarde_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U engarde_user -d engarde"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Redis Cache - Development Configuration
+  redis:
+    image: redis:7-alpine
+    container_name: engarde_redis_dev
+    command: redis-server --loglevel verbose --save 60 1
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - engarde_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Backend API Service (Python FastAPI) - Development with Hot-Reload
+  backend:
+    build:
+      context: ./production-backend
+      dockerfile: Dockerfile
+      target: builder
+      cache_from:
+        - engarde-backend:dev-cache
+    image: engarde-backend:dev
+    container_name: engarde_backend_dev
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./.env
+      - ./production-backend/.env
+    environment:
+      # Database Configuration
+      DATABASE_URL: postgresql://engarde_user:engarde_password@postgres:5432/engarde
+      REDIS_URL: redis://redis:6379/0
+
+      # Development Settings
+      DEBUG: "true"
+      LOG_LEVEL: debug
+      ENVIRONMENT: development
+
+      # Hot-reload configuration
+      RELOAD: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: /app
+
+      # CORS Settings (permissive for development)
+      CORS_ORIGINS: '["http://localhost:3000","http://localhost:3001","http://frontend:3000","http://127.0.0.1:3000","http://127.0.0.1:3001"]'
+      CORS_ALLOW_CREDENTIALS: "true"
+
+      # Disable rate limiting for development
+      RATE_LIMIT_ENABLED: "false"
+
+      # Development secrets (NOT for production!)
+      SECRET_KEY: dev-secret-key-change-in-production-abc123
+
+      # Marketplace Configuration
+      MARKETPLACE_ENABLED: "true"
+      MARKETPLACE_COMMISSION_RATE: "0.15"
+      MARKETPLACE_CREDIT_USD_RATE: "0.01"
+      MARKETPLACE_CSV_UPLOAD_PATH: /app/marketplace/csv_imports
+      MARKETPLACE_MAX_FILE_SIZE: 50MB
+
+      # Logo Cache Configuration
+      LOGO_CACHE_DIR: /app/static/cached_logos
+      LOGO_REFRESH_INTERVAL_DAYS: "7"
+      LOGO_CACHE_MAX_SIZE_MB: "500"
+      LOGO_CACHE_ENABLED: "true"
+
+      # Feature Toggles
+      FEATURE_TOGGLES_CACHE_TTL: "300"
+      FEATURE_TOGGLES_ENABLED: "true"
+
+      # AI Service Keys (optional for development)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+
+      # Demo Data Seeding
+      SEED_DEMO_DATA: "true"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - engarde_network
+    volumes:
+      # Bind mount source code for hot-reload
+      - ./production-backend/app:/app/app:rw
+      - ./production-backend/alembic:/app/alembic:rw
+      - ./production-backend/scripts:/app/scripts:rw
+
+      # Persistent data directories (bind mounts for easy access)
+      - ./production-backend/uploads:/app/uploads:rw
+      - ./production-backend/marketplace:/app/marketplace:rw
+      - ./production-backend/logs:/app/logs:rw
+      - ./production-backend/app/static:/app/static:rw
+
+      # Named volumes for generated/cached data (avoid syncing these)
+      - backend_pycache:/app/app/__pycache__
+      - backend_pytest_cache:/app/.pytest_cache
+      - backend_ml_cache:/home/engarde/.cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    # Docker Compose v2 Watch Mode Configuration
+    develop:
+      watch:
+        # Sync Python source files (triggers uvicorn --reload)
+        - action: sync
+          path: ./production-backend/app
+          target: /app/app
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+            - "*.pyo"
+            - "*.pyd"
+            - .pytest_cache/
+            - "*.egg-info/"
+
+        # Sync Alembic migrations
+        - action: sync
+          path: ./production-backend/alembic
+          target: /app/alembic
+
+        # Rebuild container if requirements change
+        - action: rebuild
+          path: ./production-backend/requirements.txt
+
+  # Frontend Service (Next.js) - Development with Fast Refresh
+  frontend:
+    build:
+      context: ./production-frontend
+      dockerfile: Dockerfile.dev
+      cache_from:
+        - engarde-frontend:dev-cache
+      # Increase shared memory for Next.js build process
+      shm_size: '1gb'
+    image: engarde-frontend:dev
+    container_name: engarde_frontend_dev
+    env_file:
+      - ./.env
+      - ./production-frontend/.env
+    environment:
+      # API Configuration
+      # CRITICAL FIX: Use middleware proxy for Docker deployment
+      # - Browser makes requests to /api/* (relative URLs)
+      # - Next.js middleware proxies to backend via Docker internal network
+      # - All security features (CSRF, rate limiting, headers) remain active
+      NEXT_PUBLIC_API_URL: /api
+      BACKEND_URL: http://backend:8000
+      DOCKER_CONTAINER: "true"
+
+      NEXT_PUBLIC_APP_NAME: Engarde
+      NEXT_PUBLIC_APP_VERSION: "1.0.0-dev"
+
+      # Development mode
+      NODE_ENV: development
+
+      # Hot-reload settings for Docker
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "false"
+
+      # Authentication
+      NEXTAUTH_SECRET: dev-nextauth-secret-change-in-production-xyz789
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_AUTH_PROVIDER: supabase
+
+      # Database URL (if frontend needs direct DB access)
+      DATABASE_URL: postgresql://engarde_user:engarde_password@postgres:5432/engarde
+
+      # Feature Flags - Development
+      NEXT_PUBLIC_ENABLE_ANALYTICS: "false"
+      NEXT_PUBLIC_ENABLE_SENTRY: "false"
+      NEXT_PUBLIC_DEBUG: "true"
+      NEXT_PUBLIC_ENABLE_PWA: "true"
+      NEXT_PUBLIC_ENABLE_OFFLINE: "true"
+
+      # Disable telemetry
+      NEXT_TELEMETRY_DISABLED: "1"
+
+      # Performance monitoring
+      NEXT_PUBLIC_ENABLE_PERFORMANCE_MONITORING: "true"
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - engarde_network
+    volumes:
+      # Bind mount source code for hot-reload (Next.js 13+ uses app directory)
+      - ./production-frontend/app:/app/app:rw
+      - ./production-frontend/components:/app/components:rw
+      - ./production-frontend/contexts:/app/contexts:rw
+      - ./production-frontend/hooks:/app/hooks:rw
+      - ./production-frontend/lib:/app/lib:rw
+      - ./production-frontend/public:/app/public:rw
+      - ./production-frontend/services:/app/services:rw
+      - ./production-frontend/stores:/app/stores:rw
+      - ./production-frontend/styles:/app/styles:rw
+      - ./production-frontend/types:/app/types:rw
+      - ./production-frontend/next.config.js:/app/next.config.js:ro
+      - ./production-frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./production-frontend/tailwind.config.js:/app/tailwind.config.js:ro
+      - ./production-frontend/postcss.config.js:/app/postcss.config.js:ro
+      - ./production-frontend/env-validation.js:/app/env-validation.js:ro
+      - ./production-frontend/next-env.d.ts:/app/next-env.d.ts:rw
+
+      # Named volumes for node_modules and .next (avoid syncing these - performance!)
+      - frontend_node_modules:/app/node_modules
+      - frontend_next_cache:/app/.next
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    # Docker Compose v2 Watch Mode Configuration
+    develop:
+      watch:
+        # Sync app directory (Next.js 13+ app router - triggers Fast Refresh)
+        - action: sync
+          path: ./production-frontend/app
+          target: /app/app
+          ignore:
+            - "**/*.test.tsx"
+            - "**/*.test.ts"
+            - "**/*.spec.tsx"
+            - "**/*.spec.ts"
+
+        # Sync components
+        - action: sync
+          path: ./production-frontend/components
+          target: /app/components
+          ignore:
+            - "**/*.test.tsx"
+            - "**/*.test.ts"
+
+        # Sync contexts
+        - action: sync
+          path: ./production-frontend/contexts
+          target: /app/contexts
+
+        # Sync hooks
+        - action: sync
+          path: ./production-frontend/hooks
+          target: /app/hooks
+
+        # Sync lib utilities
+        - action: sync
+          path: ./production-frontend/lib
+          target: /app/lib
+
+        # Sync services
+        - action: sync
+          path: ./production-frontend/services
+          target: /app/services
+
+        # Sync stores
+        - action: sync
+          path: ./production-frontend/stores
+          target: /app/stores
+
+        # Sync public assets
+        - action: sync
+          path: ./production-frontend/public
+          target: /app/public
+
+        # Sync styles
+        - action: sync
+          path: ./production-frontend/styles
+          target: /app/styles
+
+        # Sync configuration files (triggers restart)
+        - action: sync+restart
+          path: ./production-frontend/next.config.js
+          target: /app/next.config.js
+
+        - action: sync+restart
+          path: ./production-frontend/tailwind.config.js
+          target: /app/tailwind.config.js
+
+        # Rebuild container if package.json changes
+        - action: rebuild
+          path: ./production-frontend/package.json
+
+volumes:
+  # Database and cache volumes
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+  # Backend volumes for generated/cached data
+  backend_pycache:
+    driver: local
+  backend_pytest_cache:
+    driver: local
+  backend_ml_cache:
+    driver: local
+
+  # Frontend volumes for node_modules and build cache
+  frontend_node_modules:
+    driver: local
+  frontend_next_cache:
+    driver: local
+
+networks:
+  engarde_network:
+    driver: bridge
+    name: engarde_dev_network

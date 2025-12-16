@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.1.14",
+    "playwright": "^1.55.0"
+  },
+  "name": "engardehq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auth_browser_investigation.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

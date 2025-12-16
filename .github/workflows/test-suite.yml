@@ -1,0 +1,466 @@
+name: Comprehensive Test Suite
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run tests daily at 6 AM UTC
+    - cron: '0 6 * * *'
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+  POSTGRES_DB: engarde_test
+  POSTGRES_USER: engarde_test_user
+  POSTGRES_PASSWORD: test_password_123
+
+jobs:
+  # ============================================================================
+  # Backend Authentication Tests
+  # ============================================================================
+  backend-auth-tests:
+    name: Backend Auth Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd production-backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio pytest-mock faker
+
+      - name: Set up environment
+        run: |
+          cd production-backend
+          cp .env.example .env.test
+          echo "DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" >> .env.test
+          echo "REDIS_URL=redis://localhost:6379" >> .env.test
+
+      - name: Run database migrations
+        run: |
+          cd production-backend
+          alembic upgrade head
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Run authentication tests
+        run: |
+          cd production-backend
+          pytest tests/test_auth_comprehensive.py \
+            -v \
+            --cov=app.routers.zerodb_auth \
+            --cov=app.services.zerodb_auth \
+            --cov-report=xml:coverage/auth-coverage.xml \
+            --cov-report=html:coverage/auth-html \
+            --cov-report=term \
+            --junit-xml=test-results/auth-junit.xml
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload auth coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./production-backend/coverage/auth-coverage.xml
+          flags: backend-auth
+          name: backend-auth-coverage
+
+      - name: Upload auth test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-auth-test-results
+          path: |
+            production-backend/test-results/
+            production-backend/coverage/auth-html/
+
+  # ============================================================================
+  # Backend Brand Management Tests
+  # ============================================================================
+  backend-brand-tests:
+    name: Backend Brand Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd production-backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio pytest-mock faker
+
+      - name: Run database migrations
+        run: |
+          cd production-backend
+          alembic upgrade head
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Run brand management tests
+        run: |
+          cd production-backend
+          pytest tests/test_brands_comprehensive.py \
+            -v \
+            --cov=app.routers.brands \
+            --cov=app.models.brand_models \
+            --cov=app.schemas.brand_schemas \
+            --cov-report=xml:coverage/brand-coverage.xml \
+            --cov-report=html:coverage/brand-html \
+            --cov-report=term \
+            --junit-xml=test-results/brand-junit.xml
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Upload brand coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./production-backend/coverage/brand-coverage.xml
+          flags: backend-brands
+          name: backend-brand-coverage
+
+      - name: Upload brand test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-brand-test-results
+          path: |
+            production-backend/test-results/
+            production-backend/coverage/brand-html/
+
+  # ============================================================================
+  # Frontend Unit Tests
+  # ============================================================================
+  frontend-unit-tests:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: production-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd production-frontend
+          npm ci
+
+      - name: Run authentication tests
+        run: |
+          cd production-frontend
+          npm test -- __tests__/auth-comprehensive.test.tsx \
+            --coverage \
+            --coverageDirectory=coverage/auth \
+            --coverageReporters=json,lcov,text \
+            --watchAll=false
+
+      - name: Run brand tests
+        run: |
+          cd production-frontend
+          npm test -- __tests__/brands-comprehensive.test.tsx \
+            --coverage \
+            --coverageDirectory=coverage/brands \
+            --coverageReporters=json,lcov,text \
+            --watchAll=false
+
+      - name: Generate combined coverage
+        run: |
+          cd production-frontend
+          npm test -- --coverage --watchAll=false
+
+      - name: Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./production-frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-reports
+          path: production-frontend/coverage/
+
+  # ============================================================================
+  # E2E Integration Tests
+  # ============================================================================
+  e2e-tests:
+    name: E2E Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: production-frontend/package-lock.json
+
+      - name: Install backend dependencies
+        run: |
+          cd production-backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install frontend dependencies
+        run: |
+          cd production-frontend
+          npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          cd production-frontend
+          npx playwright install --with-deps chromium
+
+      - name: Set up backend environment
+        run: |
+          cd production-backend
+          echo "DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" > .env
+          echo "REDIS_URL=redis://localhost:6379" >> .env
+          echo "JWT_SECRET_KEY=test_secret_key_for_ci_pipeline_do_not_use_in_production" >> .env
+          echo "SEED_DEMO_DATA=true" >> .env
+
+      - name: Run database migrations
+        run: |
+          cd production-backend
+          alembic upgrade head
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Seed test data
+        run: |
+          cd production-backend
+          python scripts/seed_demo_users_brands.py
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Start backend server
+        run: |
+          cd production-backend
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 10
+        env:
+          DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
+
+      - name: Build frontend
+        run: |
+          cd production-frontend
+          npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+
+      - name: Start frontend server
+        run: |
+          cd production-frontend
+          npm run start &
+          sleep 10
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+
+      - name: Run E2E tests
+        run: |
+          cd production-frontend
+          npx playwright test e2e/auth-brand-integration.spec.ts \
+            --reporter=html,json,junit
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: production-frontend/playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: |
+            production-frontend/test-results/
+            production-frontend/playwright-report/
+
+  # ============================================================================
+  # Test Summary and Reporting
+  # ============================================================================
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [backend-auth-tests, backend-brand-tests, frontend-unit-tests, e2e-tests]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: test-artifacts/
+
+      - name: Generate test summary
+        run: |
+          echo "# Test Suite Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Auth Tests: ${{ needs.backend-auth-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Brand Tests: ${{ needs.backend-brand-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Unit Tests: ${{ needs.frontend-unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E Integration Tests: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check test results
+        run: |
+          if [[ "${{ needs.backend-auth-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.backend-brand-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.frontend-unit-tests.result }}" != "success" ]] || \
+             [[ "${{ needs.e2e-tests.result }}" != "success" ]]; then
+            echo "One or more test suites failed!"
+            exit 1
+          fi
+          echo "All test suites passed!"
+
+  # ============================================================================
+  # Coverage Report Consolidation
+  # ============================================================================
+  coverage-report:
+    name: Coverage Report
+    runs-on: ubuntu-latest
+    needs: [backend-auth-tests, backend-brand-tests, frontend-unit-tests]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage-artifacts/
+
+      - name: Generate coverage summary
+        run: |
+          echo "# Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports have been uploaded to Codecov." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed coverage at: https://codecov.io/gh/${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## Test Coverage Report\n\nCoverage reports have been generated. View details in the [Codecov dashboard](https://codecov.io/gh/${{ github.repository }}).'
+            })

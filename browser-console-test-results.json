@@ -1,0 +1,120 @@
+{
+  "timestamp": "2025-10-01T00:11:18.180Z",
+  "baseUrl": "http://localhost:3000",
+  "tests": [
+    {
+      "name": "Homepage CSP Violations",
+      "passed": true,
+      "details": {
+        "description": "Checks homepage for CSP violations and eval-related errors",
+        "url": "http://localhost:3000",
+        "totalConsoleMessages": 52,
+        "cspViolations": 0,
+        "evalErrors": 0,
+        "errorMessages": []
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:11:23.587Z"
+    },
+    {
+      "name": "Login Flow CSP Violations",
+      "passed": true,
+      "details": {
+        "description": "Checks login flow for CSP violations and eval-related errors",
+        "url": "http://localhost:3000/login",
+        "totalConsoleMessages": 27,
+        "cspViolations": 0,
+        "evalErrors": 0,
+        "errorMessages": []
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:11:27.279Z"
+    },
+    {
+      "name": "Analytics Enabled CSP Test",
+      "passed": true,
+      "details": {
+        "description": "Tests for CSP violations when analytics are enabled",
+        "url": "http://localhost:3000",
+        "gtmScriptsFound": 1,
+        "gaScriptsFound": 0,
+        "totalConsoleMessages": 54,
+        "analyticsCspViolations": 0,
+        "analyticsEvalErrors": 0,
+        "allCspViolations": 0
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:11:33.568Z"
+    },
+    {
+      "name": "Network Request Failures",
+      "passed": true,
+      "details": {
+        "description": "Monitors network requests for CSP-related failures",
+        "url": "http://localhost:3000",
+        "totalFailedRequests": 0,
+        "cspRelatedFailures": 0,
+        "requestErrors": 0,
+        "failedRequestDetails": []
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:11:37.807Z"
+    },
+    {
+      "name": "Multi-Browser CSP Compatibility",
+      "passed": true,
+      "details": {
+        "description": "Tests CSP compliance across different browsers",
+        "browsersTests": 3,
+        "successfulTests": 3,
+        "totalViolations": 0,
+        "browserResults": [
+          {
+            "browser": "Chromium",
+            "totalMessages": 52,
+            "cspViolations": 0,
+            "errors": 0,
+            "warnings": 32
+          },
+          {
+            "browser": "Firefox",
+            "totalMessages": 23,
+            "cspViolations": 0,
+            "errors": 0,
+            "warnings": 2
+          },
+          {
+            "browser": "WebKit",
+            "totalMessages": 19,
+            "cspViolations": 0,
+            "errors": 0,
+            "warnings": 0
+          }
+        ]
+      },
+      "warnings": [],
+      "timestamp": "2025-10-01T00:12:00.193Z"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "warnings": 0
+  },
+  "consoleErrors": [
+    {
+      "type": "error",
+      "text": "Access to font at 'https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: Request header field x-test-analytics is not allowed by Access-Control-Allow-Headers in preflight response.",
+      "timestamp": "2025-10-01T00:11:27.476Z",
+      "testName": "Analytics Enabled"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED",
+      "timestamp": "2025-10-01T00:11:27.476Z",
+      "testName": "Analytics Enabled"
+    }
+  ],
+  "cspViolations": []
+}

@@ -1,0 +1,373 @@
+{
+  "timestamp": "2025-10-01T00:13:48.246Z",
+  "testSuite": "CSP Verification and eval() Error Resolution",
+  "summary": {
+    "totalTestSuites": 3,
+    "totalTests": 16,
+    "passed": 14,
+    "failed": 2,
+    "warnings": 3,
+    "overallStatus": "PARTIALLY_PASSED"
+  },
+  "testSuites": [
+    {
+      "name": "CSP Configuration Tests",
+      "description": "Unit tests verifying CSP configuration logic",
+      "totalTests": 6,
+      "passed": 5,
+      "failed": 1,
+      "warnings": 2,
+      "status": "FAILED",
+      "details": [
+        {
+          "name": "CSP Configuration Without Analytics",
+          "passed": true,
+          "details": {
+            "description": "Verifies CSP does not include unsafe-eval when analytics are disabled",
+            "analyticsCheckFound": true,
+            "conditionalUnsafeEvalFound": true,
+            "properConditioningFound": true
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        },
+        {
+          "name": "CSP Configuration With Analytics",
+          "passed": true,
+          "details": {
+            "description": "Verifies CSP includes unsafe-eval and GA domains when analytics are enabled",
+            "googleAnalyticsDomainsFound": true,
+            "unsafeEvalConditionFound": true,
+            "analyticsConditionFound": true
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        },
+        {
+          "name": "Environment Detection Logic",
+          "passed": true,
+          "details": {
+            "description": "Verifies proper environment detection for analytics enablement",
+            "productionCheckFound": true,
+            "analyticsEnvCheckFound": true,
+            "environmentFunctionFound": true
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        },
+        {
+          "name": "Security Documentation",
+          "passed": true,
+          "details": {
+            "description": "Verifies proper security documentation and rationale",
+            "securityTradeOffFound": true,
+            "googleAnalyticsExplanationFound": true,
+            "alternativesDocumentationFound": true,
+            "securityStrategyFound": true
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        },
+        {
+          "name": "CSP Directive Structure",
+          "passed": true,
+          "details": {
+            "description": "Verifies all required CSP directives are present",
+            "requiredDirectives": 10,
+            "foundDirectives": 10,
+            "missingDirectives": []
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        },
+        {
+          "name": "CSP Security Checks",
+          "passed": false,
+          "details": {
+            "description": "Verifies CSP configuration follows security best practices",
+            "unsafeInlineFound": true,
+            "unsafeEvalFound": true,
+            "wildcardSourceFound": true,
+            "dataURIFound": true
+          },
+          "warnings": [
+            "'unsafe-inline' directive found - consider using nonces for better security",
+            "Wildcard source '*' found - this may be too permissive"
+          ],
+          "timestamp": "2025-10-01T00:07:08.691Z"
+        }
+      ]
+    },
+    {
+      "name": "HTTP Header Tests",
+      "description": "Tests verifying CSP headers in HTTP responses",
+      "totalTests": 5,
+      "passed": 4,
+      "failed": 1,
+      "warnings": 1,
+      "status": "FAILED",
+      "details": [
+        {
+          "name": "CSP Header Presence",
+          "passed": true,
+          "details": {
+            "description": "Verifies Content-Security-Policy header is present in HTTP response",
+            "statusCode": 200,
+            "cspHeaderFound": true,
+            "cspHeaderValue": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://font..."
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:10:17.265Z"
+        },
+        {
+          "name": "CSP Without Analytics",
+          "passed": true,
+          "details": {
+            "description": "Verifies CSP does not include unsafe-eval when analytics are disabled",
+            "statusCode": 200,
+            "unsafeEvalFound": false,
+            "googleDomainsFound": false,
+            "defaultSrcFound": true,
+            "scriptSrcFound": true,
+            "cspHeader": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' http://localhost:8000 http://backend:* https://backend:* http://host.docker.internal:* https://host.docker.internal:*; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; manifest-src 'self'; child-src 'none'"
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:10:17.287Z"
+        },
+        {
+          "name": "Security Headers",
+          "passed": true,
+          "details": {
+            "description": "Verifies presence and configuration of security headers",
+            "statusCode": 200,
+            "foundHeaders": 6,
+            "totalExpected": 6,
+            "missingHeaders": [],
+            "headerValues": {
+              "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' http://localhost:8000 http://backend:* https://backend:* http://host.docker.internal:* https://host.docker.internal:*; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; manifest-src 'self'; child-src 'none'",
+              "x-frame-options": "DENY",
+              "x-content-type-options": "nosniff",
+              "x-xss-protection": "1; mode=block",
+              "referrer-policy": "strict-origin-when-cross-origin",
+              "permissions-policy": "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+            }
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:10:17.307Z"
+        },
+        {
+          "name": "CSP Consistency",
+          "passed": false,
+          "details": {
+            "description": "Verifies CSP headers are consistently applied across different routes",
+            "testedRoutes": 4,
+            "successfulRequests": 4,
+            "averageCSPLength": 507,
+            "maxVariation": 0,
+            "routeResults": [
+              {
+                "route": "/",
+                "statusCode": 200,
+                "cspPresent": true,
+                "cspLength": 507
+              },
+              {
+                "route": "/login",
+                "statusCode": 200,
+                "cspPresent": true,
+                "cspLength": 507
+              },
+              {
+                "route": "/dashboard",
+                "statusCode": 200,
+                "cspPresent": true,
+                "cspLength": 507
+              },
+              {
+                "route": "/api/health",
+                "statusCode": 200,
+                "cspPresent": false,
+                "cspLength": 0
+              }
+            ]
+          },
+          "warnings": [
+            "CSP header missing for route: /api/health"
+          ],
+          "timestamp": "2025-10-01T00:10:19.586Z"
+        },
+        {
+          "name": "Development Headers",
+          "passed": true,
+          "details": {
+            "description": "Verifies appropriate development headers are present/absent",
+            "statusCode": 200,
+            "foundDevHeaders": 0,
+            "devHeaderValues": {}
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:10:19.619Z"
+        }
+      ],
+      "baseUrl": "http://localhost:3000"
+    },
+    {
+      "name": "Browser Console Tests",
+      "description": "Tests monitoring browser console for CSP violations and eval errors",
+      "totalTests": 5,
+      "passed": 5,
+      "failed": 0,
+      "warnings": 0,
+      "status": "PASSED",
+      "details": [
+        {
+          "name": "Homepage CSP Violations",
+          "passed": true,
+          "details": {
+            "description": "Checks homepage for CSP violations and eval-related errors",
+            "url": "http://localhost:3000",
+            "totalConsoleMessages": 52,
+            "cspViolations": 0,
+            "evalErrors": 0,
+            "errorMessages": []
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:11:23.587Z"
+        },
+        {
+          "name": "Login Flow CSP Violations",
+          "passed": true,
+          "details": {
+            "description": "Checks login flow for CSP violations and eval-related errors",
+            "url": "http://localhost:3000/login",
+            "totalConsoleMessages": 27,
+            "cspViolations": 0,
+            "evalErrors": 0,
+            "errorMessages": []
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:11:27.279Z"
+        },
+        {
+          "name": "Analytics Enabled CSP Test",
+          "passed": true,
+          "details": {
+            "description": "Tests for CSP violations when analytics are enabled",
+            "url": "http://localhost:3000",
+            "gtmScriptsFound": 1,
+            "gaScriptsFound": 0,
+            "totalConsoleMessages": 54,
+            "analyticsCspViolations": 0,
+            "analyticsEvalErrors": 0,
+            "allCspViolations": 0
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:11:33.568Z"
+        },
+        {
+          "name": "Network Request Failures",
+          "passed": true,
+          "details": {
+            "description": "Monitors network requests for CSP-related failures",
+            "url": "http://localhost:3000",
+            "totalFailedRequests": 0,
+            "cspRelatedFailures": 0,
+            "requestErrors": 0,
+            "failedRequestDetails": []
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:11:37.807Z"
+        },
+        {
+          "name": "Multi-Browser CSP Compatibility",
+          "passed": true,
+          "details": {
+            "description": "Tests CSP compliance across different browsers",
+            "browsersTests": 3,
+            "successfulTests": 3,
+            "totalViolations": 0,
+            "browserResults": [
+              {
+                "browser": "Chromium",
+                "totalMessages": 52,
+                "cspViolations": 0,
+                "errors": 0,
+                "warnings": 32
+              },
+              {
+                "browser": "Firefox",
+                "totalMessages": 23,
+                "cspViolations": 0,
+                "errors": 0,
+                "warnings": 2
+              },
+              {
+                "browser": "WebKit",
+                "totalMessages": 19,
+                "cspViolations": 0,
+                "errors": 0,
+                "warnings": 0
+              }
+            ]
+          },
+          "warnings": [],
+          "timestamp": "2025-10-01T00:12:00.193Z"
+        }
+      ],
+      "baseUrl": "http://localhost:3000",
+      "cspViolationsDetected": 0,
+      "consoleErrorsDetected": 2
+    }
+  ],
+  "findings": {
+    "cspViolations": [],
+    "evalErrors": [],
+    "securityIssues": [
+      "CSP Security: 'unsafe-inline' directive found - consider using nonces for better security",
+      "CSP Security: Wildcard source '*' found - this may be too permissive"
+    ],
+    "resolved": [
+      "CSP correctly excludes unsafe-eval when analytics are disabled",
+      "CSP correctly includes unsafe-eval only when analytics are enabled",
+      "HTTP headers correctly configured when analytics are disabled",
+      "No CSP violations detected in browser console",
+      "No eval-related errors detected in browser console",
+      "Homepage loads without CSP violations",
+      "Login flow works without CSP violations",
+      "Application works correctly with analytics enabled"
+    ],
+    "recommendations": [
+      {
+        "priority": "Medium",
+        "category": "Security Enhancement",
+        "recommendation": "Consider implementing nonce-based CSP instead of 'unsafe-inline' for better security",
+        "rationale": "While functional, unsafe-inline poses security risks that can be mitigated with nonces"
+      },
+      {
+        "priority": "Low",
+        "category": "Monitoring",
+        "recommendation": "Implement continuous CSP monitoring in production",
+        "rationale": "Regular monitoring helps catch CSP issues early in production environments"
+      },
+      {
+        "priority": "Medium",
+        "category": "Testing",
+        "recommendation": "Include CSP tests in CI/CD pipeline",
+        "rationale": "Automated testing prevents CSP regressions during development"
+      }
+    ]
+  },
+  "environmentTests": {
+    "analyticsDisabled": {
+      "status": "PASSED",
+      "unsafeEvalFound": false,
+      "googleDomainsFound": false
+    },
+    "analyticsEnabled": {
+      "status": "PASSED",
+      "cspViolations": 0,
+      "evalErrors": 0
+    }
+  },
+  "conclusion": "CSP Verification Test Suite Results:\n\n📊 Overall Status: PARTIALLY_PASSED\n🎯 Pass Rate: 88% (14/16 tests passed)\n📋 Test Suites: 3\n⚠️  Warnings: 3\n\n🎉 RESOLVED ISSUES:\n   1. CSP correctly excludes unsafe-eval when analytics are disabled\n   2. CSP correctly includes unsafe-eval only when analytics are enabled\n   3. HTTP headers correctly configured when analytics are disabled\n   4. No CSP violations detected in browser console\n   5. No eval-related errors detected in browser console\n   6. Homepage loads without CSP violations\n   7. Login flow works without CSP violations\n   8. Application works correctly with analytics enabled\n\n✅ SUCCESS: The CSP eval() errors have been successfully resolved!\n\nKey Achievements:\n• CSP now conditionally allows 'unsafe-eval' only when Google Analytics is enabled\n• No CSP violations detected in browser console\n• No eval-related errors found\n• Application functions correctly in both analytics enabled/disabled modes\n• Security headers are properly configured\n\n\n🔒 SECURITY NOTES:\n   1. CSP Security: 'unsafe-inline' directive found - consider using nonces for better security\n   2. CSP Security: Wildcard source '*' found - this may be too permissive\n\n💡 RECOMMENDATIONS:\n   [Medium] Consider implementing nonce-based CSP instead of 'unsafe-inline' for better security\n   [Medium] Include CSP tests in CI/CD pipeline\n   [Low] Implement continuous CSP monitoring in production\n\n🔍 TESTING METHODOLOGY:\n• Static code analysis of CSP configuration\n• HTTP response header verification\n• Browser console monitoring for violations\n• Multi-browser compatibility testing\n• Environment-specific testing (analytics on/off)\n"
+}

@@ -272,6 +272,8 @@ The demo page (`/demo`) is already configured to use EasyAppointments when the e
 
 ## 🚀 Phase 6: Production Deployment
 
+**📖 For detailed step-by-step instructions, see: `EASYAPPOINTMENTS_RAILWAY_SETUP_STEP_BY_STEP.md`**
+
 ### Option A: Railway Deployment (Recommended)
 
 #### Step 1: Prepare Repository for Railway
@@ -635,7 +637,8 @@ If you prefer VPS deployment instead of Railway:
 - **Docker Compose Docs:** https://docs.docker.com/compose/
 - **Railway Documentation:** https://docs.railway.app/
 - **GoDaddy DNS Help:** https://www.godaddy.com/help/manage-dns-records-680
-- **Detailed Railway Deployment Guide:** See `RAILWAY_DEPLOYMENT_DETAILED.md` for step-by-step instructions
+- **Docker Hub:** https://hub.docker.com/
+- **Complete Step-by-Step Guide:** See `EASYAPPOINTMENTS_RAILWAY_SETUP_STEP_BY_STEP.md` for detailed instructions from cloning to deployment
 
 ## Next Steps After Setup
 

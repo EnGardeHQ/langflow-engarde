@@ -1,203 +1,136 @@
 # EasyAppointments Railway Setup - Complete Step-by-Step Guide
 
 ## Overview
-This guide walks you through setting up EasyAppointments on Railway using Docker Hub. We'll:
-1. Get EasyAppointments source code
-2. Build a Docker image locally
-3. Push to Docker Hub
-4. Deploy to Railway from Docker Hub
+This guide walks you through setting up EasyAppointments on Railway using GitHub deployment (EnGardeHQ organization). We'll:
+1. Get EasyAppointments source code (already configured for MySQL)
+2. Deploy from GitHub to Railway
+3. Add MySQL database in Railway
+4. Configure environment variables
 5. Configure DNS in GoDaddy
 
 ---
 
 ## Prerequisites
-- Docker Desktop installed and running
-- Docker Hub account (free at https://hub.docker.com/)
 - Railway account (free at https://railway.app/)
+- GitHub account with access to EnGardeHQ organization
 - GoDaddy account with `engarde.media` domain
-- Terminal/Command line access
+- Terminal/Command line access (optional, for local testing)
 
 ---
 
-## Step 1: Get EasyAppointments Source Code
+## ⚠️ CRITICAL: Railway Deployment Notes
 
-### Option A: Clone from Official Repository (Recommended)
+**This setup uses GitHub deployment - Railway builds directly from the repository!**
 
-1. **Open Terminal:**
-   ```bash
-   cd /Users/cope/EnGardeHQ
-   ```
+### Key Points:
+- ✅ **Railway builds from GitHub** - No Docker Hub needed
+- ✅ **MySQL configured** - Uses MySQL as the primary database
+- ✅ **Environment variables** - Set in Railway, not baked into image
+- ✅ **PORT handling** - Dockerfile handles Railway's PORT variable (e.g., 8080)
+- ✅ **Repository:** `EnGardeHQ/easyappointments-railway` on GitHub
 
-2. **Clone EasyAppointments Repository:**
-   ```bash
-   git clone https://github.com/alextselegidis/easyappointments.git easyappointments-source
-   cd easyappointments-source
-   ```
+### If Deployment Fails:
+1. Check Railway build logs for specific errors
+2. Verify MySQL service is running
+3. Ensure environment variables use MySQL references: `${{MySQL.MYSQLHOST}}`
+4. Check that `railway.json` and `Dockerfile` are in the repository
 
-3. **Verify Files:**
-   ```bash
-   ls -la
-   # You should see files like: index.php, config/, application/, etc.
-   ```
-
-### Option B: Download ZIP File
-
-1. **Download from GitHub:**
-   - Visit: https://github.com/alextselegidis/easyappointments
-   - Click "Code" → "Download ZIP"
-   - Extract ZIP file to: `/Users/cope/EnGardeHQ/easyappointments-source`
-
-2. **Navigate to Directory:**
-   ```bash
-   cd /Users/cope/EnGardeHQ/easyappointments-source
-   ```
+See **Step 5** for deployment instructions and troubleshooting sections for common issues.
 
 ---
 
-## Step 2: Create Dockerfile
+## Step 1: Repository Already Configured
 
-1. **Create Dockerfile in the EasyAppointments Directory:**
-   ```bash
-   cd /Users/cope/EnGardeHQ/easyappointments-source
-   ```
+✅ **The EasyAppointments repository is already set up in the EnGardeHQ GitHub organization:**
+- Repository: `https://github.com/EnGardeHQ/easyappointments-railway`
+- Configured for MySQL
+- Railway-ready Dockerfile included
+- `railway.json` configuration file included
 
-2. **Create Dockerfile:**
-   ```bash
-   cat > Dockerfile << 'EOF'
-   FROM php:8.1-apache
+**Note:** The repository is already configured with:
+- MySQL PHP extensions (`mysqli`, `pdo_mysql`)
+- MySQL database driver configuration
+- Railway PORT handling
+- Apache MPM configuration fixes
 
-   # Install system dependencies
-   RUN apt-get update && apt-get install -y \
-       libpng-dev \
-       libjpeg-dev \
-       libfreetype6-dev \
-       libzip-dev \
-       unzip \
-       && rm -rf /var/lib/apt/lists/*
-
-   # Install PHP extensions
-   RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-       && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql zip
-
-   # Enable Apache mod_rewrite
-   RUN a2enmod rewrite
-
-   # Set working directory
-   WORKDIR /var/www/html
-
-   # Copy EasyAppointments files
-   COPY . /var/www/html/
-
-   # Set permissions
-   RUN chown -R www-data:www-data /var/www/html \
-       && chmod -R 755 /var/www/html
-
-   # Expose port 80
-   EXPOSE 80
-
-   # Start Apache
-   CMD ["apache2-foreground"]
-   EOF
-   ```
-
-3. **Verify Dockerfile Created:**
-   ```bash
-   cat Dockerfile
-   # Should show the Dockerfile contents
-   ```
+If you need to make changes locally:
+```bash
+cd /Users/cope/EnGardeHQ/easyappointments-source
+git pull origin main
+```
 
 ---
 
-## Step 3: Build Docker Image Locally
+## Step 2: Dockerfile Already Configured
 
-1. **Log in to Docker Hub (if not already):**
-   ```bash
-   docker login
-   # Enter your Docker Hub username and password
-   ```
+✅ **The Dockerfile is already configured in the repository with:**
+- MySQL support (`mysqli`, `pdo_mysql` extensions)
+- Railway PORT handling (listens on Railway's PORT environment variable)
+- Apache MPM configuration fixes
+- Proper directory permissions
 
-2. **Build Docker Image:**
-   ```bash
-   cd /Users/cope/EnGardeHQ/easyappointments-source
-   
-   # Build image (replace 'your-dockerhub-username' with your actual Docker Hub username)
-   docker build -t your-dockerhub-username/easyappointments:latest .
-   
-   # Example:
-   # docker build -t johndoe/easyappointments:latest .
-   ```
+**Key Features:**
+- Uses MySQL natively
+- Handles Railway's PORT variable (e.g., 8080)
+- Fixes Apache MPM conflicts
+- Ready for Railway deployment
 
-3. **Wait for Build to Complete:**
-   - This may take 5-10 minutes
-   - You'll see progress output
-   - Wait for "Successfully built" message
-
-4. **Verify Image Created:**
-   ```bash
-   docker images | grep easyappointments
-   # Should show your image
-   ```
-
-5. **Test Image Locally (Optional but Recommended):**
-   ```bash
-   # Run container locally to test
-   docker run -d -p 8080:80 --name easyappointments-test your-dockerhub-username/easyappointments:latest
-   
-   # Visit http://localhost:8080 in browser
-   # Should see EasyAppointments installation page
-   
-   # Stop and remove test container when done:
-   docker stop easyappointments-test
-   docker rm easyappointments-test
-   ```
+No action needed - the Dockerfile is production-ready!
 
 ---
 
-## Step 4: Push Docker Image to Docker Hub
+## Step 3: Deploy from GitHub (Skip Docker Hub)
 
-1. **Push Image to Docker Hub:**
-   ```bash
-   # Push the image (replace with your Docker Hub username)
-   docker push your-dockerhub-username/easyappointments:latest
-   
-   # Example:
-   # docker push johndoe/easyappointments:latest
-   ```
+**✅ Railway builds directly from GitHub - no Docker Hub needed!**
 
-2. **Wait for Upload to Complete:**
-   - This may take 5-15 minutes depending on your internet speed
-   - You'll see progress output
+Railway will automatically:
+- Build the Dockerfile from the GitHub repository
+- Use the `railway.json` configuration
+- Deploy the service
 
-3. **Verify Image on Docker Hub:**
-   - Visit https://hub.docker.com/
-   - Log in
-   - Go to "Repositories"
-   - You should see `easyappointments` repository
-   - Click on it to verify the image is there
+**No local Docker build required** - Railway handles everything!
 
 ---
 
-## Step 5: Create Railway Project
+## Step 4: (Skipped - Using GitHub Deployment)
+
+**✅ No Docker Hub needed!** Railway builds directly from GitHub.
+
+---
+
+## Step 5: Create Railway Project from GitHub
 
 1. **Sign in to Railway:**
    - Visit https://railway.app/
    - Click "Start a New Project"
-   - Sign in with GitHub (recommended) or email
+   - Sign in with GitHub (required for GitHub deployment)
 
-2. **Create New Project:**
+2. **Authorize Railway (if first time):**
+   - Railway will ask to access your GitHub account
+   - Grant access to EnGardeHQ organization
+   - Allow Railway to access repositories
+
+3. **Create New Project:**
    - Click "New Project"
-   - Select "Deploy from Docker Hub"
+   - Select "Deploy from GitHub repo"
 
-3. **Enter Docker Image Details:**
-   - **Docker Image:** `your-dockerhub-username/easyappointments:latest`
-     - Example: `johndoe/easyappointments:latest`
-   - **Image Registry:** Docker Hub
+4. **Select Repository:**
+   - Select: **EnGardeHQ** organization
+   - Choose repository: **easyappointments-railway**
    - Click "Deploy"
 
-4. **Wait for Initial Deployment:**
-   - Railway will pull your image from Docker Hub
-   - This may take 2-5 minutes
-   - You'll see deployment progress
+5. **Wait for Initial Build:**
+   - Railway will automatically:
+     - Detect `railway.json` configuration
+     - Build using `Dockerfile`
+     - Start deploying
+   - This may take 5-10 minutes for first build
+   - You'll see build progress and logs
+
+6. **Verify Build Success:**
+   - Check Railway logs for successful build
+   - Should see: "Starting EasyAppointments on port 8080"
+   - No errors about MPM or port conflicts
 
 ---
 
@@ -209,18 +142,21 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
    - Select "Database" → "MySQL"
 
 2. **Wait for MySQL to Provision:**
-   - Railway will automatically create MySQL 8.0 database
+   - Railway will automatically create MySQL database
    - Takes 1-2 minutes
+   - Railway will show provisioning progress
 
 3. **Get Database Credentials:**
    - Click on the MySQL service
    - Go to "Variables" tab
-   - **Write down these values** (you'll need them):
+   - Railway automatically provides these variables:
      - `MYSQLHOST` (e.g., `containers-us-west-123.railway.app`)
      - `MYSQLDATABASE` (e.g., `railway`)
-     - `MYSQLUSER` (e.g., `root`)
-     - `MYSQLPASSWORD` (random password - copy this!)
+     - `MYSQLUSER` (e.g., `postgres`)
+     - `MYSQLPASSWORD` (random password - Railway manages this)
      - `MYSQLPORT` (usually `3306`)
+   
+   **Note:** You don't need to write these down - Railway will provide them via environment variable references in the next step.
 
 ---
 
@@ -233,7 +169,7 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
    - Click "Variables" tab
    - Click "New Variable" for each:
 
-   **Database Variables (use Railway's reference syntax):**
+   **MySQL Database Variables (use Railway's reference syntax):**
    ```
    Variable Name: DB_HOST
    Value: ${{MySQL.MYSQLHOST}}
@@ -266,14 +202,29 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
    
    Variable Name: PHP_UPLOAD_MAX_FILESIZE
    Value: 10M
-   
-   Variable Name: PHP_POST_MAX_SIZE
-   Value: 10M
-   ```
+      Variable Name: PHP_POST_MAX_SIZE
+    Value: 10M
+    
+    # Optional: Google Calendar Integration
+    Variable Name: GOOGLE_CLIENT_ID
+    Value: your-google-client-id
+    
+    Variable Name: GOOGLE_CLIENT_SECRET
+    Value: your-google-client-secret
+    
+    Variable Name: GOOGLE_SYNC_FEATURE
+    Value: true
+    ```
+
+   **Important Notes:**
+   - ✅ Use Railway's "Reference" button to link MySQL variables
+   - ✅ This ensures automatic updates if database credentials change
+   - ✅ Railway handles password rotation automatically
 
 3. **Save Variables:**
    - Click "Save" after adding each variable
    - Railway will automatically redeploy with new variables
+   - Check deployment logs to verify database connection succeeds
 
 ---
 
@@ -367,14 +318,20 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
    - If SSL not ready yet, wait 5-10 more minutes
 
 2. **Database Configuration:**
-   - **Database Host:** Use `MYSQLHOST` value from Step 6
+   - **Database Host:** Use `MYSQLHOST` value from Railway MySQL service
      - Example: `containers-us-west-123.railway.app`
+     - Get from: Railway → MySQL service → Variables → MYSQLHOST
    - **Database Name:** Use `MYSQLDATABASE` value
      - Example: `railway`
+     - Get from: Railway → MySQL service → Variables → MYSQLDATABASE
    - **Database Username:** Use `MYSQLUSER` value
-     - Example: `root`
-   - **Database Password:** Use `MYSQLPASSWORD` value (copy from Railway)
-   - **Database Port:** `3306`
+     - Example: `postgres`
+     - Get from: Railway → MySQL service → Variables → MYSQLUSER
+   - **Database Password:** Use `MYSQLPASSWORD` value
+     - Get from: Railway → MySQL service → Variables → MYSQLPASSWORD
+     - Click "Show" to reveal the password
+   - **Database Port:** `3306` (MySQL default)
+   - **Database Type:** Select "MySQL" (if prompted)
    - Click "Test Connection" - should succeed
    - Click "Continue"
 
@@ -434,40 +391,39 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
 
 ### Part B: Configure in EasyAppointments
 
-1. **Go to EasyAppointments Admin:**
+1. **Wait for Deployment**: Ensure you have set the `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_SYNC_FEATURE=true` variables in Railway.
+
+2. **Go to EasyAppointments Admin**:
    - Visit: `https://scheduler.engarde.media/index.php/backend`
    - Log in
 
-2. **Navigate to Google Calendar Settings:**
-   - Go to: Settings → Integrations → Google Calendar
+3. **Enable Sync on Calendar Page**:
+   - Navigate to the **Calendar** tab in the sidebar.
+   - You should see a **"Enable Sync"** or **"Synchronize"** button near the top reload icon.
+   - Click it to start the OAuth process with Google.
 
-3. **Enter OAuth Credentials:**
-   - Paste Client ID
-   - Paste Client Secret
-   - Click "Save"
-
-4. **Authorize Calendars:**
-   - Click "Authorize" button
-   - Sign in with your **personal Gmail account**
-   - Grant calendar permissions
-   - Select your primary calendar
-   - Confirm authorization
-
-5. **Authorize Second Calendar:**
-   - Click "Authorize" again (or add second calendar)
-   - Sign in with your **Workspace account**
-   - Grant calendar permissions
-   - Select your business calendar
-   - Confirm authorization
-
-6. **Configure Sync Settings:**
-   - Enable "Sync both ways"
-   - Set sync frequency: Every 15 minutes
-   - Enable "Block conflicting appointments"
-   - Check both calendars for conflict detection
-   - Click "Save"
+4. **Authorize**:
+   - Follow the Google login prompts to grant access to your calendar.
+   - Once redirected back, your appointments will begin syncing.
 
 ---
+
+## Step 13: Alternative - Sync via API (Experimental)
+
+If you prefer to build a custom sync or the native integration doesn't meet your needs, you can use the built-in REST API.
+
+1. **Enable API**:
+   - Go to Settings → Integrations → API.
+   - Generate a New API Token.
+
+2. **Key Endpoints**:
+   - **Get Appointments**: `GET /api/v1/appointments`
+   - **Create Unavailability (Block time)**: `POST /api/v1/unavailabilities`
+   - **Check Availability**: `GET /api/v1/availabilities`
+
+3. **Workflow for Google Sync**:
+   - Monitor Google Calendar events.
+   - For every new "Busy" block in Google, call the EasyAppointments API to create an `unavailability` record for that provider/time.
 
 ## Step 13: Test Everything
 
@@ -527,11 +483,55 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
   - **Solution:** Make sure Docker Hub username matches image tag
 
 ### Railway Deployment Fails
+
 - **Error:** "Image not found"
   - **Solution:** Verify image name in Railway matches Docker Hub exactly
 
-- **Error:** "Database connection failed"
-  - **Solution:** Check environment variables use correct syntax: `${{MySQL.MYSQLHOST}}`
+- **Error:** "Database connection failed" or "Connection refused"
+  - **Solution:** 
+    1. Check environment variables use correct MySQL syntax: `${{MySQL.MYSQLHOST}}`
+    2. Verify MySQL service is running in Railway
+    3. Check that all MySQL variables are set correctly:
+       - `DB_HOST` = `${{MySQL.MYSQLHOST}}`
+       - `DB_NAME` = `${{MySQL.MYSQLDATABASE}}`
+       - `DB_USERNAME` = `${{MySQL.MYSQLUSER}}`
+       - `DB_PASSWORD` = `${{MySQL.MYSQLPASSWORD}}`
+       - `DB_PORT` = `${{MySQL.MYSQLPORT}}`
+    4. Verify MySQL service shows as "Active" in Railway
+    5. Check Railway logs for specific database connection errors
+
+- **Error:** "Port binding failed" or "Cannot bind to port"
+  - **Solution:**
+    1. Verify Dockerfile uses Railway's PORT environment variable
+    2. Check that `docker-entrypoint-fixed.sh` handles PORT correctly
+    3. Rebuild image: `docker build --no-cache -t cope84/easyappointments:latest .`
+
+- **Error:** "Environment variable not found" or "BASE_URL is localhost"
+  - **Solution:**
+    1. **Root cause:** Image has local environment baked in
+    2. **Fix:** Rebuild image without local environment variables:
+       ```bash
+       cd /Users/cope/EnGardeHQ/easyappointments-source
+       docker build --no-cache -t cope84/easyappointments:latest .
+       docker push cope84/easyappointments:latest
+       ```
+    3. In Railway, ensure BASE_URL is set to: `https://scheduler.engarde.media`
+    4. Redeploy service in Railway
+
+- **Error:** Service starts but shows "localhost" URLs instead of production domain
+  - **Solution:** 
+    1. This means BASE_URL environment variable is not set correctly in Railway
+    2. Go to Railway → Service → Variables
+    3. Add/update: `BASE_URL=https://scheduler.engarde.media`
+    4. Redeploy service
+
+- **Error:** "Image built for local environment, needs Railway rebuild"
+  - **Solution:** This is the exact issue you're experiencing!
+    1. Follow the rebuild instructions in Step 5 (section 5)
+    2. Use `--no-cache` flag to force complete rebuild
+    3. Ensure no local environment variables are baked into the image
+    4. Push fresh image to Docker Hub
+    5. Redeploy in Railway
 
 ### DNS Not Resolving
 - **Problem:** Domain not working after 30 minutes
@@ -552,18 +552,20 @@ This guide walks you through setting up EasyAppointments on Railway using Docker
 ## Quick Reference Commands
 
 ```bash
-# Clone EasyAppointments
-git clone https://github.com/alextselegidis/easyappointments.git easyappointments-source
-cd easyappointments-source
+# Pull latest changes from GitHub (if working locally)
+cd /Users/cope/EnGardeHQ/easyappointments-source
+git pull origin main
 
-# Build Docker image
-docker build -t your-dockerhub-username/easyappointments:latest .
-
-# Push to Docker Hub
-docker push your-dockerhub-username/easyappointments:latest
-
-# Test locally
-docker run -d -p 8080:80 --name easyappointments-test your-dockerhub-username/easyappointments:latest
+# Test locally with MySQL (optional)
+docker run -d -p 8080:8080 \
+  -e PORT=8080 \
+  -e DB_HOST=your-postgres-host \
+  -e DB_NAME=your-db-name \
+  -e DB_USERNAME=postgres \
+  -e DB_PASSWORD=your-password \
+  -e DB_PORT=3306 \
+  --name easyappointments-test \
+  cope84/easyappointments:latest
 
 # Check DNS propagation
 dig scheduler.engarde.media
@@ -573,12 +575,10 @@ dig scheduler.engarde.media
 
 ## Summary Checklist
 
-- [ ] Cloned/downloaded EasyAppointments source code
-- [ ] Created Dockerfile
-- [ ] Built Docker image locally
-- [ ] Pushed image to Docker Hub
+- [ ] Repository configured in EnGardeHQ GitHub organization
+- [ ] Dockerfile configured for MySQL
 - [ ] Created Railway project
-- [ ] Deployed from Docker Hub to Railway
+- [ ] Deployed from GitHub to Railway
 - [ ] Added MySQL database in Railway
 - [ ] Configured environment variables
 - [ ] Added custom domain in Railway

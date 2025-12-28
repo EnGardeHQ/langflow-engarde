@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  easyappointments:
+    image: easyappointments/easyappointments:latest
+    container_name: easyappointments
+    restart: unless-stopped
+    ports:
+      - "${EASYAPPOINTMENTS_PORT:-8080}:80"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=easyappointments
+      - DB_USERNAME=easyappointments
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - BASE_URL=${EASYAPPOINTMENTS_URL:-http://localhost:8080}
+    volumes:
+      - ./uploads:/var/www/html/uploads
+      - ./config:/var/www/html/config
+      - ./custom:/var/www/html/custom
+    depends_on:
+      - db
+    networks:
+      - easyappointments_network
+
+  db:
+    image: mysql:8.0
+    container_name: easyappointments_db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=easyappointments
+      - MYSQL_USER=easyappointments
+      - MYSQL_PASSWORD=${DB_PASSWORD:-changeme}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-rootchangeme}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - easyappointments_network
+
+networks:
+  easyappointments_network:
+    driver: bridge
+
+volumes:
+  db_data:

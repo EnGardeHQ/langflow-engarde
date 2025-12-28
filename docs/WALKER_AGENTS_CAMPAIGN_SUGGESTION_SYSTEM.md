@@ -56,7 +56,7 @@ The Walker Agents Campaign Suggestion System is En Garde's unified notification 
   │  Email   │ │ WhatsApp │ │   Chat   │   │   Push   │
   │ Service  │ │ Service  │ │ Service  │   │ Notif.   │
   │          │ │          │ │          │   │          │
-  │ SendGrid │ │  Twilio  │ │ WebSocket│   │ Firebase │
+  │  Brevo   │ │  Twilio  │ │ WebSocket│   │ Firebase │
   └──────────┘ └──────────┘ └──────────┘   └──────────┘
         │            │            │                │
         └────────────┴────────────┴────────────────┘
@@ -309,7 +309,7 @@ CREATE TABLE user_walker_agent_preferences (
 
 ## Multi-Channel Notification Flow
 
-### Email Delivery (SendGrid)
+### Email Delivery (Brevo)
 
 **Service**: `NotificationService.sendEmail()`
 
@@ -336,15 +336,14 @@ async function sendWalkerAgentEmailNotification(suggestion_batch) {
     cta_links: generateCTALinks(suggestions)
   });
 
-  // Send via SendGrid
-  const result = await sendgrid.send({
-    to: user.email,
-    from: 'walker-agents@engarde.media',
+  // Send via Brevo (formerly Sendinblue)
+  const result = await brevo.sendTransacEmail({
+    sender: { name: 'En Garde Walker Agents', email: 'walker-agents@engarde.media' },
+    to: [{ email: user.email, name: `${user.first_name} ${user.last_name}` }],
     subject: generateSubjectLine(suggestion_batch),
-    html: html,
-    tracking_settings: {
-      click_tracking: { enable: true },
-      open_tracking: { enable: true }
+    htmlContent: html,
+    params: {
+      FIRSTNAME: user.first_name
     }
   });
 

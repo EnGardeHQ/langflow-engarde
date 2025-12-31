@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import AlertDropdown from "@/alerts/alertDropDown";
-import EnGardeLogo from "@/assets/EnGardeLogo.png";
+import EnGardeLogo from "@/assets/EnGardeIcon.svg";
 import { AssistantButton } from "@/components/common/assistant";
 import ForwardedIconComponent from "@/components/common/genericIconComponent";
 import ModelProviderCount from "@/components/common/modelProviderCountComponent";

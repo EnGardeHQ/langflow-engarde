@@ -1,0 +1,11 @@
+engarde-branding/node_modules/
+src/backend/base/.venv/
+src/backend/base/uv.lock
+src/lfx/.venv/
+**/node_modules/
+**/.venv/
+**/.git/
+docs/
+scripts/
+Makefile
+*.md

@@ -1,0 +1,30 @@
+# Quick branding fix - modifies existing image without full rebuild
+FROM cope84/engarde-langflow:v1.0.4
+
+USER root
+
+# Copy branding assets
+COPY engarde-branding /tmp/branding
+
+# Replace logos and favicon in the built frontend
+RUN cp /tmp/branding/logo.png /app/.venv/lib/python3.12/site-packages/langflow/frontend/assets/logo_dark-DEVbuISE.png && \
+    cp /tmp/branding/logo.png /app/.venv/lib/python3.12/site-packages/langflow/frontend/assets/logo_light-CIlityAH.png && \
+    cp /tmp/branding/favicon.ico /app/.venv/lib/python3.12/site-packages/langflow/frontend/favicon.ico && \
+    rm -rf /tmp/branding
+
+# Update welcome message in the built JavaScript bundle
+RUN find /app/.venv/lib/python3.12/site-packages/langflow/frontend -name "*.js" -type f -exec sed -i 's/Welcome to Langflow/Welcome to EnGarde'\''s Agent Suite/g' {} \; || true
+
+USER user
+WORKDIR /app
+
+# Keep all existing ENV and CMD
+ENV PATH="/app/.venv/bin:$PATH"
+ENV LANGFLOW_HOST=0.0.0.0
+ENV LANGFLOW_PORT=7860
+ENV LANGFLOW_COMPONENTS_PATH=/app/custom_components
+ENV LANGFLOW_AUTO_LOGIN=true
+
+EXPOSE 7860
+
+CMD ["/app/start.sh"]

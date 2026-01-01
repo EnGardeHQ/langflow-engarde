@@ -53,7 +53,7 @@ COPY ./src/lfx/pyproject.toml /app/src/lfx/pyproject.toml
 
 # Install Python dependencies
 RUN RUSTFLAGS='--cfg reqwest_unstable' \
-    uv sync --frozen --no-install-project --no-editable --extra postgresql
+    uv sync --no-install-project --no-editable --extra postgresql
 
 # Copy backend source
 COPY ./src /app/src
@@ -96,7 +96,7 @@ RUN npm ci \
 WORKDIR /app
 
 RUN RUSTFLAGS='--cfg reqwest_unstable' \
-    uv sync --frozen --no-editable --extra postgresql
+    uv sync --no-editable --extra postgresql
 
 ################################
 # RUNTIME

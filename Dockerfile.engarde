@@ -58,6 +58,9 @@ RUN RUSTFLAGS='--cfg reqwest_unstable' \
 # Copy backend source
 COPY ./src /app/src
 
+# Copy custom agent components
+COPY ./custom_components /app/custom_components
+
 ################################
 # FRONTEND BUILD with ENGARDE BRANDING
 ################################

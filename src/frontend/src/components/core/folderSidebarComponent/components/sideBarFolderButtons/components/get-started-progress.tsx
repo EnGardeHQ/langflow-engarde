@@ -84,13 +84,13 @@ export const GetStartedProgress: FC<{
   };
 
   return (
-    <div className="mt-3 h-[10.8rem] w-full">
+    <div className="mt-3 w-full">
       <div className="mb-2 flex items-center justify-between">
         <span
           className="text-sm font-medium"
           data-testid="get_started_progress_title"
         >
-          {percentageGetStarted >= 100 ? (
+          {hasFlows ? (
             <>
               <span>All Set</span> <span className="pl-1"> 🎉 </span>
             </>
@@ -107,106 +107,7 @@ export const GetStartedProgress: FC<{
         </button>
       </div>
 
-      <div className="mb-1 mt-2 flex items-center justify-between gap-3">
-        <div className="h-1 w-full rounded-full bg-muted">
-          <div
-            className="h-1 w-[33%] rounded-full bg-accent-pink-foreground"
-            style={{ width: `${percentageGetStarted}%` }}
-          />
-        </div>
-        <span
-          className="text-sm text-muted-foreground"
-          data-testid="get_started_progress_percentage"
-        >
-          {percentageGetStarted}%
-        </span>
-      </div>
-
       <div className="mt-2 space-y-1">
-        <Button
-          data-testid="github_starred_btn_get_started"
-          unstyled
-          className={cn(
-            "w-full",
-            isGithubStarredChild && "pointer-events-none",
-          )}
-          onClick={(e) => {
-            if (isGithubStarredChild) {
-              e.preventDefault();
-              return;
-            }
-            handleUserTrack("github_starred");
-          }}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-2 rounded-md px-2 py-[10px] hover:bg-muted",
-              isGithubStarredChild && "pointer-events-none",
-            )}
-          >
-            {isGithubStarredChild ? (
-              <span data-testid="github_starred_icon_get_started">
-                <IconComponent
-                  name="Check"
-                  className="h-4 w-4 text-accent-emerald-foreground"
-                />
-              </span>
-            ) : (
-              <FaGithub className="h-4 w-4" />
-            )}
-            <span
-              className={cn(
-                "text-sm",
-                isGithubStarredChild && "text-muted-foreground line-through",
-              )}
-            >
-              Star repo for updates
-            </span>
-          </div>
-        </Button>
-
-        <Button
-          data-testid="discord_joined_btn_get_started"
-          unstyled
-          className={cn(
-            "w-full",
-            isDiscordJoinedChild && "pointer-events-none",
-          )}
-          onClick={(e) => {
-            if (isDiscordJoinedChild) {
-              e.preventDefault();
-              return;
-            }
-            handleUserTrack("discord_clicked");
-          }}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-2 rounded-md p-2 py-[10px] hover:bg-muted",
-              isDiscordJoinedChild && "pointer-events-none",
-            )}
-          >
-            {isDiscordJoinedChild ? (
-              <span data-testid="discord_joined_icon_get_started">
-                <IconComponent
-                  name="Check"
-                  className="h-4 w-4 text-accent-emerald-foreground"
-                />
-              </span>
-            ) : (
-              <FaDiscord className="h-4 w-4 text-[#5865F2]" />
-            )}
-            <span
-              className={cn(
-                "text-sm",
-                isDiscordJoinedChild && "text-muted-foreground line-through",
-              )}
-            >
-              Join the community
-            </span>
-          </div>
-        </Button>
-
         <Button
           unstyled
           className={cn("w-full", hasFlows && "pointer-events-none")}
@@ -239,8 +140,8 @@ export const GetStartedProgress: FC<{
         openModal={newProjectModal}
         setOpenModal={setNewProjectModal}
         openDeleteFolderModal={false}
-        setOpenDeleteFolderModal={() => {}}
-        handleDeleteFolder={() => {}}
+        setOpenDeleteFolderModal={() => { }}
+        handleDeleteFolder={() => { }}
       />
     </div>
   );

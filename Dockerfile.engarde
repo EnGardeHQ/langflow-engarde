@@ -114,6 +114,7 @@ RUN apt-get update \
     && useradd user -u 1000 -g 0 --no-create-home --home-dir /app/data
 
 COPY --from=builder --chown=1000 /app/.venv /app/.venv
+COPY --from=builder --chown=1000 /app/custom_components /app/custom_components
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"

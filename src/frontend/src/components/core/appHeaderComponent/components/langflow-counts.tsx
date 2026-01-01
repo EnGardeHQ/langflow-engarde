@@ -13,9 +13,7 @@ export const LangflowCounts = () => {
   const formattedStars = formatNumber(stars);
   const formattedDiscordCount = formatNumber(discordCount);
 
-  return (
   return null;
-  );
 };
 
 export default LangflowCounts;

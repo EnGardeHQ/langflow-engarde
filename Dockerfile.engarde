@@ -59,7 +59,7 @@ RUN RUSTFLAGS='--cfg reqwest_unstable' \
 COPY ./src /app/src
 
 # Copy custom agent components
-COPY ["En Garde Components", "/app/En Garde Components"]
+COPY ["En Garde Components", "/app/components/En Garde Components"]
 
 ################################
 # FRONTEND BUILD with ENGARDE BRANDING
@@ -114,7 +114,7 @@ RUN apt-get update \
     && useradd user -u 1000 -g 0 --no-create-home --home-dir /app/data
 
 COPY --from=builder --chown=1000 /app/.venv /app/.venv
-COPY --from=builder --chown=1000 ["/app/En Garde Components", "/app/En Garde Components"]
+COPY --from=builder --chown=1000 ["/app/components/En Garde Components", "/app/components/En Garde Components"]
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
@@ -143,7 +143,7 @@ ENV LANGFLOW_HOST=0.0.0.0
 # ENV LANGFLOW_PORT=7860  <-- REMOVED to avoid conflict with Railway PORT
 
 # EnGarde-specific environment variables
-ENV LANGFLOW_COMPONENTS_PATH="/app/En Garde Components"
+ENV LANGFLOW_COMPONENTS_PATH="/app/components"
 ENV LANGFLOW_AUTO_LOGIN=true
 
 # Expose port for Railway (uses dynamic PORT variable)

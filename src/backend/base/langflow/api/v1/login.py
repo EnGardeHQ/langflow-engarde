@@ -67,9 +67,9 @@ async def sso_login(
         # 4. Generate Session Tokens (Same as standard login)
         tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
         
-        # 5. Set Cookies
-        response = RedirectResponse(url="/")
-        response.set_cookie(
+        # 5. Create redirect response and set cookies
+        redirect_response = RedirectResponse(url="/", status_code=302)
+        redirect_response.set_cookie(
             "refresh_token_lf",
             tokens["refresh_token"],
             httponly=auth_settings.REFRESH_HTTPONLY,
@@ -78,7 +78,7 @@ async def sso_login(
             expires=auth_settings.REFRESH_TOKEN_EXPIRE_SECONDS,
             domain=auth_settings.COOKIE_DOMAIN,
         )
-        response.set_cookie(
+        redirect_response.set_cookie(
             "access_token_lf",
             tokens["access_token"],
             httponly=auth_settings.ACCESS_HTTPONLY,
@@ -88,7 +88,7 @@ async def sso_login(
             domain=auth_settings.COOKIE_DOMAIN,
         )
         
-        return response
+        return redirect_response
 
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid SSO token")

@@ -52,7 +52,7 @@ COPY ./src/lfx/README.md /app/src/lfx/README.md
 COPY ./src/lfx/pyproject.toml /app/src/lfx/pyproject.toml
 
 # Install Python dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
     RUSTFLAGS='--cfg reqwest_unstable' \
     uv sync --frozen --no-install-project --no-editable --extra postgresql
 
@@ -83,7 +83,7 @@ RUN cp /tmp/engarde-branding/logo.png src/assets/logo_dark.png && \
 RUN find src/pages/MainPage/pages -name "empty-page.tsx" -exec sed -i 's/Welcome to Langflow/Welcome to EnGarde'\''s Agent Suite/g' {} \;
 
 # Build frontend with EnGarde customizations
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,target=/root/.npm,id=npm-cache \
     npm ci \
     && ESBUILD_BINARY_PATH="" NODE_OPTIONS="--max-old-space-size=12288" JOBS=1 npm run build \
     && cp -r build /app/src/backend/langflow/frontend \
@@ -94,7 +94,7 @@ RUN --mount=type=cache,target=/root/.npm \
 ################################
 WORKDIR /app
 
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
     RUSTFLAGS='--cfg reqwest_unstable' \
     uv sync --frozen --no-editable --extra postgresql
 
@@ -142,7 +142,7 @@ ENV LANGFLOW_HOST=0.0.0.0
 # ENV LANGFLOW_PORT=7860  <-- REMOVED to avoid conflict with Railway PORT
 
 # EnGarde-specific environment variables
-ENV LANGFLOW_COMPONENTS_PATH=/app/custom_components
+ENV LANGFLOW_COMPONENTS_PATH="/app/En Garde Components"
 ENV LANGFLOW_AUTO_LOGIN=true
 
 # Expose port for Railway (uses dynamic PORT variable)

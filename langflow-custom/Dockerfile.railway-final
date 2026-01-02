@@ -17,7 +17,11 @@ WORKDIR /app
 # Environment variables
 ENV LANGFLOW_HOST=0.0.0.0
 ENV LANGFLOW_PORT=7860
-ENV LANGFLOW_COMPONENTS_PATH=/app/custom_components
+ENV LANGFLOW_COMPONENTS_PATH="/app/En Garde Components"
+
+# Rename directory if it exists from base image
+RUN if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/En Garde Components"; fi
+
 ENV LANGFLOW_AUTO_LOGIN=true
 
 # Expose port for Railway

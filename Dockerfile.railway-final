@@ -22,7 +22,10 @@ ENV LANGFLOW_COMPONENTS_PATH="/app/components"
 # Rename directory if it exists from base image
 RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/En Garde Components"; fi
 
-ENV LANGFLOW_AUTO_LOGIN=true
+RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/En Garde Components"; fi
+
+ENV LANGFLOW_AUTO_LOGIN=false
+ENV LANGFLOW_SECRET_KEY=""
 
 # Expose port for Railway
 EXPOSE 7860

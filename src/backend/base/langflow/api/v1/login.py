@@ -1,9 +1,8 @@
-from __future__ import annotations
-
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status, Query
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import RedirectResponse
+import jwt
+import os
 
 from langflow.api.utils import DbSession
 from langflow.api.v1.schemas import Token
@@ -13,11 +12,86 @@ from langflow.services.auth.utils import (
     create_refresh_token,
     create_user_longterm_token,
     create_user_tokens,
+    get_password_hash,
 )
-from langflow.services.database.models.user.crud import get_user_by_id
+from langflow.services.database.models.user.crud import get_user_by_username
+from langflow.services.database.models.user.model import User, UserCreate
 from langflow.services.deps import get_settings_service, get_variable_service
 
 router = APIRouter(tags=["Login"])
+
+@router.get("/custom/sso_login")
+async def sso_login(
+    response: Response,
+    db: DbSession,
+    token: str = Query(..., description="JWT token signed by En Garde backend"),
+):
+    """
+    Custom SSO endpoint for En Garde integration.
+    Validates the token signed by En Garde backend and logs the user in.
+    """
+    settings_service = get_settings_service()
+    auth_settings = settings_service.auth_settings
+    
+    # 1. Get Secret Key
+    secret_key = os.getenv("LANGFLOW_SECRET_KEY")
+    if not secret_key:
+        raise HTTPException(status_code=500, detail="LANGFLOW_SECRET_KEY not configured")
+
+    try:
+        # 2. Decode & Validate Token
+        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        email = payload.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Token missing email")
+            
+        # 3. Get or Create User
+        user = await get_user_by_username(db, email)
+        if not user:
+            # Create user with random password (they should only login via SSO)
+            user_create = UserCreate(
+                username=email,
+                password=get_password_hash(os.urandom(32).hex()),
+                is_active=True,
+                is_superuser=False, # En Garde users are NOT superusers by default
+            )
+            user = User.model_validate(user_create)
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            # Create default folder
+            await get_or_create_default_folder(db, user.id)
+
+        # 4. Generate Session Tokens (Same as standard login)
+        tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
+        
+        # 5. Set Cookies
+        response = RedirectResponse(url="/")
+        response.set_cookie(
+            "refresh_token_lf",
+            tokens["refresh_token"],
+            httponly=auth_settings.REFRESH_HTTPONLY,
+            samesite=auth_settings.REFRESH_SAME_SITE,
+            secure=auth_settings.REFRESH_SECURE,
+            expires=auth_settings.REFRESH_TOKEN_EXPIRE_SECONDS,
+            domain=auth_settings.COOKIE_DOMAIN,
+        )
+        response.set_cookie(
+            "access_token_lf",
+            tokens["access_token"],
+            httponly=auth_settings.ACCESS_HTTPONLY,
+            samesite=auth_settings.ACCESS_SAME_SITE,
+            secure=auth_settings.ACCESS_SECURE,
+            expires=auth_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
+            domain=auth_settings.COOKIE_DOMAIN,
+        )
+        
+        return response
+
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid SSO token")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/login", response_model=Token)

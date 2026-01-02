@@ -144,7 +144,9 @@ ENV LANGFLOW_HOST=0.0.0.0
 
 # EnGarde-specific environment variables
 ENV LANGFLOW_COMPONENTS_PATH="/app/components"
-ENV LANGFLOW_AUTO_LOGIN=true
+ENV LANGFLOW_AUTO_LOGIN=false
+# SECRET_KEY for SSO - must be set in Railway
+ENV LANGFLOW_SECRET_KEY=""
 
 # Expose port for Railway (uses dynamic PORT variable)
 EXPOSE 7860

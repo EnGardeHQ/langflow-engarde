@@ -83,8 +83,10 @@ async def parse_input_request_from_body(http_request: Request) -> SimplifiedAPIR
         return SimplifiedAPIRequest()
 
 
-@router.get("/all", dependencies=[Depends(get_current_active_user)])
-async def get_all():
+@router.get("/all")
+async def get_all(
+    user: User = Depends(get_current_active_user),
+):
     """Retrieve all component types with compression for better performance.
 
     Returns a compressed response containing all available component types.
@@ -93,6 +95,12 @@ async def get_all():
 
     try:
         all_types = await get_and_cache_all_types_dict(settings_service=get_settings_service())
+
+        # En Garde: Filter custom components for non-admin users
+        if not user.is_superuser:
+            all_types.pop("En Garde Components", None)
+            all_types.pop("custom_components", None)
+
         # Return compressed response using our utility function
         return compress_response(all_types)
 

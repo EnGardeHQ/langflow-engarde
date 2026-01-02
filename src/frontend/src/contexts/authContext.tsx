@@ -16,15 +16,15 @@ import type { AuthContextType } from "../types/contexts/auth";
 
 const initialValue: AuthContextType = {
   accessToken: null,
-  login: () => {},
+  login: () => { },
   userData: null,
-  setUserData: () => {},
+  setUserData: () => { },
   authenticationErrorCount: 0,
-  setApiKey: () => {},
+  setApiKey: () => { },
   apiKey: null,
-  storeApiKey: () => {},
-  getUser: () => {},
-  clearAuthSession: () => {},
+  storeApiKey: () => { },
+  getUser: () => { },
+  clearAuthSession: () => { },
 };
 
 export const AuthContext = createContext<AuthContextType>(initialValue);
@@ -56,6 +56,19 @@ export function AuthProvider({ children }): React.ReactElement {
     const apiKey = cookieManager.get(LANGFLOW_API_TOKEN);
     if (apiKey) {
       setApiKey(apiKey);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Check for access_token in URL query params (for Iframe SSO)
+    const queryParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = queryParams.get("access_token");
+
+    if (tokenFromUrl) {
+      login(tokenFromUrl, "true");
+      // Remove token from URL to clean history
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({ path: newUrl }, "", newUrl);
     }
   }, []);
 

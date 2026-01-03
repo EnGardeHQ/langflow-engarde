@@ -7,14 +7,14 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import logging
 
 from langflow.services.database.models.user import User
-from langflow.services.database.models.user.crud import get_user_by_username
+from langflow.services.database.models.user.crud import get_user_by_username, update_user_last_login_at
 from langflow.services.deps import session_scope
-from langflow.services.auth.utils import create_user_longterm_token
+from langflow.services.auth.utils import create_token
 
 logger = logging.getLogger(__name__)
 
@@ -105,8 +105,16 @@ async def sso_login(
                     await session.commit()
                     await session.refresh(user)
 
-            # Generate a Langflow session token
-            access_token = create_user_longterm_token(user_id=user.id, db=session)
+            # Generate a Langflow access token for this user
+            # Token expires in 30 days for SSO users
+            access_token = create_token(
+                data={"sub": str(user.id), "type": "access"},
+                expires_delta=timedelta(days=30)
+            )
+
+            # Update last login time
+            await update_user_last_login_at(user.id, session)
+
             logger.info(f"Session token generated for user: {email}")
 
         # Redirect to Langflow dashboard with the token

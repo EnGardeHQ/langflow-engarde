@@ -62,12 +62,19 @@ async def sso_login(
         email = payload.get("email")
         tenant_id = payload.get("tenant_id")
         tenant_name = payload.get("tenant_name", "EnGarde")
+        user_role = payload.get("role", "user")  # admin, superuser, user, agency
 
         if not email:
             logger.error("Token missing email")
             raise HTTPException(status_code=400, detail="Invalid token: missing email")
 
-        logger.info(f"Processing SSO login for: {email}, tenant: {tenant_name}")
+        logger.info(f"Processing SSO login for: {email}, tenant: {tenant_name}, role: {user_role}")
+
+        # Map EnGarde roles to Langflow permissions
+        # superuser and admin get is_superuser=True in Langflow
+        is_superuser = user_role in ["superuser", "admin"]
+        # All SSO users are active by default
+        is_active = True
 
         # Use session_scope context manager
         async with session_scope() as session:
@@ -75,31 +82,28 @@ async def sso_login(
             user = await get_user_by_username(session, email)
 
             if not user:
-                logger.info(f"Creating new user: {email}")
-                # Create the user using Langflow's user creation logic
-                # Use email as both username and password (they'll use SSO anyway)
-                from langflow.services.database.models.user.model import UserCreate
-
-                user_create = UserCreate(
-                    username=email,
-                    password=email,  # Dummy password, won't be used with SSO
-                    is_active=True,
-                    is_superuser=False,
-                )
-
-                # Create user
+                logger.info(f"Creating new user: {email} with role: {user_role}")
+                # Create user directly with required fields
                 user = User(
-                    username=user_create.username,
-                    password=user_create.password,  # This will be hashed by the model
-                    is_active=user_create.is_active,
-                    is_superuser=user_create.is_superuser,
+                    username=email,
+                    password=email,  # Dummy password, will be hashed by the model
+                    is_active=is_active,
+                    is_superuser=is_superuser,
                 )
                 session.add(user)
                 await session.commit()
                 await session.refresh(user)
-                logger.info(f"User created successfully: {email}")
+                logger.info(f"User created successfully: {email} (superuser: {is_superuser})")
             else:
                 logger.info(f"Existing user found: {email}")
+                # Update user permissions if role changed
+                if user.is_superuser != is_superuser or user.is_active != is_active:
+                    logger.info(f"Updating user permissions: superuser={is_superuser}, active={is_active}")
+                    user.is_superuser = is_superuser
+                    user.is_active = is_active
+                    session.add(user)
+                    await session.commit()
+                    await session.refresh(user)
 
             # Generate a Langflow session token
             access_token = create_user_longterm_token(user_id=user.id, db=session)

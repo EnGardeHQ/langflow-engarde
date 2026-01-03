@@ -72,7 +72,7 @@ async def sso_login(
         # Use session_scope context manager
         async with session_scope() as session:
             # Get or create user in Langflow
-            user = get_user_by_username(session, email)
+            user = await get_user_by_username(session, email)
 
             if not user:
                 logger.info(f"Creating new user: {email}")

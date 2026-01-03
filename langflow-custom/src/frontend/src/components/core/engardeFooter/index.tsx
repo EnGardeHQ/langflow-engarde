@@ -1,4 +1,4 @@
-import EnGardeIcon from "@/assets/EnGardeIcon.svg";
+import EnGardeIcon from "@/assets/EGMBlackIcon.svg";
 
 export default function EnGardeFooter(): JSX.Element {
   return (

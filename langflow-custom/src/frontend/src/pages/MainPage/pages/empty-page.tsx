@@ -1,8 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 import { useShallow } from "zustand/react/shallow";
-import logoDarkPng from "@/assets/logo_dark.png";
-import logoLightPng from "@/assets/logo_light.png";
+import enGardeLogo from "@/assets/engarde-logo-color.svg";
 import { ForwardedIconComponent } from "@/components/common/genericIconComponent";
 import CardsWrapComponent from "@/components/core/cardsWrapComponent";
 import { Button } from "@/components/ui/button";
@@ -67,19 +66,11 @@ export const EmptyPageCommunity = ({
         <div className="m-0 h-full w-full bg-background p-0">
           <div className="z-50 flex h-full w-full flex-col items-center justify-center gap-5">
             <div className="z-50 flex flex-col items-center gap-2">
-              <div className="z-50 dark:hidden">
+              <div className="z-50">
                 <img
-                  src={logoLightPng}
-                  alt="Langflow Logo Light"
-                  data-testid="empty_page_logo_light"
-                  className="relative top-8 h-40 pointer-events-none select-none"
-                />
-              </div>
-              <div className="z-50 hidden dark:block">
-                <img
-                  src={logoDarkPng}
-                  alt="Langflow Logo Dark"
-                  data-testid="empty_page_logo_dark"
+                  src={enGardeLogo}
+                  alt="EnGarde Logo"
+                  data-testid="empty_page_logo"
                   className="relative top-8 h-40 pointer-events-none select-none"
                 />
               </div>

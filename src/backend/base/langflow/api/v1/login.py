@@ -5,6 +5,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 import jwt
 import os
+import logging
+from uuid import UUID, uuid4
 
 from langflow.api.utils import DbSession
 from langflow.api.v1.schemas import Token
@@ -22,53 +24,69 @@ from langflow.services.deps import get_settings_service, get_variable_service
 
 router = APIRouter(tags=["Login"])
 
+logger = logging.getLogger(__name__)
+
 @router.get("/custom/sso_login")
 async def sso_login(
-    response: Response,
-    db: DbSession,
-    token: str = Query(..., description="JWT token signed by En Garde backend"),
+    token: str = Query(...),
+    request: Request = None,
+    db: AsyncSession = Depends(get_async_db)
 ):
     """
-    Custom SSO endpoint for En Garde integration.
-    Validates the token signed by En Garde backend and logs the user in.
+    SSO Login Endpoint for En Garde Integration
+    Accepts JWT token, verifies it, creates/logs in user, and redirects to tenant-specific folder
     """
-    settings_service = get_settings_service()
-    auth_settings = settings_service.auth_settings
-    
-    # 1. Get Secret Key
+    auth_settings = get_settings_service().auth_settings
     secret_key = os.getenv("LANGFLOW_SECRET_KEY")
+    
     if not secret_key:
-        raise HTTPException(status_code=500, detail="LANGFLOW_SECRET_KEY not configured")
-
+        raise HTTPException(status_code=500, detail="SSO not configured")
+    
     try:
-        # 2. Decode & Validate Token
+        # 1. Verify JWT Token
         payload = jwt.decode(token, secret_key, algorithms=["HS256"])
         email = payload.get("email")
+        tenant_id = payload.get("tenant_id", "staging")
+        tenant_name = payload.get("tenant_name", "Staging/Testing")
+        
         if not email:
-            raise HTTPException(status_code=400, detail="Token missing email")
-            
-        # 3. Get or Create User
+            raise HTTPException(status_code=401, detail="Invalid token: missing email")
+        
+        # 2. Get or Create User by Email
         user = await get_user_by_username(db, email)
         if not user:
-            # Create user with random password (they should only login via SSO)
-            user_create = UserCreate(
+            # Create new user
+            from langflow.services.database.models.user.crud import create_user
+            user = await create_user(db, UserCreate(
                 username=email,
-                password=get_password_hash(os.urandom(32).hex()),
+                password=str(uuid.uuid4()),  # Random password (not used with SSO)
                 is_active=True,
-                is_superuser=False, # En Garde users are NOT superusers by default
+                is_superuser=False
+            ))
+        
+        # 3. Get or Create Tenant-Specific Folder
+        from langflow.initial_setup.tenant_setup import get_or_create_tenant_folder
+        
+        try:
+            folder = await get_or_create_tenant_folder(
+                db=db,
+                user_id=user.id,
+                tenant_id=tenant_id,
+                tenant_name=tenant_name
             )
-            user = User.model_validate(user_create)
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-            # Create default folder
-            await get_or_create_default_folder(db, user.id)
-
+            folder_id = str(folder.id)
+        except Exception as e:
+            logger.error(f"Failed to create tenant folder: {e}")
+            # Fallback to default folder
+            from langflow.initial_setup.setup import get_or_create_default_folder
+            folder = await get_or_create_default_folder(db, user.id)
+            folder_id = str(folder.id)
+        
         # 4. Generate Session Tokens (Same as standard login)
         tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
         
-        # 5. Create redirect response and set cookies
-        redirect_response = RedirectResponse(url="/", status_code=302)
+        # 5. Create redirect response to tenant folder and set cookies
+        redirect_response = RedirectResponse(url=f"/folder/{folder_id}", status_code=302)
         redirect_response.set_cookie(
             "refresh_token_lf",
             tokens["refresh_token"],
@@ -92,6 +110,8 @@ async def sso_login(
 
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid SSO token")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="SSO token expired")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

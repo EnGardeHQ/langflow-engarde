@@ -29,13 +29,14 @@ logger = logging.getLogger(__name__)
 @router.get("/custom/sso_login")
 async def sso_login(
     token: str = Query(...),
-    request: Request = None,
-    db: AsyncSession = Depends(get_async_db)
+    request: Request = None
 ):
     """
     SSO Login Endpoint for En Garde Integration
     Accepts JWT token, verifies it, creates/logs in user, and redirects to tenant-specific folder
     """
+    from langflow.services.deps import session_scope
+    
     auth_settings = get_settings_service().auth_settings
     secret_key = os.getenv("LANGFLOW_SECRET_KEY")
     
@@ -52,38 +53,39 @@ async def sso_login(
         if not email:
             raise HTTPException(status_code=401, detail="Invalid token: missing email")
         
-        # 2. Get or Create User by Email
-        user = await get_user_by_username(db, email)
-        if not user:
-            # Create new user
-            from langflow.services.database.models.user.crud import create_user
-            user = await create_user(db, UserCreate(
-                username=email,
-                password=str(uuid.uuid4()),  # Random password (not used with SSO)
-                is_active=True,
-                is_superuser=False
-            ))
-        
-        # 3. Get or Create Tenant-Specific Folder
-        from langflow.initial_setup.tenant_setup import get_or_create_tenant_folder
-        
-        try:
-            folder = await get_or_create_tenant_folder(
-                db=db,
-                user_id=user.id,
-                tenant_id=tenant_id,
-                tenant_name=tenant_name
-            )
-            folder_id = str(folder.id)
-        except Exception as e:
-            logger.error(f"Failed to create tenant folder: {e}")
-            # Fallback to default folder
-            from langflow.initial_setup.setup import get_or_create_default_folder
-            folder = await get_or_create_default_folder(db, user.id)
-            folder_id = str(folder.id)
-        
-        # 4. Generate Session Tokens (Same as standard login)
-        tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
+        # 2. Get or Create User by Email (with session)
+        async with session_scope() as db:
+            user = await get_user_by_username(db, email)
+            if not user:
+                # Create new user
+                from langflow.services.database.models.user.crud import create_user
+                user = await create_user(db, UserCreate(
+                    username=email,
+                    password=str(uuid4()),  # Random password (not used with SSO)
+                    is_active=True,
+                    is_superuser=False
+                ))
+            
+            # 3. Get or Create Tenant-Specific Folder
+            from langflow.initial_setup.tenant_setup import get_or_create_tenant_folder
+            
+            try:
+                folder = await get_or_create_tenant_folder(
+                    db=db,
+                    user_id=user.id,
+                    tenant_id=tenant_id,
+                    tenant_name=tenant_name
+                )
+                folder_id = str(folder.id)
+            except Exception as e:
+                logger.error(f"Failed to create tenant folder: {e}")
+                # Fallback to default folder
+                from langflow.initial_setup.setup import get_or_create_default_folder
+                folder = await get_or_create_default_folder(db, user.id)
+                folder_id = str(folder.id)
+            
+            # 4. Generate Session Tokens (Same as standard login)
+            tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
         
         # 5. Create redirect response to tenant folder and set cookies
         redirect_response = RedirectResponse(url=f"/folder/{folder_id}", status_code=302)

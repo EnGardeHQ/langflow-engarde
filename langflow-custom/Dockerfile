@@ -138,8 +138,8 @@ WORKDIR /app
 ENV LANGFLOW_HOST=0.0.0.0
 # ENV LANGFLOW_PORT=7860  <-- REMOVED to avoid conflict with Railway PORT
 
-# COPY ["En Garde Components", "/app/components/En Garde Components"]
-# ENV LANGFLOW_COMPONENTS_PATH="/app/components"
+COPY ["En Garde Components", "/app/components/En Garde Components"]
+ENV LANGFLOW_COMPONENTS_PATH="/app/components"
 ENV LANGFLOW_AUTO_LOGIN=true
 
 # Expose port for Railway (uses dynamic PORT variable)

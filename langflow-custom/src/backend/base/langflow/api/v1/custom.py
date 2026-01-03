@@ -3,7 +3,7 @@ Custom SSO Login Endpoint for EnGarde Integration
 Handles JWT-based SSO authentication from the main EnGarde backend
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, HTTPException, Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
@@ -13,8 +13,9 @@ import logging
 
 from langflow.services.database.models.user import User
 from langflow.services.database.models.user.crud import get_user_by_username, update_user_last_login_at
-from langflow.services.deps import session_scope
+from langflow.services.deps import session_scope, get_settings_service
 from langflow.services.auth.utils import create_token
+from langflow.initial_setup.setup import get_or_create_default_folder
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ router = APIRouter(prefix="/custom", tags=["custom"])
 async def sso_login(
     token: str,
     request: Request,
+    response: Response,
 ):
     """
     SSO login endpoint that accepts a JWT token from the main EnGarde backend.
@@ -115,12 +117,40 @@ async def sso_login(
             # Update last login time
             await update_user_last_login_at(user.id, session)
 
+            # Create default project for user if it doesn't exist
+            _ = await get_or_create_default_folder(session, user.id)
+
             logger.info(f"Session token generated for user: {email}")
 
-        # Redirect to Langflow dashboard with the token
-        # The frontend will pick up this token and set it in cookies/localStorage
+        # Get auth settings for cookie configuration
+        auth_settings = get_settings_service().auth_settings
+
+        # Set the access token cookie (same format as regular login)
+        response.set_cookie(
+            "access_token_lf",
+            access_token,
+            httponly=auth_settings.ACCESS_HTTPONLY,
+            samesite=auth_settings.ACCESS_SAME_SITE,
+            secure=auth_settings.ACCESS_SECURE,
+            expires=60 * 60 * 24 * 30,  # 30 days in seconds
+            domain=auth_settings.COOKIE_DOMAIN,
+        )
+
+        # Set the API key cookie if user has one
+        if user.store_api_key:
+            response.set_cookie(
+                "apikey_tkn_lflw",
+                str(user.store_api_key),
+                httponly=auth_settings.ACCESS_HTTPONLY,
+                samesite=auth_settings.ACCESS_SAME_SITE,
+                secure=auth_settings.ACCESS_SECURE,
+                expires=None,  # Session cookie
+                domain=auth_settings.COOKIE_DOMAIN,
+            )
+
+        # Redirect to Langflow dashboard (home page)
         frontend_url = str(request.base_url).rstrip("/")
-        redirect_url = f"{frontend_url}/?token={access_token}"
+        redirect_url = f"{frontend_url}/"
 
         logger.info(f"Redirecting user to: {redirect_url}")
         return RedirectResponse(url=redirect_url)

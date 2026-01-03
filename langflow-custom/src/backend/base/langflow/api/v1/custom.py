@@ -125,35 +125,38 @@ async def sso_login(
         # Get auth settings for cookie configuration
         auth_settings = get_settings_service().auth_settings
 
-        # Set the access token cookie (same format as regular login)
-        response.set_cookie(
+        # Redirect to Langflow dashboard (home page)
+        frontend_url = str(request.base_url).rstrip("/")
+        redirect_url = f"{frontend_url}/"
+
+        # Create redirect response
+        redirect_response = RedirectResponse(url=redirect_url)
+
+        # Set the access token cookie on the redirect response
+        redirect_response.set_cookie(
             "access_token_lf",
             access_token,
             httponly=auth_settings.ACCESS_HTTPONLY,
             samesite=auth_settings.ACCESS_SAME_SITE,
             secure=auth_settings.ACCESS_SECURE,
-            expires=60 * 60 * 24 * 30,  # 30 days in seconds
+            max_age=60 * 60 * 24 * 30,  # 30 days in seconds
             domain=auth_settings.COOKIE_DOMAIN,
         )
 
         # Set the API key cookie if user has one
         if user.store_api_key:
-            response.set_cookie(
+            redirect_response.set_cookie(
                 "apikey_tkn_lflw",
                 str(user.store_api_key),
                 httponly=auth_settings.ACCESS_HTTPONLY,
                 samesite=auth_settings.ACCESS_SAME_SITE,
                 secure=auth_settings.ACCESS_SECURE,
-                expires=None,  # Session cookie
+                max_age=None,  # Session cookie
                 domain=auth_settings.COOKIE_DOMAIN,
             )
 
-        # Redirect to Langflow dashboard (home page)
-        frontend_url = str(request.base_url).rstrip("/")
-        redirect_url = f"{frontend_url}/"
-
-        logger.info(f"Redirecting user to: {redirect_url}")
-        return RedirectResponse(url=redirect_url)
+        logger.info(f"Redirecting user to: {redirect_url} with cookies set")
+        return redirect_response
 
     except HTTPException:
         raise

@@ -52,7 +52,7 @@ COPY ./src/lfx/README.md /app/src/lfx/README.md
 COPY ./src/lfx/pyproject.toml /app/src/lfx/pyproject.toml
 
 # Install Python dependencies
-RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=langflow-uv-cache,target=/root/.cache/uv \
     RUSTFLAGS='--cfg reqwest_unstable' \
     uv sync --frozen --no-install-project --no-editable --extra postgresql
 
@@ -83,7 +83,7 @@ RUN cp /tmp/engarde-branding/logo.png src/assets/logo_dark.png && \
 RUN find src/pages/MainPage/pages -name "empty-page.tsx" -exec sed -i 's/Welcome to Langflow/Welcome to EnGarde'\''s Agent Suite/g' {} \;
 
 # Build frontend with EnGarde customizations
-RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
+RUN --mount=type=cache,id=langflow-npm-cache,target=/root/.npm \
     npm ci \
     && ESBUILD_BINARY_PATH="" NODE_OPTIONS="--max-old-space-size=12288" JOBS=1 npm run build \
     && cp -r build /app/src/backend/langflow/frontend \
@@ -94,7 +94,7 @@ RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
 ################################
 WORKDIR /app
 
-RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=langflow-uv-cache-final,target=/root/.cache/uv \
     RUSTFLAGS='--cfg reqwest_unstable' \
     uv sync --frozen --no-editable --extra postgresql
 

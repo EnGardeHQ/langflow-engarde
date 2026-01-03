@@ -42,14 +42,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy files first to avoid permission issues with bind mounts
-COPY ./uv.lock /app/uv.lock
-COPY ./README.md /app/README.md
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./src/backend/base/README.md /app/src/backend/base/README.md
-COPY ./src/backend/base/uv.lock /app/src/backend/base/uv.lock
-COPY ./src/backend/base/pyproject.toml /app/src/backend/base/pyproject.toml
-COPY ./src/lfx/README.md /app/src/lfx/README.md
-COPY ./src/lfx/pyproject.toml /app/src/lfx/pyproject.toml
+COPY ./langflow-custom/uv.lock /app/uv.lock
+COPY ./langflow-custom/README.md /app/README.md
+COPY ./langflow-custom/pyproject.toml /app/pyproject.toml
+COPY ./langflow-custom/src/backend/base/README.md /app/src/backend/base/README.md
+COPY ./langflow-custom/src/backend/base/uv.lock /app/src/backend/base/uv.lock
+COPY ./langflow-custom/src/backend/base/pyproject.toml /app/src/backend/base/pyproject.toml
+COPY ./langflow-custom/src/lfx/README.md /app/src/lfx/README.md
+COPY ./langflow-custom/src/lfx/pyproject.toml /app/src/lfx/pyproject.toml
 
 # Install Python dependencies
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
@@ -57,7 +57,7 @@ RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
     uv sync --frozen --no-install-project --no-editable --extra postgresql
 
 # Copy backend source
-COPY ./src /app/src
+COPY ./langflow-custom/src /app/src
 
 ################################
 # FRONTEND BUILD with ENGARDE BRANDING

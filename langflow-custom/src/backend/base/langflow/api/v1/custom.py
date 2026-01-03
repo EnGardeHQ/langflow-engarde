@@ -13,7 +13,7 @@ import logging
 
 from langflow.services.database.models.user import User
 from langflow.services.database.models.user.crud import get_user_by_username
-from langflow.services.deps import get_session
+from langflow.services.deps import session_scope
 from langflow.services.auth.utils import create_user_longterm_token
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,6 @@ router = APIRouter(prefix="/custom", tags=["custom"])
 async def sso_login(
     token: str,
     request: Request,
-    session: Session = Depends(get_session),
 ):
     """
     SSO login endpoint that accepts a JWT token from the main EnGarde backend.
@@ -70,39 +69,41 @@ async def sso_login(
 
         logger.info(f"Processing SSO login for: {email}, tenant: {tenant_name}")
 
-        # Get or create user in Langflow
-        user = get_user_by_username(session, email)
+        # Use session_scope context manager
+        async with session_scope() as session:
+            # Get or create user in Langflow
+            user = get_user_by_username(session, email)
 
-        if not user:
-            logger.info(f"Creating new user: {email}")
-            # Create the user using Langflow's user creation logic
-            # Use email as both username and password (they'll use SSO anyway)
-            from langflow.services.database.models.user.model import UserCreate
+            if not user:
+                logger.info(f"Creating new user: {email}")
+                # Create the user using Langflow's user creation logic
+                # Use email as both username and password (they'll use SSO anyway)
+                from langflow.services.database.models.user.model import UserCreate
 
-            user_create = UserCreate(
-                username=email,
-                password=email,  # Dummy password, won't be used with SSO
-                is_active=True,
-                is_superuser=False,
-            )
+                user_create = UserCreate(
+                    username=email,
+                    password=email,  # Dummy password, won't be used with SSO
+                    is_active=True,
+                    is_superuser=False,
+                )
 
-            # Create user
-            user = User(
-                username=user_create.username,
-                password=user_create.password,  # This will be hashed by the model
-                is_active=user_create.is_active,
-                is_superuser=user_create.is_superuser,
-            )
-            session.add(user)
-            session.commit()
-            session.refresh(user)
-            logger.info(f"User created successfully: {email}")
-        else:
-            logger.info(f"Existing user found: {email}")
+                # Create user
+                user = User(
+                    username=user_create.username,
+                    password=user_create.password,  # This will be hashed by the model
+                    is_active=user_create.is_active,
+                    is_superuser=user_create.is_superuser,
+                )
+                session.add(user)
+                await session.commit()
+                await session.refresh(user)
+                logger.info(f"User created successfully: {email}")
+            else:
+                logger.info(f"Existing user found: {email}")
 
-        # Generate a Langflow session token
-        access_token = create_user_longterm_token(user_id=user.id, db=session)
-        logger.info(f"Session token generated for user: {email}")
+            # Generate a Langflow session token
+            access_token = create_user_longterm_token(user_id=user.id, db=session)
+            logger.info(f"Session token generated for user: {email}")
 
         # Redirect to Langflow dashboard with the token
         # The frontend will pick up this token and set it in cookies/localStorage

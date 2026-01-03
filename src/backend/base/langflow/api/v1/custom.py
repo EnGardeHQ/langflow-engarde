@@ -120,6 +120,9 @@ async def sso_login(
             # Create default project for user if it doesn't exist
             _ = await get_or_create_default_folder(session, user.id)
 
+            # Store user API key if it exists (need to access before session closes)
+            user_api_key = user.store_api_key
+
             logger.info(f"Session token generated for user: {email}")
 
         # Get auth settings for cookie configuration
@@ -144,10 +147,10 @@ async def sso_login(
         )
 
         # Set the API key cookie if user has one
-        if user.store_api_key:
+        if user_api_key:
             redirect_response.set_cookie(
                 "apikey_tkn_lflw",
-                str(user.store_api_key),
+                str(user_api_key),
                 httponly=auth_settings.ACCESS_HTTPONLY,
                 samesite=auth_settings.ACCESS_SAME_SITE,
                 secure=auth_settings.ACCESS_SECURE,

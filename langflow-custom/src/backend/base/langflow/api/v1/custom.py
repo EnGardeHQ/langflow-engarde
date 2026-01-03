@@ -13,8 +13,8 @@ import logging
 
 from langflow.services.database.models.user import User
 from langflow.services.database.models.user.crud import get_user_by_username
-from langflow.services.deps import get_session, get_settings
-from langflow.services.auth.utils import create_super_user_if_it_doesnt_exist, create_user_longterm_token
+from langflow.services.deps import get_session
+from langflow.services.auth.utils import create_user_longterm_token
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,6 @@ async def sso_login(
     token: str,
     request: Request,
     session: Session = Depends(get_session),
-    settings=Depends(get_settings),
 ):
     """
     SSO login endpoint that accepts a JWT token from the main EnGarde backend.

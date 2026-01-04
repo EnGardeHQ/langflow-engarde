@@ -320,6 +320,10 @@ class DirectoryReader:
     async def abuild_component_menu_list(self, file_paths):
         response = {"menu": []}
         await logger.adebug("-------------------- Async Building component menu list --------------------")
+        
+        # DEBUG: En Garde Components Troubleshooting
+        await logger.aerror(f"DEBUG: abuild_component_menu_list received {len(file_paths)} files")
+        # await logger.aerror(f"DEBUG: File paths: {file_paths}")
 
         tasks = [self.process_file_async(file_path) for file_path in file_paths]
         results = await asyncio.gather(*tasks)
@@ -327,8 +331,18 @@ class DirectoryReader:
         for file_path, (validation_result, result_content) in zip(file_paths, results, strict=True):
             file_path_ = Path(file_path)
             menu_name = file_path_.parent.name
+            
+            # DEBUG: Trace individual file processing
+            try:
+                await logger.aerror(f"DEBUG: Processing file (Async): {file_path}")
+                await logger.aerror(f"DEBUG: Original menu_name: {menu_name}")
+            except Exception as e:
+                await logger.aerror(f"DEBUG: Error logging file info: {e}")
+
             if menu_name == "engarde_components":
                 menu_name = "En Garde Components"
+                await logger.aerror(f"DEBUG: Renamed menu to: {menu_name}")
+                
             filename = file_path_.name
 
             if not validation_result:
@@ -349,8 +363,8 @@ class DirectoryReader:
             if validation_result:
                 try:
                     output_types = await asyncio.to_thread(self.get_output_types_from_code, result_content)
-                except Exception:  # noqa: BLE001
-                    await logger.aexception("Error while getting output types from code")
+                except Exception as e:  # noqa: BLE001
+                    await logger.aerror(f"Error while getting output types from code for {file_path}: {e}")
                     output_types = [component_name_camelcase]
             else:
                 output_types = [component_name_camelcase]

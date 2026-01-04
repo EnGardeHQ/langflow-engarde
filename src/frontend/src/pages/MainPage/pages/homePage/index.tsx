@@ -56,14 +56,17 @@ const HomePage = ({ type }: { type: "flows" | "components" | "mcp" }) => {
     }
   }, [folderId, folders, navigate]);
 
-  const { data: folderData, isLoading } = useGetFolderQuery({
-    id: folderId ?? myCollectionId!,
-    page: pageIndex,
-    size: pageSize,
-    is_component: flowType === "components",
-    is_flow: flowType === "flows",
-    search,
-  });
+  const { data: folderData, isLoading } = useGetFolderQuery(
+    {
+      id: folderId ?? myCollectionId!,
+      page: pageIndex,
+      size: pageSize,
+      is_component: flowType === "components",
+      is_flow: flowType === "flows",
+      search,
+    },
+    { enabled: !!(folderId ?? myCollectionId) },
+  );
 
   const data = {
     flows: folderData?.flows?.items ?? [],
@@ -367,8 +370,8 @@ const HomePage = ({ type }: { type: "flows" | "components" | "mcp" }) => {
         openModal={newProjectModal}
         setOpenModal={setNewProjectModal}
         openDeleteFolderModal={false}
-        setOpenDeleteFolderModal={() => {}}
-        handleDeleteFolder={() => {}}
+        setOpenDeleteFolderModal={() => { }}
+        handleDeleteFolder={() => { }}
       />
     </CardsWrapComponent>
   );

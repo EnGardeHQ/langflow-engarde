@@ -143,7 +143,7 @@ ENV LANGFLOW_HOST=0.0.0.0
 # ENV LANGFLOW_PORT=7860  <-- REMOVED to avoid conflict with Railway PORT
 
 # EnGarde-specific environment variables
-ENV LANGFLOW_COMPONENTS_PATH="/app/components"
+ENV LANGFLOW_COMPONENTS_PATH="/app/components/En Garde Components"
 ENV LANGFLOW_AUTO_LOGIN=false
 # SECRET_KEY for SSO - must be set in Railway
 ENV LANGFLOW_SECRET_KEY=""

@@ -148,6 +148,10 @@ ENV LANGFLOW_AUTO_LOGIN=false
 # SECRET_KEY for SSO - must be set in Railway
 ENV LANGFLOW_SECRET_KEY=""
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-7860}/health || exit 1
+
 # Expose port for Railway (uses dynamic PORT variable)
 EXPOSE 7860
 

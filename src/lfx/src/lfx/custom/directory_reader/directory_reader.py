@@ -247,7 +247,7 @@ class DirectoryReader:
                 logger.error(f"DEBUG: Error logging file info: {e}")
 
             if menu_name == "engarde_components":
-                menu_name = "En Garde Components"
+                menu_name = "En Garde Agents"
                 logger.error(f"DEBUG: Renamed menu to: {menu_name}")
                 
             filename = file_path_.name
@@ -340,7 +340,7 @@ class DirectoryReader:
                 await logger.aerror(f"DEBUG: Error logging file info: {e}")
 
             if menu_name == "engarde_components":
-                menu_name = "En Garde Components"
+                menu_name = "En Garde Agents"
                 await logger.aerror(f"DEBUG: Renamed menu to: {menu_name}")
                 
             filename = file_path_.name

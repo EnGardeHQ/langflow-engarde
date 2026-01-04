@@ -96,11 +96,11 @@ async def get_all(
     try:
         all_types = await get_and_cache_all_types_dict(settings_service=get_settings_service())
 
-        # En Garde: Filter custom components for non-admin users
-        # TEMPORARILY DISABLED - Show components to all authenticated users
-        # if not user.is_superuser:
-        #     all_types.pop("En Garde Components", None)
-        #     all_types.pop("custom_components", None)
+        # En Garde: Filter custom components for non-superuser users
+        # Only show En Garde Agents to superusers (admins)
+        if not user.is_superuser:
+            all_types.pop("En Garde Agents", None)
+            all_types.pop("custom_components", None)
 
         # Return compressed response using our utility function
         return compress_response(all_types)

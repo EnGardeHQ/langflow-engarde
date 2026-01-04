@@ -19,10 +19,12 @@ ENV LANGFLOW_HOST=0.0.0.0
 ENV LANGFLOW_PORT=7860
 ENV LANGFLOW_COMPONENTS_PATH="/app/components/engarde_components"
 
-# Rename directory if it exists from base image
-RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/engarde_components"; fi
+# Handle potential legacy paths from base image
+RUN mkdir -p "/app/components" \
+    && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/engarde_components"; fi \
+    && if [ -d "/app/components/En Garde Components" ]; then mv "/app/components/En Garde Components" "/app/components/engarde_components"; fi
 
-RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/En Garde Components"; fi
+
 
 ENV LANGFLOW_AUTO_LOGIN=false
 ENV LANGFLOW_SECRET_KEY=""

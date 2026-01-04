@@ -576,10 +576,10 @@ class Settings(BaseSettings):
             
         # DEBUG: En Garde Components Troubleshooting
         try:
-            from lfx.log.logger import logger
+            # Logger is already imported at module level
             logger.error(f"DEBUG: Final components_path in Settings: {value}")
-        except ImportError:
-            pass # Logger might not be initialized yet but usually is
+        except Exception:
+            pass 
             
         return value
 

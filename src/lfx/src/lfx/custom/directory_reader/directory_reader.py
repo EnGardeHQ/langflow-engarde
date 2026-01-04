@@ -230,12 +230,26 @@ class DirectoryReader:
         """Build a list of menus with their components from the .py files in the directory."""
         response = {"menu": []}
         logger.debug("-------------------- Building component menu list --------------------")
+        
+        # DEBUG: En Garde Components Troubleshooting
+        logger.error(f"DEBUG: build_component_menu_list received {len(file_paths)} files")
+        logger.error(f"DEBUG: File paths: {file_paths}")
 
         for file_path in file_paths:
             file_path_ = Path(file_path)
             menu_name = file_path_.parent.name
+            
+            # DEBUG: Trace individual file processing
+            try:
+                logger.error(f"DEBUG: Processing file: {file_path}")
+                logger.error(f"DEBUG: Original menu_name: {menu_name}")
+            except Exception as e:
+                logger.error(f"DEBUG: Error logging file info: {e}")
+
             if menu_name == "engarde_components":
                 menu_name = "En Garde Components"
+                logger.error(f"DEBUG: Renamed menu to: {menu_name}")
+                
             filename = file_path_.name
             validation_result, result_content = self.process_file(file_path)
             if not validation_result:

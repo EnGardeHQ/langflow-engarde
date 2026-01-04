@@ -573,6 +573,14 @@ class Settings(BaseSettings):
             value = [str(value)]
         elif isinstance(value, list):
             value = [str(p) if isinstance(p, Path) else p for p in value]
+            
+        # DEBUG: En Garde Components Troubleshooting
+        try:
+            from lfx.log.logger import logger
+            logger.error(f"DEBUG: Final components_path in Settings: {value}")
+        except ImportError:
+            pass # Logger might not be initialized yet but usually is
+            
         return value
 
     model_config = SettingsConfigDict(validate_assignment=True, extra="ignore", env_prefix="LANGFLOW_")

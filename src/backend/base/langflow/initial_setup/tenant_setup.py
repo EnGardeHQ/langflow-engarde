@@ -6,8 +6,7 @@ Creates and manages separate folders for each brand/tenant
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from langflow.services.database.models.folder.model import Folder
-from langflow.schema.folder import FolderRead
+from langflow.services.database.models.folder.model import Folder, FolderRead
 import logging
 
 logger = logging.getLogger(__name__)

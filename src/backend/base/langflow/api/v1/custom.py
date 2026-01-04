@@ -12,9 +12,9 @@ import os
 import logging
 
 from langflow.services.database.models.user import User
-from langflow.services.database.models.user.crud import get_user_by_username, update_user_last_login_at
+from langflow.services.database.models.user.crud import get_user_by_username
 from langflow.services.deps import session_scope, get_settings_service
-from langflow.services.auth.utils import create_token
+from langflow.services.auth.utils import create_user_tokens
 from langflow.initial_setup.setup import get_or_create_default_folder
 
 logger = logging.getLogger(__name__)
@@ -107,15 +107,8 @@ async def sso_login(
                     await session.commit()
                     await session.refresh(user)
 
-            # Generate a Langflow access token for this user
-            # Token expires in 30 days for SSO users
-            access_token = create_token(
-                data={"sub": str(user.id), "type": "access"},
-                expires_delta=timedelta(days=30)
-            )
-
-            # Update last login time
-            await update_user_last_login_at(user.id, session)
+            # Generate access and refresh tokens for this user (same as normal login)
+            tokens = await create_user_tokens(user_id=user.id, db=session, update_last_login=True)
 
             # Create default project for user if it doesn't exist
             _ = await get_or_create_default_folder(session, user.id)
@@ -123,7 +116,7 @@ async def sso_login(
             # Store user API key if it exists (need to access before session closes)
             user_api_key = user.store_api_key
 
-            logger.info(f"Session token generated for user: {email}")
+            logger.info(f"Session tokens generated for user: {email}")
 
         # Get auth settings for cookie configuration
         auth_settings = get_settings_service().auth_settings
@@ -135,28 +128,38 @@ async def sso_login(
         # Create redirect response
         redirect_response = RedirectResponse(url=redirect_url)
 
-        # Set the access token cookie on the redirect response
+        # Set the refresh token cookie (required for AUTO_LOGIN=false)
         redirect_response.set_cookie(
-            "access_token_lf",
-            access_token,
-            httponly=auth_settings.ACCESS_HTTPONLY,
-            samesite=auth_settings.ACCESS_SAME_SITE,
-            secure=auth_settings.ACCESS_SECURE,
-            max_age=60 * 60 * 24 * 30,  # 30 days in seconds
+            "refresh_token_lf",
+            tokens["refresh_token"],
+            httponly=auth_settings.REFRESH_HTTPONLY,
+            samesite=auth_settings.REFRESH_SAME_SITE,
+            secure=auth_settings.REFRESH_SECURE,
+            expires=auth_settings.REFRESH_TOKEN_EXPIRE_SECONDS,
             domain=auth_settings.COOKIE_DOMAIN,
         )
 
-        # Set the API key cookie if user has one
-        if user_api_key:
-            redirect_response.set_cookie(
-                "apikey_tkn_lflw",
-                str(user_api_key),
-                httponly=auth_settings.ACCESS_HTTPONLY,
-                samesite=auth_settings.ACCESS_SAME_SITE,
-                secure=auth_settings.ACCESS_SECURE,
-                max_age=None,  # Session cookie
-                domain=auth_settings.COOKIE_DOMAIN,
-            )
+        # Set the access token cookie
+        redirect_response.set_cookie(
+            "access_token_lf",
+            tokens["access_token"],
+            httponly=auth_settings.ACCESS_HTTPONLY,
+            samesite=auth_settings.ACCESS_SAME_SITE,
+            secure=auth_settings.ACCESS_SECURE,
+            expires=auth_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
+            domain=auth_settings.COOKIE_DOMAIN,
+        )
+
+        # Set the API key cookie (required for AUTO_LOGIN=false)
+        redirect_response.set_cookie(
+            "apikey_tkn_lflw",
+            str(user_api_key) if user_api_key else "",
+            httponly=auth_settings.ACCESS_HTTPONLY,
+            samesite=auth_settings.ACCESS_SAME_SITE,
+            secure=auth_settings.ACCESS_SECURE,
+            expires=None,  # Session cookie
+            domain=auth_settings.COOKIE_DOMAIN,
+        )
 
         logger.info(f"Redirecting user to: {redirect_url} with cookies set")
         return redirect_response

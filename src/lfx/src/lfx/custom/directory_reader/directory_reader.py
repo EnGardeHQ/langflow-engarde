@@ -234,6 +234,8 @@ class DirectoryReader:
         for file_path in file_paths:
             file_path_ = Path(file_path)
             menu_name = file_path_.parent.name
+            if menu_name == "engarde_components":
+                menu_name = "En Garde Components"
             filename = file_path_.name
             validation_result, result_content = self.process_file(file_path)
             if not validation_result:
@@ -311,6 +313,8 @@ class DirectoryReader:
         for file_path, (validation_result, result_content) in zip(file_paths, results, strict=True):
             file_path_ = Path(file_path)
             menu_name = file_path_.parent.name
+            if menu_name == "engarde_components":
+                menu_name = "En Garde Components"
             filename = file_path_.name
 
             if not validation_result:

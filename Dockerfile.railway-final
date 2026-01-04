@@ -17,10 +17,10 @@ WORKDIR /app
 # Environment variables
 ENV LANGFLOW_HOST=0.0.0.0
 ENV LANGFLOW_PORT=7860
-ENV LANGFLOW_COMPONENTS_PATH="/app/components/En Garde Components"
+ENV LANGFLOW_COMPONENTS_PATH="/app/components/engarde_components"
 
 # Rename directory if it exists from base image
-RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/En Garde Components"; fi
+RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/engarde_components"; fi
 
 RUN mkdir -p "/app/components" && if [ -d "/app/custom_components" ]; then mv "/app/custom_components" "/app/components/En Garde Components"; fi
 

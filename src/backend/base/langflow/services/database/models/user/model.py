@@ -54,6 +54,8 @@ class User(SQLModel, table=True):  # type: ignore[call-arg]
 class UserCreate(SQLModel):
     username: str = Field()
     password: str = Field()
+    is_active: bool = Field(default=False)
+    is_superuser: bool = Field(default=False)
     optins: dict[str, Any] | None = Field(
         default={"github_starred": False, "dialog_dismissed": False, "discord_clicked": False}
     )

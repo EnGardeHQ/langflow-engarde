@@ -8,7 +8,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from langflow.services.database.models.user.model import User, UserUpdate
+from langflow.services.database.models.user.model import User, UserCreate, UserUpdate
 
 
 async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
@@ -66,3 +66,21 @@ async def get_all_superusers(db: AsyncSession) -> list[User]:
     stmt = select(User).where(User.is_superuser == True)  # noqa: E712
     result = await db.exec(stmt)
     return list(result.all())
+
+
+async def create_user(db: AsyncSession, user: UserCreate) -> User:
+    from langflow.services.auth.utils import get_password_hash
+
+    user_data = user.model_dump()
+    user_data["password"] = get_password_hash(user_data["password"])
+
+    db_user = User(**user_data)
+    db.add(db_user)
+    try:
+        await db.commit()
+        await db.refresh(db_user)
+    except IntegrityError as e:
+        await db.rollback()
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+    return db_user

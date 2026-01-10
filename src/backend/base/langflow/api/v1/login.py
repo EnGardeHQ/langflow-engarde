@@ -57,14 +57,17 @@ async def sso_login(
         async with session_scope() as db:
             user = await get_user_by_username(db, email)
             if not user:
-                # Create new user
-                from langflow.services.database.models.user.crud import create_user
-                user = await create_user(db, UserCreate(
+                # Create new user directly (create_user function doesn't exist in this version)
+                from langflow.services.database.models.user.model import User
+                user = User(
                     username=email,
-                    password=str(uuid4()),  # Random password (not used with SSO)
+                    password=str(uuid4()),  # Random password (not used with SSO), will be hashed
                     is_active=True,
                     is_superuser=False
-                ))
+                )
+                db.add(user)
+                await db.commit()
+                await db.refresh(user)
             
             # 3. Get or Create Tenant-Specific Folder
             from langflow.initial_setup.tenant_setup import get_or_create_tenant_folder

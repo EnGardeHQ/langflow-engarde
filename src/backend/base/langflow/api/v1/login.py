@@ -69,23 +69,10 @@ async def sso_login(
                 await db.commit()
                 await db.refresh(user)
             
-            # 3. Get or Create Tenant-Specific Folder
-            from langflow.initial_setup.tenant_setup import get_or_create_tenant_folder
-            
-            try:
-                folder = await get_or_create_tenant_folder(
-                    db=db,
-                    user_id=user.id,
-                    tenant_id=tenant_id,
-                    tenant_name=tenant_name
-                )
-                folder_id = str(folder.id)
-            except Exception as e:
-                logger.error(f"Failed to create tenant folder: {e}")
-                # Fallback to default folder
-                from langflow.initial_setup.setup import get_or_create_default_folder
-                folder = await get_or_create_default_folder(db, user.id)
-                folder_id = str(folder.id)
+            # 3. Get or Create Default Folder (tenant sync not in this version)
+            from langflow.initial_setup.setup import get_or_create_default_folder
+            folder = await get_or_create_default_folder(db, user.id)
+            folder_id = str(folder.id)
             
             # 4. Generate Session Tokens (Same as standard login)
             tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)

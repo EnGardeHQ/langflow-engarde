@@ -77,8 +77,8 @@ async def sso_login(
             # 4. Generate Session Tokens (Same as standard login)
             tokens = await create_user_tokens(user_id=user.id, db=db, update_last_login=True)
         
-        # 5. Create redirect response to tenant folder and set cookies
-        redirect_response = RedirectResponse(url=f"/folder/{folder_id}", status_code=302)
+        # 5. Create redirect response to frontend home and set cookies
+        redirect_response = RedirectResponse(url="/", status_code=302)
         redirect_response.set_cookie(
             "refresh_token_lf",
             tokens["refresh_token"],

@@ -1,8 +1,16 @@
 [build]
-builder = "NIXPACKS"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.official-base"
 
 [deploy]
 numReplicas = 1
 sleepApplication = false
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+
+# Health check configuration
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+
+# Start command (uses the script in Dockerfile)
+startCommand = "/app/start-engarde.sh"

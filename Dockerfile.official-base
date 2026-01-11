@@ -1,0 +1,152 @@
+# ============================================================================
+# EnGarde Langflow - Simplified Build from Official Image
+# ============================================================================
+# Based on: langflowai/langflow:latest (official Langflow Docker image)
+#
+# This Dockerfile extends the official image with EnGarde customizations:
+# 1. Custom Walker Agent Components (14 components)
+# 2. SSO configuration
+# 3. Railway-compatible startup script
+#
+# Note: Full branding customizations (logo, footer) require rebuilding from source
+# See Dockerfile.engarde for complete branding customization
+# ============================================================================
+
+FROM langflowai/langflow:latest
+
+USER root
+
+# ============================================================================
+# Install system dependencies
+# ============================================================================
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# ============================================================================
+# ENGARDE CUSTOMIZATION 1: Copy custom Walker Agent components
+# These components enable EnGarde's AI-powered campaign analysis:
+# - SEO Walker Agent
+# - Content Walker Agent
+# - Paid Ads Walker Agent
+# - Audience Intelligence Walker Agent
+# - Supporting utility components
+# ============================================================================
+RUN mkdir -p "/app/components/En Garde Components"
+COPY ["En Garde Components", "/app/components/En Garde Components"]
+
+# Ensure proper permissions
+RUN chown -R user:root "/app/components" && \
+    chmod -R 755 "/app/components"
+
+# ============================================================================
+# ENGARDE CUSTOMIZATION 2: Environment variables
+# Critical variables that MUST be set in Railway:
+# - LANGFLOW_SECRET_KEY: Shared secret with EnGarde backend for SSO
+# - LANGFLOW_DATABASE_URL: PostgreSQL connection string
+# - ENGARDE_API_URL: EnGarde backend URL for Walker Agents
+# ============================================================================
+
+# Langflow core settings
+ENV LANGFLOW_HOST=0.0.0.0
+ENV LANGFLOW_COMPONENTS_PATH="/app/components"
+
+# SSO Configuration (CRITICAL - disable auto-login for SSO)
+ENV LANGFLOW_AUTO_LOGIN=false
+ENV LANGFLOW_SECRET_KEY=""
+
+# EnGarde API integration
+ENV ENGARDE_API_URL=""
+
+# Walker Agent API Keys (set these in Railway environment variables)
+ENV WALKER_AGENT_API_KEY_ONSIDE_SEO=""
+ENV WALKER_AGENT_API_KEY_ONSIDE_CONTENT=""
+ENV WALKER_AGENT_API_KEY_SANKORE_PAID_ADS=""
+ENV WALKER_AGENT_API_KEY_MADANSARA_AUDIENCE_INTELLIGENCE=""
+
+# Database configuration
+ENV LANGFLOW_DATABASE_URL=""
+
+# Logging
+ENV LANGFLOW_LOG_LEVEL="info"
+
+# ============================================================================
+# ENGARDE CUSTOMIZATION 3: Create startup script for Railway
+# Railway provides a dynamic PORT environment variable
+# This script ensures Langflow uses the correct port
+# ============================================================================
+RUN cat > /app/start-engarde.sh << 'EOF'
+#!/bin/bash
+set -e
+
+PORT=${PORT:-7860}
+
+echo "=============================================="
+echo "  EnGarde Langflow - Starting"
+echo "=============================================="
+echo "Version: 2.0.0 (based on langflowai/langflow:latest)"
+echo "Port: $PORT"
+echo "Host: $LANGFLOW_HOST"
+echo "Components Path: $LANGFLOW_COMPONENTS_PATH"
+echo "Auto Login: $LANGFLOW_AUTO_LOGIN"
+echo "Database URL: ${LANGFLOW_DATABASE_URL:0:30}..."
+echo "=============================================="
+
+# Verify custom components are loaded
+if [ -d "/app/components/En Garde Components" ]; then
+    COMPONENT_COUNT=$(find "/app/components/En Garde Components" -name "*.py" | wc -l)
+    echo "✓ Custom components found: $COMPONENT_COUNT files"
+else
+    echo "⚠ Warning: Custom components directory not found"
+fi
+
+# Run database migrations
+if [ -n "$LANGFLOW_DATABASE_URL" ]; then
+    echo "Running database migrations..."
+    langflow migration --fix || echo "⚠ Migration warning (may be normal on first run)"
+else
+    echo "⚠ Warning: LANGFLOW_DATABASE_URL not set"
+fi
+
+echo "=============================================="
+echo "Starting Langflow server on port $PORT..."
+echo "=============================================="
+
+# Start Langflow with explicit configuration
+exec langflow run \
+    --host "$LANGFLOW_HOST" \
+    --port "$PORT" \
+    --env-file /app/.env 2>/dev/null || \
+exec langflow run \
+    --host "$LANGFLOW_HOST" \
+    --port "$PORT"
+EOF
+
+RUN chmod +x /app/start-engarde.sh && \
+    chown user:root /app/start-engarde.sh
+
+# ============================================================================
+# Container metadata (EnGarde branding)
+# ============================================================================
+LABEL org.opencontainers.image.title="EnGarde AI Campaign Builder"
+LABEL org.opencontainers.image.authors="EnGarde Team <team@engarde.media>"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.url="https://engarde.media"
+LABEL org.opencontainers.image.source="https://github.com/EnGardeHQ/langflow-engarde"
+LABEL org.opencontainers.image.description="EnGarde - AI-powered social media campaign builder with Langflow integration"
+LABEL org.opencontainers.image.vendor="EnGarde"
+LABEL org.opencontainers.image.version="2.0.0-official-base"
+LABEL org.opencontainers.image.base.name="langflowai/langflow:latest"
+
+USER user
+WORKDIR /app
+
+EXPOSE 7860
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-7860}/health || exit 1
+
+# Use EnGarde startup script
+CMD ["/app/start-engarde.sh"]

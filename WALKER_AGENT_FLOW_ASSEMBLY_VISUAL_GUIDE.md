@@ -51,6 +51,220 @@ This guide shows you exactly how to connect custom components in Langflow to bui
 
 ---
 
+## 📡 API Quick Reference
+
+### Base URLs
+- **Production Backend**: `https://api.engarde.media`
+- **WebSocket**: `wss://api.engarde.media`
+- **Production Frontend**: `https://app.engarde.media`
+- **Langflow Server**: `https://langflow.engarde.media`
+
+### Walker Agent API Keys (Environment Variables)
+```bash
+# SEO Walker Agent
+WALKER_AGENT_API_KEY_ONSIDE_SEO=wa_onside_production_tvKoJ-yGxSzPkmJ9vAxgnvsdGd_zUPBLDCYVYQg_GDc
+
+# Content Walker Agent
+WALKER_AGENT_API_KEY_ONSIDE_CONTENT=wa_onside_production_1-oq6OFlu0Pb3kvVHlNeiTcbe8S6u1CMbzmc8ppfxP4
+
+# Paid Ads Walker Agent
+WALKER_AGENT_API_KEY_SANKORE_PAID_ADS=wa_sankore_production_sBhmczd9F_nN_PY94H8TJuS9e7-jZqp5l7rwrQSOscc
+
+# Audience Intelligence Walker Agent
+WALKER_AGENT_API_KEY_MADANSARA_AUDIENCE_INTELLIGENCE=wa_madansara_production_k6XDe6dbAU-JD5zVxOWr8zsPjI-h6OyQAfh1jtRAn5g
+```
+
+### Core Walker Agent Endpoints
+
+#### 1. Submit Suggestions (from Langflow)
+```
+POST https://api.engarde.media/api/v1/walker-agents/suggestions
+Headers:
+  - Authorization: Bearer {WALKER_AGENT_API_KEY}
+  - Content-Type: application/json
+
+Body:
+{
+  "tenant_id": "uuid",
+  "agent_type": "seo|content|paid_ads|audience_intelligence",
+  "suggestions": [
+    {
+      "type": "keyword_opportunity",
+      "title": "Target high-volume keyword",
+      "description": "...",
+      "estimated_revenue": 5000.0,
+      "confidence_score": 0.85,
+      "priority": "high|medium|low",
+      "action_description": "Create content targeting this keyword",
+      "cta_url": "https://app.engarde.media/...",
+      "metadata": {}
+    }
+  ]
+}
+```
+
+#### 2. Get Suggestions (for Frontend)
+```
+GET https://api.engarde.media/api/v1/walker-agents/suggestions?tenant_id={uuid}&status=pending&limit=50
+Headers:
+  - Authorization: Bearer {USER_JWT_TOKEN}
+```
+
+#### 3. Record User Action
+```
+POST https://api.engarde.media/api/v1/walker-agents/responses
+Headers:
+  - Authorization: Bearer {USER_JWT_TOKEN}
+  - Content-Type: application/json
+
+Body:
+{
+  "suggestion_id": "uuid",
+  "action": "execute|pause|reject|details",
+  "user_id": "uuid",
+  "notes": "Optional user notes"
+}
+```
+
+#### 4. Analytics Dashboard
+```
+GET https://api.engarde.media/api/v1/walker-agents/analytics?tenant_id={uuid}&time_range=30d
+Headers:
+  - Authorization: Bearer {USER_JWT_TOKEN}
+
+time_range options: 7d, 30d, 90d, all
+```
+
+#### 5. WebSocket Real-time Notifications
+```
+WebSocket: wss://api.engarde.media/api/v1/walker-agents/ws/{tenant_id}
+
+Message Types:
+- new_suggestion
+- suggestion_update
+- notification
+```
+
+#### 6. Notification Preferences
+```
+GET https://api.engarde.media/api/v1/walker-agents/notification-preferences?tenant_id={uuid}&user_id={uuid}
+POST https://api.engarde.media/api/v1/walker-agents/notification-preferences
+PUT https://api.engarde.media/api/v1/walker-agents/notification-preferences?tenant_id={uuid}&user_id={uuid}
+```
+
+#### 7. Multi-Channel Notifications
+```
+POST https://api.engarde.media/api/v1/notifications/send
+Headers:
+  - Authorization: Bearer {WALKER_AGENT_API_KEY}
+  - Content-Type: application/json
+
+Body:
+{
+  "tenant_id": "uuid",
+  "message": "You have 5 new SEO suggestions",
+  "channel": "email|whatsapp|in_app|all",
+  "batch_id": "uuid",
+  "suggestions_count": 5
+}
+```
+
+#### 8. Get Current Brand (Tenant)
+```
+GET https://api.engarde.media/api/brands/current
+Headers:
+  - Authorization: Bearer {USER_JWT_TOKEN}
+
+Response:
+{
+  "id": "uuid",  # This is the tenant_id
+  "name": "Brand Name",
+  "settings": {}
+}
+```
+
+### Microservice Data Endpoints (for MultiSourceDataFetcher)
+
+#### OnSide (SEO & Content)
+```
+GET https://onside-production.up.railway.app/api/seo/analysis?tenant_id={uuid}
+GET https://onside-production.up.railway.app/api/content/performance?tenant_id={uuid}
+Headers:
+  - Authorization: Bearer {ONSIDE_API_KEY}
+```
+
+#### Sankore (Paid Ads)
+```
+GET https://sankore-production.up.railway.app/api/ads/metrics?tenant_id={uuid}
+Headers:
+  - Authorization: Bearer {SANKORE_API_KEY}
+```
+
+#### MadanSara (Audience Intelligence)
+```
+GET https://madansara-production.up.railway.app/api/audience/insights?tenant_id={uuid}
+Headers:
+  - Authorization: Bearer {MADANSARA_API_KEY}
+```
+
+### AI Model Endpoints (for AIAnalyzer)
+
+#### Meta Llama via Together AI (Default)
+```
+POST https://api.llama.com/compat/v1/chat/completions
+Headers:
+  - Authorization: Bearer {META_LLAMA_API_KEY}
+  - Content-Type: application/json
+
+Body:
+{
+  "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+  "messages": [
+    {"role": "system", "content": "You are an SEO expert..."},
+    {"role": "user", "content": "Analyze this data..."}
+  ],
+  "max_tokens": 2000,
+  "temperature": 0.7
+}
+```
+
+### Frontend URLs
+
+#### Walker Agent Dashboard
+```
+https://app.engarde.media/walker-agents
+https://app.engarde.media/walker-agents/analytics
+https://app.engarde.media/walker-agents/settings
+```
+
+### Agent-Specific Configuration
+
+#### SEO Walker Agent
+- **Agent Type**: `seo`
+- **API Key**: `WALKER_AGENT_API_KEY_ONSIDE_SEO`
+- **Data Source**: OnSide SEO microservice
+- **API Endpoint**: `https://onside-production.up.railway.app/api/seo/analysis`
+
+#### Content Walker Agent
+- **Agent Type**: `content`
+- **API Key**: `WALKER_AGENT_API_KEY_ONSIDE_CONTENT`
+- **Data Source**: OnSide Content microservice
+- **API Endpoint**: `https://onside-production.up.railway.app/api/content/performance`
+
+#### Paid Ads Walker Agent
+- **Agent Type**: `paid_ads`
+- **API Key**: `WALKER_AGENT_API_KEY_SANKORE_PAID_ADS`
+- **Data Source**: Sankore microservice
+- **API Endpoint**: `https://sankore-production.up.railway.app/api/ads/metrics`
+
+#### Audience Intelligence Walker Agent
+- **Agent Type**: `audience_intelligence`
+- **API Key**: `WALKER_AGENT_API_KEY_MADANSARA_AUDIENCE_INTELLIGENCE`
+- **Data Source**: MadanSara microservice
+- **API Endpoint**: `https://madansara-production.up.railway.app/api/audience/insights`
+
+---
+
 ## 🔗 Complete Component Chain (6 Components)
 
 ```
@@ -126,7 +340,7 @@ This guide shows you exactly how to connect custom components in Langflow to bui
 ---
 
 ### Component 3: MultiSourceDataFetcher
-**Status**: ❌ MISSING - Need to create
+**Status**: ✅ Created (multi_source_data_fetcher.py)
 
 **Purpose**: Fetch data from multiple sources (Microservice, BigQuery, ZeroDB)
 
@@ -157,7 +371,7 @@ This guide shows you exactly how to connect custom components in Langflow to bui
 ---
 
 ### Component 4: AIAnalyzer
-**Status**: ❌ MISSING - Need to create
+**Status**: ✅ Created (ai_analyzer.py)
 
 **Purpose**: Analyze data using AI and generate suggestions
 
@@ -434,13 +648,15 @@ This guide shows you exactly how to connect custom components in Langflow to bui
 
 ---
 
-## 🔧 Missing Components to Create
+## ✅ All Components Complete
 
-### 1. MultiSourceDataFetcher Component ❌
+All required components have been created and deployed to the Langflow server:
+
+### 1. MultiSourceDataFetcher Component ✅
 
 **File**: `engarde_components/multi_source_data_fetcher.py`
 
-**Implementation Priority**: HIGH (required for flow to work)
+**Status**: ✅ IMPLEMENTED AND DEPLOYED
 
 **Responsibilities**:
 - Read user_config to determine enabled data sources (or use defaults)
@@ -460,32 +676,27 @@ ENDPOINTS = {
 }
 ```
 
-### 2. AIAnalyzer Component ❌
+### 2. AIAnalyzer Component ✅
 
 **File**: `engarde_components/ai_analyzer.py`
 
-**Implementation Priority**: HIGH (required for flow to work)
+**Status**: ✅ IMPLEMENTED AND DEPLOYED
 
 **Responsibilities**:
 - Build prompt template based on agent_type
 - Inject user's custom_prompt_additions from config (if provided)
 - Include aggregated_data in prompt
-- Call AI model (OpenAI GPT-4 or Meta Llama via Together AI)
+- Call AI model (Meta Llama via Together AI using OpenAI-compatible endpoint)
 - Parse AI response (expect JSON array of suggestions)
 - Validate suggestion structure
 - Return suggestions as JSON array
 
 **AI Model Configuration**:
 ```python
-# Option 1: OpenAI GPT-4
-import openai
-openai.api_key = os.getenv("OPENAI_API_KEY")
-model = "gpt-4-turbo-preview"
-
-# Option 2: Meta Llama via Together AI
-import together
-together.api_key = os.getenv("META_LLAMA_API_KEY")
-model = "meta-llama/Llama-3.1-70B-Instruct-Turbo"
+# Uses Meta Llama via Together AI (OpenAI-compatible API)
+api_key = os.getenv("META_LLAMA_API_KEY")
+api_url = os.getenv("META_LLAMA_API_ENDPOINT", "https://api.llama.com/compat/v1")
+model = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
 ```
 
 **Prompt Templates by Agent Type**:
@@ -607,16 +818,16 @@ model = "meta-llama/Llama-3.1-70B-Instruct-Turbo"
 ### Langflow Components
 - [x] Component 1: CurrentBrandTenantComponent ✅ (exists in engarde_components/)
 - [x] Component 2: LoadUserConfig ✅ (exists)
-- [ ] Component 3: MultiSourceDataFetcher ❌ (need to create)
-- [ ] Component 4: AIAnalyzer ❌ (need to create)
+- [x] Component 3: MultiSourceDataFetcher ✅ (exists - multi_source_data_fetcher.py)
+- [x] Component 4: AIAnalyzer ✅ (exists - ai_analyzer.py)
 - [x] Component 5: WalkerAgentAPIComponent ✅ (exists and updated)
 - [x] Component 6: NotificationAgentComponent ✅ (exists)
 
 ### Deployment Steps
-- [ ] Create MultiSourceDataFetcher component
-- [ ] Create AIAnalyzer component
-- [ ] Copy all components to Langflow custom_components directory
-- [ ] Restart Langflow service
+- [x] Create MultiSourceDataFetcher component ✅
+- [x] Create AIAnalyzer component ✅
+- [x] Copy all components to Langflow custom_components directory ✅
+- [x] Deploy Langflow to Railway ✅
 - [ ] Build SEO Walker flow in UI (follow steps above)
 - [ ] Test flow execution with real tenant_id
 - [ ] Verify suggestions appear in PostgreSQL database
@@ -963,6 +1174,6 @@ WHERE tenant_id = 'your-tenant-id';
 
 ---
 
-**Last Updated**: January 16, 2026
-**Status**: Backend deployed ✅ | Missing 2 Langflow components ❌
-**Next Step**: Create MultiSourceDataFetcher and AIAnalyzer components
+**Last Updated**: January 17, 2026
+**Status**: Backend deployed ✅ | All Langflow components deployed ✅
+**Next Step**: Build Walker Agent flows in Langflow UI

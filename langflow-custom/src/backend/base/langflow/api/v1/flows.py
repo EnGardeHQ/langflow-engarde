@@ -338,7 +338,10 @@ async def read_flows(
                 (Flow.user_id == None) | (Flow.user_id == current_user.id)  # noqa: E711
             )
         else:
-            stmt = select(Flow).where(Flow.user_id == current_user.id)
+            # Include flows owned by user OR public flows from any user
+            stmt = select(Flow).where(
+                (Flow.user_id == current_user.id) | (Flow.access_type == AccessTypeEnum.PUBLIC)
+            )
 
         if remove_example_flows:
             stmt = stmt.where(Flow.folder_id != starter_folder_id)

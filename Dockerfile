@@ -360,7 +360,12 @@ ENV META_LLAMA_API_KEY=""
 ENV META_LLAMA_API_ENDPOINT="https://api.together.xyz/v1"
 
 # ============================================================================
-# ENGARDE CUSTOMIZATION 11: Create startup script for Railway
+# ENGARDE CUSTOMIZATION 11: Copy admin flow script
+# ============================================================================
+COPY --chown=1000:0 set_admin_flows_public.py /app/set_admin_flows_public.py
+
+# ============================================================================
+# ENGARDE CUSTOMIZATION 12: Create startup script for Railway
 # Railway provides a dynamic PORT environment variable
 # This script ensures Langflow uses the correct port
 # ============================================================================

@@ -1,0 +1,18 @@
+[build]
+# Checkpoint 4: Full EnGarde Deployment - All customizations active
+# Previous: Dockerfile.sso-backend (Checkpoint 2 - SSO only)
+# Current: Dockerfile (ALL customizations - branding + SSO + components)
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+numReplicas = 1
+sleepApplication = false
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+startCommand = "/bin/bash /app/start.sh"
+
+# Health check disabled - Langflow doesn't expose a /health endpoint by default
+# Railway will check if the container is running and the port is open
+# healthcheckPath = "/health"
+# healthcheckTimeout = 300

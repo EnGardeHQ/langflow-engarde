@@ -248,11 +248,12 @@ FROM langflowai/langflow:latest
 USER root
 
 # ============================================================================
-# Install system dependencies
+# Install system dependencies including PostgreSQL client for backups
 # ============================================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
@@ -371,13 +372,27 @@ COPY --chown=1000:0 set_admin_flows_public.py /app/set_admin_flows_public.py
 # ============================================================================
 RUN cat > /app/start.sh << 'EOF'
 #!/bin/bash
+set -e
+
 PORT=${PORT:-7860}
 echo "==================================="
 echo "EnGarde Langflow Starting"
 echo "==================================="
 echo "Port: $PORT"
+echo "Database URL: ${LANGFLOW_DATABASE_URL:0:30}..."
 echo "Components Path: $LANGFLOW_COMPONENTS_PATH"
 echo "Auto Login: $LANGFLOW_AUTO_LOGIN"
+echo "Disable Migrations: $LANGFLOW_DISABLE_MIGRATIONS"
+echo "Skip Migration Check: $LANGFLOW_SKIP_MIGRATION_CHECK"
+echo "==================================="
+
+# Test database connectivity
+echo "Testing database connectivity..."
+if command -v psql &> /dev/null; then
+    timeout 5 psql "$LANGFLOW_DATABASE_URL" -c "SELECT 1;" &> /dev/null && echo "✓ Database connection successful" || echo "⚠ Database connection failed"
+else
+    echo "⚠ psql not available, skipping connectivity test"
+fi
 echo "==================================="
 
 # Debug: List components directory
@@ -389,9 +404,18 @@ else
 fi
 echo "==================================="
 
-# Start Langflow normally - SSO endpoint is already installed in api/v1/
-echo "Starting EnGarde Langflow..."
-exec langflow run --host 0.0.0.0 --port $PORT --log-level debug
+# Verify Langflow is installed
+echo "Verifying Langflow installation..."
+python3 -c "import langflow; print(f'Langflow version: {langflow.__version__}')" || echo "ERROR: Failed to import langflow"
+echo "==================================="
+
+# Start Langflow with additional debugging
+echo "Starting EnGarde Langflow with full logging..."
+echo "Command: langflow run --host 0.0.0.0 --port $PORT --log-level debug"
+echo "==================================="
+
+# Start Langflow with stderr and stdout both visible
+exec langflow run --host 0.0.0.0 --port $PORT --log-level debug 2>&1
 EOF
 
 RUN chmod +x /app/start.sh && chown user:root /app/start.sh

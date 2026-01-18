@@ -1,0 +1,43 @@
+# Large directories
+node_modules
+langflow-custom
+playwright-testing
+logs
+
+# Git
+.git
+.gitignore
+
+# Documentation
+docs
+*.md
+README.md
+
+# Logs and temp files
+*.log
+tmp
+temp
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv
+ENV
+env
+
+# IDE
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif

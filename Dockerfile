@@ -215,7 +215,7 @@ RUN npm ci && \
 ################################
 # STAGE 2: Backend Customization
 ################################
-FROM langflowai/langflow:latest AS backend-customizer
+FROM langflowai/langflow:1.7.2 AS backend-customizer
 
 USER root
 
@@ -243,7 +243,7 @@ RUN LANGFLOW_PATH=$(python3 -c "import langflow; import os; print(os.path.dirnam
 ################################
 # STAGE 3: Final Runtime Image
 ################################
-FROM langflowai/langflow:latest
+FROM langflowai/langflow:1.7.2
 
 USER root
 

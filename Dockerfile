@@ -372,50 +372,24 @@ COPY --chown=1000:0 set_admin_flows_public.py /app/set_admin_flows_public.py
 # ============================================================================
 RUN cat > /app/start.sh << 'EOF'
 #!/bin/bash
-set -e
+
+# Ensure unbuffered output for immediate logging
+export PYTHONUNBUFFERED=1
 
 PORT=${PORT:-7860}
-echo "==================================="
-echo "EnGarde Langflow Starting"
-echo "==================================="
-echo "Port: $PORT"
-echo "Database URL: ${LANGFLOW_DATABASE_URL:0:30}..."
-echo "Components Path: $LANGFLOW_COMPONENTS_PATH"
-echo "Auto Login: $LANGFLOW_AUTO_LOGIN"
-echo "Disable Migrations: $LANGFLOW_DISABLE_MIGRATIONS"
-echo "Skip Migration Check: $LANGFLOW_SKIP_MIGRATION_CHECK"
-echo "==================================="
 
-# Test database connectivity
-echo "Testing database connectivity..."
-if command -v psql &> /dev/null; then
-    timeout 5 psql "$LANGFLOW_DATABASE_URL" -c "SELECT 1;" &> /dev/null && echo "✓ Database connection successful" || echo "⚠ Database connection failed"
-else
-    echo "⚠ psql not available, skipping connectivity test"
-fi
-echo "==================================="
+# Force output immediately - write directly to stderr since stdout might be buffered
+>&2 echo "==================================="
+>&2 echo "EnGarde Langflow Starting"
+>&2 echo "==================================="
+>&2 echo "Port: $PORT"
+>&2 echo "Database URL: ${LANGFLOW_DATABASE_URL:0:30}..."
+>&2 echo "Components Path: $LANGFLOW_COMPONENTS_PATH"
+>&2 echo "==================================="
 
-# Debug: List components directory
-echo "Components directory contents:"
-if [ -d "$LANGFLOW_COMPONENTS_PATH" ]; then
-    ls -la "$LANGFLOW_COMPONENTS_PATH" || echo "Cannot list directory"
-else
-    echo "ERROR: Components directory does not exist at: $LANGFLOW_COMPONENTS_PATH"
-fi
-echo "==================================="
-
-# Verify Langflow is installed
-echo "Verifying Langflow installation..."
-python3 -c "import langflow; print(f'Langflow version: {langflow.__version__}')" || echo "ERROR: Failed to import langflow"
-echo "==================================="
-
-# Start Langflow with additional debugging
-echo "Starting EnGarde Langflow with full logging..."
-echo "Command: langflow run --host 0.0.0.0 --port $PORT --log-level debug"
-echo "==================================="
-
-# Start Langflow with stderr and stdout both visible
-exec langflow run --host 0.0.0.0 --port $PORT --log-level debug 2>&1
+# Start Langflow with unbuffered output and both stdout/stderr
+>&2 echo "Executing: langflow run --host 0.0.0.0 --port $PORT --log-level debug"
+exec python3 -u -m langflow run --host 0.0.0.0 --port $PORT --log-level debug 2>&1
 EOF
 
 RUN chmod +x /app/start.sh && chown user:root /app/start.sh

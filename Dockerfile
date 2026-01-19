@@ -29,9 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy frontend source from official Langflow repository
 # Note: We need to clone the official repo to get the frontend source
-# CACHE BUST: 1768416456 - Change this number to force rebuild
+# CACHE BUST: 1737316800 - Change this number to force rebuild
 WORKDIR /tmp
-RUN echo "Cache bust timestamp: 1768416456" && \
+RUN echo "Cache bust timestamp: 1737316800" && \
     git clone --depth 1 --single-branch --branch v1.7.2 https://github.com/langflow-ai/langflow.git
 
 # Copy EnGarde branding assets
@@ -255,6 +255,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
+
+# ============================================================================
+# FIX: Ensure Alembic is properly installed
+# This resolves "ModuleNotFoundError: No module named 'alembic.util'"
+# ============================================================================
+RUN python3 -m pip install --no-cache-dir --upgrade alembic && \
+    echo "Alembic version: $(python3 -m pip show alembic | grep Version)"
 
 # ============================================================================
 # ENGARDE CUSTOMIZATION 8: Copy customized frontend from the installed package

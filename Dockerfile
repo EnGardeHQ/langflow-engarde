@@ -291,12 +291,24 @@ RUN mkdir -p /app/components/engarde_components
 COPY --chown=1000:0 engarde_components /app/components/engarde_components
 
 # ============================================================================
-# ENGARDE CUSTOMIZATION 10: SSO Integration - Install into Langflow's API
+# ENGARDE CUSTOMIZATION 10: SSO Integration & Template Sync - Install into Langflow
 # ============================================================================
-# Copy SSO endpoint code and register it in Langflow's API router system
+# Copy SSO endpoint code, template sync service, and migration, then register in Langflow's API router system
 COPY src/backend/base/langflow/api/v1/custom.py /tmp/custom.py
+COPY src/backend/base/langflow/services/engarde_template_sync.py /tmp/engarde_template_sync.py
+COPY src/backend/base/langflow/alembic/versions/engarde_add_template_fields.py /tmp/engarde_add_template_fields.py
 
 RUN LANGFLOW_PATH=$(python3 -c "import langflow; import os; print(os.path.dirname(langflow.__file__))") && \
+    echo "Installing Template Sync Service at: $LANGFLOW_PATH/services/engarde_template_sync.py" && \
+    cp /tmp/engarde_template_sync.py $LANGFLOW_PATH/services/engarde_template_sync.py && \
+    rm /tmp/engarde_template_sync.py && \
+    echo "Template Sync Service installed successfully" && \
+    \
+    echo "Installing Alembic migration at: $LANGFLOW_PATH/alembic/versions/engarde_add_template_fields.py" && \
+    cp /tmp/engarde_add_template_fields.py $LANGFLOW_PATH/alembic/versions/engarde_add_template_fields.py && \
+    rm /tmp/engarde_add_template_fields.py && \
+    echo "Alembic migration installed successfully" && \
+    \
     echo "Installing SSO endpoint at: $LANGFLOW_PATH/api/v1/custom.py" && \
     cp /tmp/custom.py $LANGFLOW_PATH/api/v1/custom.py && \
     rm /tmp/custom.py && \

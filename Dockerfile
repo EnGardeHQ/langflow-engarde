@@ -257,12 +257,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
-# FIX: Ensure Alembic is properly installed into the correct venv
+# FIX: Reinstall Langflow to fix broken Alembic dependency
 # This resolves "ModuleNotFoundError: No module named 'alembic.util'"
-# The official Langflow image uses /app/.venv, so we must install there
+# The base image has a broken Alembic, so we reinstall langflow-base
+# which includes all database dependencies
 # ============================================================================
-RUN /app/.venv/bin/pip install --no-cache-dir --upgrade alembic && \
-    echo "Alembic version: $(/app/.venv/bin/pip show alembic | grep Version)"
+RUN /app/.venv/bin/pip uninstall -y langflow-base && \
+    /app/.venv/bin/pip install --no-cache-dir langflow-base==1.0.20 && \
+    echo "✓ Reinstalled langflow-base with working dependencies" && \
+    /app/.venv/bin/pip show alembic | head -5
 
 # ============================================================================
 # ENGARDE CUSTOMIZATION 8: Copy customized frontend from the installed package

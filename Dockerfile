@@ -293,29 +293,26 @@ COPY --chown=1000:0 engarde_components /app/components/engarde_components
 # ============================================================================
 # ENGARDE CUSTOMIZATION 10: SSO Integration - Install into Langflow's API
 # ============================================================================
-# TEMPORARILY DISABLED: Testing if SSO installation causes startup hang
-# Cache bust to force rebuild: 2026-01-19-v2
 # Copy SSO endpoint code and register it in Langflow's API router system
-# COPY src/backend/base/langflow/api/v1/custom.py /tmp/custom.py
+COPY src/backend/base/langflow/api/v1/custom.py /tmp/custom.py
 
 RUN LANGFLOW_PATH=$(python3 -c "import langflow; import os; print(os.path.dirname(langflow.__file__))") && \
-    echo "SSO installation temporarily disabled for testing" && \
-    # echo "Installing SSO endpoint at: $LANGFLOW_PATH/api/v1/custom.py" && \
-    # cp /tmp/custom.py $LANGFLOW_PATH/api/v1/custom.py && \
-    # rm /tmp/custom.py && \
-    # echo "SSO endpoint file installed successfully" && \
-    # \
-    # echo "Step 1: Registering SSO router in api/v1/__init__.py" && \
-    # sed -i '1i from langflow.api.v1.custom import router as custom_router' $LANGFLOW_PATH/api/v1/__init__.py && \
-    # sed -i '/__all__ = \[/a\    "custom_router",' $LANGFLOW_PATH/api/v1/__init__.py && \
-    # echo "api/v1/__init__.py modified successfully" && \
-    # \
-    # echo "Step 2: Adding custom_router to api/router.py imports" && \
-    # sed -i '/from langflow.api.v1 import (/a\    custom_router,' $LANGFLOW_PATH/api/router.py && \
-    # echo "Step 3: Including custom_router in router_v1" && \
-    # sed -i '/router_v1.include_router(chat_router)/a router_v1.include_router(custom_router)' $LANGFLOW_PATH/api/router.py && \
-    # echo "SSO router registered successfully in both files" && \
-    # \
+    echo "Installing SSO endpoint at: $LANGFLOW_PATH/api/v1/custom.py" && \
+    cp /tmp/custom.py $LANGFLOW_PATH/api/v1/custom.py && \
+    rm /tmp/custom.py && \
+    echo "SSO endpoint file installed successfully" && \
+    \
+    echo "Step 1: Registering SSO router in api/v1/__init__.py" && \
+    sed -i '1i from langflow.api.v1.custom import router as custom_router' $LANGFLOW_PATH/api/v1/__init__.py && \
+    sed -i '/__all__ = \[/a\    "custom_router",' $LANGFLOW_PATH/api/v1/__init__.py && \
+    echo "api/v1/__init__.py modified successfully" && \
+    \
+    echo "Step 2: Adding custom_router to api/router.py imports" && \
+    sed -i '/from langflow.api.v1 import (/a\    custom_router,' $LANGFLOW_PATH/api/router.py && \
+    echo "Step 3: Including custom_router in router_v1" && \
+    sed -i '/router_v1.include_router(chat_router)/a router_v1.include_router(custom_router)' $LANGFLOW_PATH/api/router.py && \
+    echo "SSO router registered successfully in both files" && \
+    \
     echo "Step 4: Removing Discord and GitHub references from startup message" && \
     sed -i 's|github.com/langflow-ai/langflow|engarde.media|g' $LANGFLOW_PATH/__main__.py && \
     sed -i 's|discord.com/invite/EqksyE2EX9|engarde.media/support|g' $LANGFLOW_PATH/__main__.py && \

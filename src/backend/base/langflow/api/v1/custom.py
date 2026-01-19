@@ -13,13 +13,54 @@ import logging
 
 from langflow.services.database.models.user import User
 from langflow.services.database.models.user.crud import get_user_by_username, update_user_last_login_at
+from langflow.services.database.models.folder import Folder
 from langflow.services.deps import session_scope, get_settings_service
 from langflow.services.auth.utils import create_token, create_user_tokens
 from langflow.initial_setup.setup import get_or_create_default_folder
+from sqlalchemy import select
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/custom", tags=["custom"])
+
+
+async def ensure_admin_projects(session: Session, user_id: str):
+    """
+    Create shared admin projects for superusers.
+
+    Creates two projects:
+    1. "Walker Agents" - For subscription-gated walker agent templates
+    2. "En Garde" - For free-tier template flows
+
+    Args:
+        session: Database session
+        user_id: UUID of the superuser
+    """
+    project_names = ["En Garde", "Walker Agents"]
+
+    for project_name in project_names:
+        # Check if project already exists
+        stmt = select(Folder).where(
+            Folder.user_id == user_id,
+            Folder.name == project_name,
+            Folder.parent_id == None
+        )
+        result = await session.execute(stmt)
+        existing_folder = result.scalar_one_or_none()
+
+        if not existing_folder:
+            # Create project
+            new_folder = Folder(
+                id=uuid4(),
+                name=project_name,
+                user_id=user_id,
+                parent_id=None
+            )
+            session.add(new_folder)
+            logger.info(f"Created admin project '{project_name}' for user {user_id}")
+
+    await session.commit()
 
 
 @router.get("/sso_login")
@@ -113,6 +154,11 @@ async def sso_login(
 
             # Create default project for user if it doesn't exist
             _ = await get_or_create_default_folder(session, user.id)
+
+            # Create admin projects for superusers (Walker Agents & En Garde)
+            if user.is_superuser:
+                await ensure_admin_projects(session, user.id)
+                logger.info(f"Ensured admin projects exist for superuser: {email}")
 
             logger.info(f"Session tokens generated for user: {email}")
 

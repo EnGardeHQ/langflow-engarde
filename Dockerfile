@@ -361,9 +361,10 @@ ENV META_LLAMA_API_KEY=""
 ENV META_LLAMA_API_ENDPOINT="https://api.together.xyz/v1"
 
 # ============================================================================
-# ENGARDE CUSTOMIZATION 11: Copy admin flow script
+# ENGARDE CUSTOMIZATION 11: Copy admin setup scripts
 # ============================================================================
 COPY --chown=1000:0 set_admin_flows_public.py /app/set_admin_flows_public.py
+COPY --chown=1000:0 setup_admin_folders.py /app/setup_admin_folders.py
 
 # ============================================================================
 # ENGARDE CUSTOMIZATION 12: Create startup script for Railway
@@ -386,6 +387,13 @@ PORT=${PORT:-7860}
 >&2 echo "Database URL: ${LANGFLOW_DATABASE_URL:0:30}..."
 >&2 echo "Components Path: $LANGFLOW_COMPONENTS_PATH"
 >&2 echo "==================================="
+
+# Setup admin projects (folders) for template flows
+>&2 echo ""
+>&2 echo "Running admin project setup..."
+python3 /app/setup_admin_folders.py
+>&2 echo "Admin project setup completed"
+>&2 echo ""
 
 # Start Langflow with unbuffered output and both stdout/stderr
 >&2 echo "Executing: langflow run --host 0.0.0.0 --port $PORT --log-level debug"

@@ -294,6 +294,7 @@ COPY --chown=1000:0 engarde_components /app/components/engarde_components
 # ENGARDE CUSTOMIZATION 10: SSO Integration - Install into Langflow's API
 # ============================================================================
 # TEMPORARILY DISABLED: Testing if SSO installation causes startup hang
+# Cache bust to force rebuild: 2026-01-19-v2
 # Copy SSO endpoint code and register it in Langflow's API router system
 # COPY src/backend/base/langflow/api/v1/custom.py /tmp/custom.py
 

@@ -257,11 +257,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
-# FIX: Ensure Alembic is properly installed
+# FIX: Ensure Alembic is properly installed into the correct venv
 # This resolves "ModuleNotFoundError: No module named 'alembic.util'"
+# The official Langflow image uses /app/.venv, so we must install there
 # ============================================================================
-RUN python3 -m pip install --no-cache-dir --upgrade alembic && \
-    echo "Alembic version: $(python3 -m pip show alembic | grep Version)"
+RUN /app/.venv/bin/pip install --no-cache-dir --upgrade alembic && \
+    echo "Alembic version: $(/app/.venv/bin/pip show alembic | grep Version)"
 
 # ============================================================================
 # ENGARDE CUSTOMIZATION 8: Copy customized frontend from the installed package

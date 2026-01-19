@@ -257,19 +257,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
-# FIX: Completely reinstall Alembic and all database-related dependencies
-# This resolves "ModuleNotFoundError: No module named 'alembic.util'"
-# The base image appears to have corrupted Alembic installation
-# ============================================================================
-RUN /app/.venv/bin/pip uninstall -y alembic sqlalchemy && \
-    /app/.venv/bin/pip install --no-cache-dir \
-        alembic==1.13.1 \
-        sqlalchemy==2.0.25 \
-        sqlalchemy-utils==0.41.1 && \
-    echo "✓ Reinstalled database dependencies" && \
-    /app/.venv/bin/python -c "from alembic.util.exc import CommandError; print('✓ Alembic import test passed')"
-
-# ============================================================================
 # ENGARDE CUSTOMIZATION 8: Copy customized frontend from the installed package
 # ============================================================================
 COPY --from=backend-customizer /app/.venv/lib/python3.12/site-packages/langflow/frontend /tmp/custom-frontend
@@ -304,24 +291,12 @@ RUN mkdir -p /app/components/engarde_components
 COPY --chown=1000:0 engarde_components /app/components/engarde_components
 
 # ============================================================================
-# ENGARDE CUSTOMIZATION 10: SSO Integration & Template Sync - Install into Langflow
+# ENGARDE CUSTOMIZATION 10: SSO Integration - Install into Langflow
 # ============================================================================
-# Copy SSO endpoint code, template sync service, and migration, then register in Langflow's API router system
+# Copy SSO endpoint code and register in Langflow's API router system
 COPY src/backend/base/langflow/api/v1/custom.py /tmp/custom.py
-COPY src/backend/base/langflow/services/engarde_template_sync.py /tmp/engarde_template_sync.py
-COPY src/backend/base/langflow/alembic/versions/engarde_add_template_fields.py /tmp/engarde_add_template_fields.py
 
 RUN LANGFLOW_PATH=$(python3 -c "import langflow; import os; print(os.path.dirname(langflow.__file__))") && \
-    echo "Installing Template Sync Service at: $LANGFLOW_PATH/services/engarde_template_sync.py" && \
-    cp /tmp/engarde_template_sync.py $LANGFLOW_PATH/services/engarde_template_sync.py && \
-    rm /tmp/engarde_template_sync.py && \
-    echo "Template Sync Service installed successfully" && \
-    \
-    echo "Installing Alembic migration at: $LANGFLOW_PATH/alembic/versions/engarde_add_template_fields.py" && \
-    cp /tmp/engarde_add_template_fields.py $LANGFLOW_PATH/alembic/versions/engarde_add_template_fields.py && \
-    rm /tmp/engarde_add_template_fields.py && \
-    echo "Alembic migration installed successfully" && \
-    \
     echo "Installing SSO endpoint at: $LANGFLOW_PATH/api/v1/custom.py" && \
     cp /tmp/custom.py $LANGFLOW_PATH/api/v1/custom.py && \
     rm /tmp/custom.py && \

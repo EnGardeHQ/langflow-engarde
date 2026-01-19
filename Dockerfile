@@ -257,12 +257,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================================================
-# FIX: Force-reinstall Alembic to fix broken installation
+# FIX: Completely reinstall Alembic and all database-related dependencies
 # This resolves "ModuleNotFoundError: No module named 'alembic.util'"
-# The base image appears to have a corrupted Alembic installation
+# The base image appears to have corrupted Alembic installation
 # ============================================================================
-RUN /app/.venv/bin/pip install --no-cache-dir --force-reinstall alembic && \
-    echo "✓ Force-reinstalled Alembic" && \
+RUN /app/.venv/bin/pip uninstall -y alembic sqlalchemy && \
+    /app/.venv/bin/pip install --no-cache-dir \
+        alembic==1.13.1 \
+        sqlalchemy==2.0.25 \
+        sqlalchemy-utils==0.41.1 && \
+    echo "✓ Reinstalled database dependencies" && \
     /app/.venv/bin/python -c "from alembic.util.exc import CommandError; print('✓ Alembic import test passed')"
 
 # ============================================================================

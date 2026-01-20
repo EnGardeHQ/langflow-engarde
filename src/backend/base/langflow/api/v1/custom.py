@@ -25,9 +25,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/custom", tags=["custom"])
 
 
-async def ensure_admin_projects(session: Session, user_id: str):
+async def ensure_template_admin_projects(session: Session, user_id: str):
     """
-    Create shared admin projects for superusers.
+    Create template admin projects for superusers and system admins.
 
     Creates two projects:
     1. "Walker Agents" - For subscription-gated walker agent templates
@@ -35,7 +35,7 @@ async def ensure_admin_projects(session: Session, user_id: str):
 
     Args:
         session: Database session
-        user_id: UUID of the superuser
+        user_id: UUID of the template-admin user
     """
     project_names = ["En Garde", "Walker Agents"]
 
@@ -58,9 +58,39 @@ async def ensure_admin_projects(session: Session, user_id: str):
                 parent_id=None
             )
             session.add(new_folder)
-            logger.info(f"Created admin project '{project_name}' for user {user_id}")
+            logger.info(f"Created template admin project '{project_name}' for user {user_id}")
 
     await session.commit()
+
+
+async def ensure_experiments_folder(session: Session, user_id: str):
+    """
+    Create Experiments folder for general admins.
+
+    Args:
+        session: Database session
+        user_id: UUID of the general admin user
+    """
+    # Check if Experiments folder already exists
+    stmt = select(Folder).where(
+        Folder.user_id == user_id,
+        Folder.name == "Experiments",
+        Folder.parent_id == None
+    )
+    result = await session.execute(stmt)
+    existing_folder = result.scalar_one_or_none()
+
+    if not existing_folder:
+        # Create Experiments folder
+        new_folder = Folder(
+            id=uuid4(),
+            name="Experiments",
+            user_id=user_id,
+            parent_id=None
+        )
+        session.add(new_folder)
+        await session.commit()
+        logger.info(f"Created Experiments folder for general admin user {user_id}")
 
 
 @router.get("/sso_login")
@@ -105,7 +135,7 @@ async def sso_login(
         email = payload.get("email")
         tenant_id = payload.get("tenant_id")
         tenant_name = payload.get("tenant_name", "EnGarde")
-        user_role = payload.get("role", "user")  # admin, superuser, user, agency
+        user_role = payload.get("role", "user")  # superuser, system_admin, admin, user, agency
 
         if not email:
             logger.error("Token missing email")
@@ -113,32 +143,47 @@ async def sso_login(
 
         logger.info(f"Processing SSO login for: {email}, tenant: {tenant_name}, role: {user_role}")
 
-        # Map EnGarde roles to Langflow permissions
-        # superuser and admin get is_superuser=True in Langflow
-        is_superuser = user_role in ["superuser", "admin"]
+        # Map EnGarde roles to Langflow access:
+        # - superuser, system_admin → template-admin@engarde.com (shared template account)
+        # - admin → individual account with Experiments folder
+        # - user, agency → individual account (standard access)
+
+        is_template_admin = user_role in ["superuser", "system_admin"]
+        is_general_admin = user_role == "admin"
+
+        if is_template_admin:
+            # Template admins share a single account for template management
+            langflow_username = "template-admin@engarde.com"
+            is_superuser = True
+            logger.info(f"User {email} with role {user_role} logging in as template-admin")
+        else:
+            # General admins and regular users get their own accounts
+            langflow_username = email
+            is_superuser = False
+
         # All SSO users are active by default
         is_active = True
 
         # Use session_scope context manager
         async with session_scope() as session:
             # Get or create user in Langflow
-            user = await get_user_by_username(session, email)
+            user = await get_user_by_username(session, langflow_username)
 
             if not user:
-                logger.info(f"Creating new user: {email} with role: {user_role}")
+                logger.info(f"Creating new Langflow user: {langflow_username} (EnGarde user: {email}, role: {user_role})")
                 # Create user directly with required fields
                 user = User(
-                    username=email,
-                    password=email,  # Dummy password, will be hashed by the model
+                    username=langflow_username,
+                    password=langflow_username,  # Dummy password, will be hashed by the model
                     is_active=is_active,
                     is_superuser=is_superuser,
                 )
                 session.add(user)
                 await session.commit()
                 await session.refresh(user)
-                logger.info(f"User created successfully: {email} (superuser: {is_superuser})")
+                logger.info(f"User created successfully: {langflow_username} (superuser: {is_superuser})")
             else:
-                logger.info(f"Existing user found: {email}")
+                logger.info(f"Existing Langflow user found: {langflow_username}")
                 # Update user permissions if role changed
                 if user.is_superuser != is_superuser or user.is_active != is_active:
                     logger.info(f"Updating user permissions: superuser={is_superuser}, active={is_active}")
@@ -152,15 +197,21 @@ async def sso_login(
             # This function also updates last_login_at
             tokens = await create_user_tokens(user_id=user.id, db=session, update_last_login=True)
 
-            # Create default project for user if it doesn't exist
-            _ = await get_or_create_default_folder(session, user.id)
+            # Create folders based on user type
+            if is_template_admin:
+                # Template admins (superuser, system_admin) get Walker Agents & En Garde projects
+                await ensure_template_admin_projects(session, user.id)
+                logger.info(f"Ensured template admin projects exist for {email} (role: {user_role})")
+            elif is_general_admin:
+                # General admins get default folder + Experiments folder
+                _ = await get_or_create_default_folder(session, user.id)
+                await ensure_experiments_folder(session, user.id)
+                logger.info(f"Ensured Experiments folder exists for general admin: {email}")
+            else:
+                # Regular users get default folder only
+                _ = await get_or_create_default_folder(session, user.id)
 
-            # Create admin projects for superusers (Walker Agents & En Garde)
-            if user.is_superuser:
-                await ensure_admin_projects(session, user.id)
-                logger.info(f"Ensured admin projects exist for superuser: {email}")
-
-            logger.info(f"Session tokens generated for user: {email}")
+            logger.info(f"Session tokens generated for user: {langflow_username} (EnGarde user: {email})")
 
         # Use Langflow's built-in URL param SSO support but ALSO set cookies
         # to ensure iframe authentication works correctly (SameSite=None, Secure)

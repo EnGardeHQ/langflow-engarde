@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
-Setup admin projects for EnGarde Langflow deployment.
+Setup template admin projects for EnGarde Langflow deployment.
 
-This script creates shared admin projects (folders) and migrates existing flows:
-1. Creates "Walker Agents" project for admin users (if not exists)
-2. Creates "En Garde" project for admin users (if not exists - this likely already exists)
-3. Migrates flows to appropriate projects based on naming conventions
+This script creates projects for the shared template-admin@engarde.com account:
+1. Creates "Walker Agents" project for subscription-gated walker agent templates
+2. Creates "En Garde" project for free-tier template flows
+3. Migrates existing flows to appropriate projects based on naming conventions
+
+ADMIN TIER SYSTEM:
+- Superusers & System Admins → template-admin@engarde.com (shared account)
+- General Admins → individual accounts with Experiments folder
+- Users → individual accounts with default folder
 
 In Langflow UI, these are called "Projects" - they're the organizational containers for flows.
 In the database, they're stored in the "folder" table.
 
-This runs on container startup to ensure admin project structure is correct.
+This runs on container startup to ensure the template admin project structure is correct.
 """
 
 import os
@@ -32,7 +37,7 @@ async def setup_admin_folders():
         return
 
     print("=" * 60)
-    print("ADMIN FOLDER SETUP - Starting")
+    print("TEMPLATE ADMIN FOLDER SETUP - Starting")
     print("=" * 60)
 
     try:
@@ -40,42 +45,40 @@ async def setup_admin_folders():
         conn = await asyncpg.connect(db_url)
 
         try:
-            # Get all superuser accounts
-            superusers = await conn.fetch(
-                'SELECT id, username FROM "user" WHERE is_superuser = true'
+            # Get the template-admin account (shared by superusers and system admins)
+            template_admin = await conn.fetchrow(
+                'SELECT id, username FROM "user" WHERE username = $1',
+                'template-admin@engarde.com'
             )
 
-            if not superusers:
-                print("No superuser accounts found. Skipping folder setup.")
+            if not template_admin:
+                print("Template admin account not found. Will be created on first SSO login.")
                 return
 
-            print(f"Found {len(superusers)} superuser(s)")
+            user_id = str(template_admin['id'])
+            username = template_admin['username']
 
-            for user in superusers:
-                user_id = str(user['id'])
-                username = user['username']
+            print(f"Processing template admin account: {username} (ID: {user_id})")
 
-                print(f"\nProcessing superuser: {username} (ID: {user_id})")
+            # Create/verify "En Garde" folder
+            engarde_folder_id = await ensure_folder_exists(
+                conn, user_id, "En Garde"
+            )
+            print(f"  ✓ En Garde folder: {engarde_folder_id}")
 
-                # Create/verify "En Garde" folder
-                engarde_folder_id = await ensure_folder_exists(
-                    conn, user_id, "En Garde"
-                )
-                print(f"  ✓ En Garde folder: {engarde_folder_id}")
+            # Create/verify "Walker Agents" folder
+            walker_folder_id = await ensure_folder_exists(
+                conn, user_id, "Walker Agents"
+            )
+            print(f"  ✓ Walker Agents folder: {walker_folder_id}")
 
-                # Create/verify "Walker Agents" folder
-                walker_folder_id = await ensure_folder_exists(
-                    conn, user_id, "Walker Agents"
-                )
-                print(f"  ✓ Walker Agents folder: {walker_folder_id}")
-
-                # Migrate flows to appropriate folders
-                await migrate_flows_to_folders(
-                    conn, user_id, engarde_folder_id, walker_folder_id
-                )
+            # Migrate flows to appropriate folders
+            await migrate_flows_to_folders(
+                conn, user_id, engarde_folder_id, walker_folder_id
+            )
 
             print("\n" + "=" * 60)
-            print("ADMIN FOLDER SETUP - Completed successfully")
+            print("TEMPLATE ADMIN FOLDER SETUP - Completed successfully")
             print("=" * 60)
 
         finally:

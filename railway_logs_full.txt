@@ -1,0 +1,500 @@
+2026-01-23 11:01:58,039 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:01:58,062 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:01:58,062 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.5:23574 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.6:61200 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 11:03:00,766 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.11:33216 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 11:03:01,235 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:03:01,236 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:03:01,258 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:03:01,258 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.10:46038 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.8:33490 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.17:52316 - "HEAD /health HTTP/1.1" 200
+2026-01-23 11:03:58,630 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.8:58250 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 11:03:59,103 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:03:59,104 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:03:59,126 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:03:59,126 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.10:16340 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.3:30744 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.5:48146 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 11:04:57,905 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.5:48150 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 11:04:57,979 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:04:57,979 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:04:58,001 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:04:58,001 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.6:36326 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 11:05:57,600 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.6:39826 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 11:05:58,068 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:05:58,069 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:05:58,092 - app.routers.auth - INFO - User found: demo@engarde.com
+2026-01-23 11:05:58,113 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:05:58,114 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.9:28620 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.3:14682 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 11:06:57,919 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.6:38758 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 11:06:57,999 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:06:57,999 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:06:58,022 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:06:58,022 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.6:38762 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.11:52416 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 11:06:59,817 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:06:59,818 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:06:59,818 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'CLS': 0}
+2026-01-23 11:06:59,819 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:06:59,819 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:06:59,820 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'INP': 16}
+2026-01-23 11:06:59,820 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:06:59,820 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:06:59,821 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'CLS': 0.01891490206784275}
+100.64.0.5:22262 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.8:45282 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.3:24040 - "POST /api/analytics/performance/ HTTP/1.1" 200
+2026-01-23 11:07:00,105 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 11:07:00,105 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 11:07:00,106 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'INP': 40}
+100.64.0.9:18078 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.21:43150 - "HEAD /health HTTP/1.1" 200
+100.64.0.20:38912 - "HEAD /health HTTP/1.1" 200
+100.64.0.14:43138 - "HEAD /health HTTP/1.1" 200
+100.64.0.19:40864 - "HEAD /health HTTP/1.1" 200
+100.64.0.15:37992 - "HEAD /health HTTP/1.1" 200
+100.64.0.17:54392 - "HEAD /health HTTP/1.1" 200
+100.64.0.16:23128 - "HEAD /health HTTP/1.1" 200
+100.64.0.7:15388 - "HEAD /health HTTP/1.1" 200
+100.64.0.7:44614 - "HEAD /health HTTP/1.1" 200
+100.64.0.14:37264 - "HEAD /health HTTP/1.1" 200
+100.64.0.17:61256 - "HEAD /health HTTP/1.1" 200
+2026-01-23 12:01:29,930 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:29,931 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:29,931 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:29,931 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:29,932 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:29,933 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:29,933 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:29,933 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:30,131 - app.main - WARNING - HTTP exception in GET /api/campaigns/: 401 - Not authenticated
+2026-01-23 12:01:30,132 - app.main - WARNING - HTTP exception in GET /api/dashboard/quick-stats: 401 - Not authenticated
+2026-01-23 12:01:30,895 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:30,896 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:30,896 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:30,896 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:31,854 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:31,659 - app.main - WARNING - HTTP exception in GET /api/brands/: 401 - Not authenticated
+2026-01-23 12:01:31,660 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,856 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,660 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:31,858 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:31,660 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,660 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:31,858 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,853 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,854 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:31,854 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:31,858 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+100.64.0.8:58626 - "GET /api/campaigns/ HTTP/1.1" 401
+100.64.0.6:59608 - "GET /api/dashboard/quick-stats HTTP/1.1" 401
+100.64.0.6:59622 - "GET /api/brands/ HTTP/1.1" 401
+2026-01-23 12:01:31,876 - app.main - WARNING - HTTP exception in GET /api/brands/: 401 - Not authenticated
+100.64.0.11:62530 - "GET /api/brands/ HTTP/1.1" 401
+2026-01-23 12:01:31,881 - app.main - WARNING - HTTP exception in GET /api/dashboard/audience-demographics: 401 - Not authenticated
+100.64.0.3:41356 - "GET /api/dashboard/audience-demographics?dimension=age HTTP/1.1" 401
+2026-01-23 12:01:31,884 - app.main - WARNING - HTTP exception in GET /api/brands/: 401 - Not authenticated
+100.64.0.3:41358 - "GET /api/brands/ HTTP/1.1" 401
+2026-01-23 12:01:31,949 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:01:31,991 - app.routers.auth - INFO - User found: demo@engarde.com
+2026-01-23 12:01:31,992 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:01:31,992 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:01:31,992 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:01:31,992 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.4:48044 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:01:32,039 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,039 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:32,039 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,039 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:32,047 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,047 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:32,047 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,047 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:32,048 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,048 - app.routers.auth - ERROR - [AUTH-VALIDATION] ❌ JWT decode error: ExpiredSignatureError: Signature has expired.
+2026-01-23 12:01:32,048 - app.routers.auth - ERROR - [AUTH-VALIDATION] Token was: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:01:32,048 - app.routers.auth - ERROR - [AUTH-VALIDATION] SECRET_KEY length: 64
+2026-01-23 12:01:32,049 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:01:32,050 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:01:32,050 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:01:32,050 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:01:32,050 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+2026-01-23 12:01:32,052 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:01:32,052 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:01:32,052 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:01:32,052 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:01:32,052 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+2026-01-23 12:01:32,059 - app.main - WARNING - HTTP exception in GET /api/storage/usage: 401 - Not authenticated
+100.64.0.11:62544 - "GET /api/storage/usage HTTP/1.1" 401
+2026-01-23 12:01:32,066 - app.main - WARNING - HTTP exception in GET /api/dashboard/performance-trend: 401 - Not authenticated
+100.64.0.5:11776 - "GET /api/dashboard/performance-trend?days=7 HTTP/1.1" 401
+2026-01-23 12:01:32,071 - app.main - WARNING - HTTP exception in GET /api/dashboard/recent-activity: 401 - Not authenticated
+100.64.0.6:59628 - "POST /api/auth/refresh HTTP/1.1" 200
+100.64.0.10:58490 - "GET /api/dashboard/recent-activity?page=1&page_size=4 HTTP/1.1" 401
+100.64.0.8:58632 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:02:22,819 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:02:22,820 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:02:22,820 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:02:22,820 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:02:22,820 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+2026-01-23 12:02:22,821 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:02:22,821 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:02:22,821 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:02:22,821 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:02:22,821 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.4:35778 - "POST /api/auth/refresh HTTP/1.1" 200
+100.64.0.3:56408 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:02:23,498 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:02:23,498 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:02:23,605 - app.routers.brands - INFO - User a1111111-1111-1111-1111-111111111111 current brand: Nike Demo (total brands: 2)
+2026-01-23 12:02:23,675 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:02:23,675 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:02:23,676 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:02:23,676 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:02:23,676 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.8:15948 - "POST /api/auth/refresh HTTP/1.1" 200
+100.64.0.8:15960 - "GET /api/brands/current HTTP/1.1" 200
+2026-01-23 12:02:27,284 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:02:27,284 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.3:56430 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:03:00,178 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.4:58832 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:03:00,641 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:00,642 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:00,664 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:00,665 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.9:36856 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.11:31368 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:03:41,197 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:41,281 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:41,198 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:41,198 - app.routers.me - INFO - User info requested for: demo@engarde.com
+2026-01-23 12:03:41,281 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.4:38288 - "GET /api/me HTTP/1.1" 200
+2026-01-23 12:03:41,282 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'FCP': 408}
+2026-01-23 12:03:41,280 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:41,282 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:41,280 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:41,282 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:41,281 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'TTFB': 309.0999999642372}
+2026-01-23 12:03:41,329 - app.routers.brands - INFO - User a1111111-1111-1111-1111-111111111111 retrieved 2 brands (total: 2)
+100.64.0.6:16820 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.10:30380 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.4:38290 - "GET /api/brands/ HTTP/1.1" 200
+2026-01-23 12:03:42,175 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:42,176 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:42,283 - app.routers.brands - INFO - User a1111111-1111-1111-1111-111111111111 current brand: Nike Demo (total brands: 2)
+100.64.0.3:32538 - "GET /api/brands/current HTTP/1.1" 200
+2026-01-23 12:03:48,003 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,003 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,216 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,217 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,239 - app.routers.dashboard - INFO - DEBUG: get_audience_demographics tenant_id=a1111111-1111-1111-1111-111111111111, segments_count=8
+2026-01-23 12:03:48,404 - app.routers.dashboard - INFO - Returning 5 demographic data points for dimension 'age'
+2026-01-23 12:03:48,597 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,597 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,808 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,808 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,834 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,834 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,878 - app.routers.analytics - INFO - [ANALYTICS-GEO] Using brand Nike Demo (tenant_id: a1111111-1111-1111-1111-111111111111) for geographic analytics
+100.64.0.9:47270 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:03:48,913 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,914 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:15668 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.8:15658 - "GET /api/dashboard/audience-demographics?dimension=age HTTP/1.1" 200
+100.64.0.6:16828 - "GET /api/analytics/sessions/ HTTP/1.1" 200
+100.64.0.3:32552 - "GET /api/analytics/geographic/?brand_id=b1111111-1111-1111-1111-111111111111 HTTP/1.1" 200
+100.64.0.5:43450 - "GET /api/dashboard/performance-trend?days=7 HTTP/1.1" 200
+2026-01-23 12:03:48,980 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,981 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:48,983 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:48,983 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:49,025 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:49,025 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:49,026 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:49,026 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:49,067 - app.routers.analytics - INFO - [ANALYTICS] Using brand Nike Demo (tenant_id: a1111111-1111-1111-1111-111111111111) for analytics
+2026-01-23 12:03:49,090 - app.services.ml_analytics_service - INFO - [ML-ANALYTICS] No data for campaign_id=default-campaign, using tenant aggregate
+2026-01-23 12:03:49,263 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:49,263 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.3:32544 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+100.64.0.10:21770 - "GET /api/dashboard/web-analytics HTTP/1.1" 200
+100.64.0.11:30454 - "POST /api/analytics/cultural/ HTTP/1.1" 200
+100.64.0.10:21768 - "POST /api/analytics/performance/campaign/default-campaign HTTP/1.1" 200
+2026-01-23 12:03:49,900 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:49,900 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:49,901 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:49,901 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:15658 - "POST /api/analytics/cultural/ HTTP/1.1" 200
+2026-01-23 12:03:50,059 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.4:38306 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:03:50,059 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:03:50,660 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:03:50,663 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.8:15668 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:03:50,741 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:50,741 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:50,765 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:50,766 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:50,767 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:50,767 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.6:16828 - "GET /api/analytics/conversational/history?session_id=session_platform-analytics_1769169829994&limit=50 HTTP/1.1" 200
+100.64.0.5:43450 - "POST /api/analytics/cultural/ HTTP/1.1" 200
+2026-01-23 12:03:51,334 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:03:51,334 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.3:32544 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:03:57,718 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.9:43744 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:03:58,201 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:53770 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.11:37432 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:03:58,178 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:03:58,178 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:03:58,200 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+100.64.0.7:11532 - "HEAD /health HTTP/1.1" 200
+2026-01-23 12:04:16,911 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:16,912 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.11:50492 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:04:20,414 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:20,414 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:04:21,029 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:04:21,029 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.8:52586 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:04:47,083 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:47,083 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:04:47,105 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:47,105 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:04:47,107 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:47,107 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:55190 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.8:55182 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+100.64.0.4:35024 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:04:50,409 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:50,409 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:04:51,036 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:04:51,036 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.3:10266 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:04:56,841 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.8:55362 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:04:57,311 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:57,312 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:04:57,335 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:04:57,335 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.10:12570 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.5:20432 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:05:16,695 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:16,695 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:27852 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:05:20,408 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:20,408 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:05:21,033 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:05:21,033 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.9:32008 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:05:47,086 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:47,086 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:05:47,108 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:47,108 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:05:47,130 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:47,130 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.4:35662 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.10:23532 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.6:18046 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:05:50,405 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:50,406 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:05:51,039 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:05:51,039 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.3:60358 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:05:57,219 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.6:53438 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:05:57,294 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:57,294 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:05:57,316 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:05:57,317 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.3:36706 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.5:49790 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:06:16,698 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:16,699 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.9:11256 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:06:20,396 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:20,397 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:06:20,938 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:06:20,939 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.6:16106 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:06:47,105 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:47,105 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:06:47,127 - app.routers.auth - INFO - User found: demo@engarde.com
+2026-01-23 12:06:47,148 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:47,149 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:06:47,169 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:47,170 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.6:28114 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.4:23950 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.6:28104 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:06:50,389 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:50,389 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:06:51,040 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:06:51,040 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.4:23950 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:06:57,037 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.3:20282 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:06:57,314 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:57,314 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:06:57,337 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:06:57,337 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.10:34158 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.4:38352 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:07:16,713 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:07:16,713 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.11:47716 - "POST /api/analytics/audience/default-audience HTTP/1.1" 200
+2026-01-23 12:07:20,401 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:07:20,402 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:07:21,342 - app.services.bigquery_service - ERROR - Failed to initialize BigQuery client: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603.
+2026-01-23 12:07:21,342 - app.services.bigquery_service - WARNING - BigQuery initialization failed: 403 POST https://bigquery.googleapis.com/bigquery/v2/projects/engarde-468603/datasets?prettyPrint=false: Access Denied: Project engarde-468603: User does not have bigquery.datasets.create permission in project engarde-468603. - returning mock data
+100.64.0.5:47186 - "POST /api/analytics/conversational/platform-analytics HTTP/1.1" 200
+2026-01-23 12:07:42,994 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:07:42,994 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:07:42,995 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'LCP': 6548}
+2026-01-23 12:07:42,996 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:07:42,996 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:07:42,997 - app.routers.analytics - INFO - Received performance report from user a1111111-1111-1111-1111-111111111111: {'FID': 2.5}
+100.64.0.9:24906 - "POST /api/analytics/performance/ HTTP/1.1" 200
+100.64.0.8:22854 - "POST /api/analytics/performance/ HTTP/1.1" 200
+2026-01-23 12:08:06,251 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+2026-01-23 12:08:06,255 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:08:06,255 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.4:24918 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+100.64.0.4:24902 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:08:06,354 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:08:06,355 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:08:06,376 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:08:06,377 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:08:06,377 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:08:06,377 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:08:06,377 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.6:52340 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.6:52346 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:08:47,619 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:08:47,620 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:08:47,620 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:08:47,620 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:08:47,620 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.9:36564 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:09:05,685 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.10:50564 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:09:06,153 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:09:06,154 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:09:06,175 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:09:06,175 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.4:45438 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.6:11014 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.7:45452 - "HEAD /health HTTP/1.1" 200
+2026-01-23 12:09:58,786 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.11:51676 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:09:58,861 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:09:58,862 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:09:58,883 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:09:58,884 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.11:51686 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.9:42128 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:11:00,953 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.5:13872 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:11:01,030 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:11:01,030 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:11:01,052 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:11:01,052 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.5:13884 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.10:53376 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:12:01,199 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.5:50022 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:12:01,277 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:12:01,278 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:12:01,301 - app.routers.auth - INFO - User found: demo@engarde.com
+2026-01-23 12:12:01,322 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:12:01,322 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.3:45834 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.3:45822 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:13:06,061 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.4:38534 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:13:06,136 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:13:06,136 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:13:06,157 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:13:06,158 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.6:26804 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.11:15404 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:13:58,392 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.9:16108 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:13:58,467 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:13:58,468 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:13:58,490 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:13:58,491 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:58666 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.10:49588 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.21:20500 - "HEAD /health HTTP/1.1" 200
+2026-01-23 12:15:00,920 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.10:27050 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:15:01,207 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:15:01,207 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:15:01,229 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:15:01,229 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:21638 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.4:30084 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:16:01,015 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.8:40036 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:16:01,295 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:16:01,295 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:16:01,317 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:16:01,317 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.8:40038 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.8:40046 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+2026-01-23 12:17:00,771 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.4:24214 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:17:01,245 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:17:01,246 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:17:01,269 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:17:01,270 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.11:46524 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.11:46516 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:18:01,045 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.10:22096 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:18:01,322 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:18:01,323 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:18:01,345 - app.routers.auth - INFO - User found: demo@engarde.com
+2026-01-23 12:18:01,367 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:18:01,367 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.4:50332 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.8:44450 - "GET /api/notifications/unread-count HTTP/1.1" 200
+2026-01-23 12:18:41,980 - app.routers.auth - INFO - Token refresh requested with refresh_token length: 229
+2026-01-23 12:18:41,981 - app.routers.auth - INFO - Token refresh verified for user: demo@engarde.com
+2026-01-23 12:18:41,981 - app.routers.auth - INFO - [TENANT-MONITORING] Using cached tenant_id 'a1111111-1111-1111-1111-111111111111' for user demo@engarde.com during refresh
+2026-01-23 12:18:41,981 - app.routers.auth - INFO - [TENANT-MONITORING] Refreshed JWT token will contain tenant_id: a1111111-1111-1111-1111-111111111111
+2026-01-23 12:18:41,981 - app.routers.auth - INFO - Token refreshed successfully for: demo@engarde.com
+100.64.0.10:18916 - "POST /api/auth/refresh HTTP/1.1" 200
+2026-01-23 12:19:01,001 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:19:01,002 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:19:01,025 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:19:01,025 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.5:35988 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.3:57418 - "GET /api/notifications?limit=10 HTTP/1.1" 200
+100.64.0.7:16970 - "HEAD /health HTTP/1.1" 200
+2026-01-23 12:21:05,911 - app.main - WARNING - HTTP exception in GET /api/v1/walker-agents/suggestions: 401 - Not authenticated
+100.64.0.4:53694 - "GET /api/v1/walker-agents/suggestions?tenant_id=a1111111-1111-1111-1111-111111111111&status=pending&limit=10 HTTP/1.1" 401
+2026-01-23 12:21:06,186 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:21:06,186 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+2026-01-23 12:21:06,209 - app.routers.auth - INFO - [AUTH-VALIDATION] 🔐 Validating token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-01-23 12:21:06,209 - app.routers.auth - INFO - [AUTH-VALIDATION] ✅ Token decoded successfully, email: demo@engarde.com
+100.64.0.10:19642 - "GET /api/notifications/unread-count HTTP/1.1" 200
+100.64.0.5:47914 - "GET /api/notifications?limit=10 HTTP/1.1" 200

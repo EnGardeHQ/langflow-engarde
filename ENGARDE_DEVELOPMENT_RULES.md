@@ -1808,4 +1808,295 @@ user.theme_preferences
 
 ---
 
-**End of EnGarde Development Rules v2.1.0**
+# PART 11: API ROUTING & URL STRUCTURE
+
+## 🚨 CRITICAL: /api Prefix Rules
+
+### The Problem
+
+FastAPI routers prepend their prefix to ALL routes, leading to confusing double-prefixed URLs if not handled correctly.
+
+**Common Mistake:**
+```python
+# ❌ WRONG - Creates /api/api/me endpoint!
+router = APIRouter(prefix="/api")
+
+@router.get("/api/me")  # ❌ Results in /api/api/me
+async def get_user():
+    pass
+```
+
+---
+
+## 11.1 Backend Router Configuration
+
+### Rule: Set Prefix ONCE on APIRouter, NEVER in Route Decorators
+
+```python
+# ✅ CORRECT - app/routers/me.py
+from fastapi import APIRouter
+
+# Set prefix on router initialization
+router = APIRouter(prefix="/api")
+
+# Route paths do NOT include /api prefix
+@router.get("/me")          # ✅ Results in /api/me
+@router.get("/me/")         # ✅ Also accept trailing slash
+@router.put("/me")          # ✅ Results in /api/me
+async def get_current_user_info():
+    pass
+
+@router.get("/me/team-limits")  # ✅ Results in /api/me/team-limits
+async def get_team_limits():
+    pass
+```
+
+### Rule: Always Accept Both With and Without Trailing Slash
+
+```python
+# ✅ CORRECT - Support both URL formats
+@router.get("/me")
+@router.get("/me/")
+async def get_user():
+    pass
+
+# Why? Frontend might call either:
+# - apiClient.get('/me')
+# - apiClient.get('/me/')
+```
+
+### Common Router Prefixes
+
+| Router File | Prefix | Example Endpoint | Resulting URL |
+|------------|--------|------------------|---------------|
+| `me.py` | `/api` | `@router.get("/me")` | `/api/me` |
+| `auth.py` | `/api` | `@router.post("/login")` | `/api/login` |
+| `workspaces.py` | `/api` | `@router.get("/workspaces")` | `/api/workspaces` |
+| `campaigns.py` | `/api/campaigns` | `@router.get("/")` | `/api/campaigns` |
+| `campaigns.py` | `/api/campaigns` | `@router.get("/{id}")` | `/api/campaigns/{id}` |
+
+---
+
+## 11.2 Frontend API Client Configuration
+
+### Rule: Configure Base URL Once in apiClient
+
+```typescript
+// ✅ CORRECT - lib/api/client.ts
+import axios from 'axios';
+
+export const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  // Do NOT include /api here - backend handles it
+});
+```
+
+### Rule: Call Endpoints WITHOUT /api Prefix
+
+```typescript
+// ✅ CORRECT - Frontend calls
+const user = await apiClient.get('/me');           // → http://localhost:8000/api/me
+const members = await apiClient.get('/workspaces/current/members');  // → /api/workspaces/current/members
+
+// ❌ WRONG - Don't double-prefix
+const user = await apiClient.get('/api/me');       // → /api/api/me (404!)
+```
+
+---
+
+## 11.3 Debugging API Routing Issues
+
+### Problem: 404 Not Found
+
+```bash
+# Test endpoint directly
+curl http://localhost:8000/api/me
+# 404 Not Found
+
+# Check if double-prefixed
+curl http://localhost:8000/api/api/me
+# 200 OK → You have double-prefix problem!
+```
+
+### Solution Checklist:
+
+- [ ] **Check router prefix definition**
+  ```python
+  # app/routers/me.py
+  router = APIRouter(prefix="/api")  # ✅ Good
+  ```
+
+- [ ] **Check route decorator paths**
+  ```python
+  @router.get("/me")        # ✅ Good - no /api
+  @router.get("/api/me")    # ❌ Bad - double /api
+  ```
+
+- [ ] **Check main.py router inclusion**
+  ```python
+  # app/main.py
+  from app.routers import me
+
+  app.include_router(me.router)  # ✅ Don't add prefix here
+  # app.include_router(me.router, prefix="/api")  # ❌ Double prefix!
+  ```
+
+- [ ] **Check FastAPI docs**
+  ```
+  Visit: http://localhost:8000/docs
+
+  Look for endpoints like:
+  ✅ GET /api/me
+  ❌ GET /api/api/me  (double prefix problem!)
+  ```
+
+### Problem: Frontend Gets 404
+
+```typescript
+// Check browser network tab
+// Request URL: http://localhost:8000/api/api/me
+// Status: 404
+
+// Fix: Remove /api from frontend call
+const user = await apiClient.get('/me');  // NOT '/api/me'
+```
+
+---
+
+## 11.4 Router Organization Patterns
+
+### Pattern 1: Flat Routes (Use router prefix)
+
+```python
+# app/routers/me.py
+router = APIRouter(prefix="/api")
+
+@router.get("/me")                    # /api/me
+@router.put("/me")                    # /api/me
+@router.get("/me/team-limits")        # /api/me/team-limits
+@router.get("/me/langflow/token")     # /api/me/langflow/token
+```
+
+### Pattern 2: Resource Routes (Use resource prefix)
+
+```python
+# app/routers/campaigns.py
+router = APIRouter(prefix="/api/campaigns")
+
+@router.get("/")                      # /api/campaigns
+@router.post("/")                     # /api/campaigns
+@router.get("/{campaign_id}")         # /api/campaigns/{id}
+@router.put("/{campaign_id}")         # /api/campaigns/{id}
+@router.delete("/{campaign_id}")      # /api/campaigns/{id}
+```
+
+### Pattern 3: Nested Resources
+
+```python
+# app/routers/workspaces.py
+router = APIRouter(prefix="/api/workspaces")
+
+@router.get("/current/members")              # /api/workspaces/current/members
+@router.post("/current/invite")              # /api/workspaces/current/invite
+@router.delete("/current/members/{id}")      # /api/workspaces/current/members/{id}
+```
+
+---
+
+## 11.5 Testing API Endpoints
+
+### Before Frontend Integration:
+
+```bash
+# 1. Check FastAPI docs
+open http://localhost:8000/docs
+
+# 2. Test with curl
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/me
+
+# 3. Verify response structure
+{
+  "id": "123",
+  "email": "demo@engarde.com",
+  "subscriptionTier": "business",  # ✅ Verify field names
+  "preferences": { ... }
+}
+
+# 4. Test all HTTP methods
+curl -X GET http://localhost:8000/api/me
+curl -X PUT http://localhost:8000/api/me -d '{"firstName": "Test"}'
+curl -X DELETE http://localhost:8000/api/me/something
+```
+
+### Frontend Testing:
+
+```typescript
+// Use browser console
+const res = await fetch('http://localhost:8000/api/me', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const data = await res.json();
+console.log(data);  // Verify structure matches TypeScript interface
+```
+
+---
+
+## 11.6 Common URL Mistakes Reference
+
+### ❌ Wrong → ✅ Correct
+
+| ❌ Wrong | ✅ Correct | Issue |
+|---------|----------|-------|
+| `router = APIRouter(prefix="/api")`<br>`@router.get("/api/me")` | `router = APIRouter(prefix="/api")`<br>`@router.get("/me")` | Double /api prefix |
+| `apiClient.get('/api/me')` | `apiClient.get('/me')` | Frontend adds /api when backend already has it |
+| `@router.get("/users/{user_id}")`<br>No trailing slash support | `@router.get("/users/{user_id}")`<br>`@router.get("/users/{user_id}/")` | Missing trailing slash variant |
+| `app.include_router(me.router, prefix="/api")` | `app.include_router(me.router)` | Adding prefix when router already has one |
+
+---
+
+## 11.7 Quick Reference Card
+
+### Backend Router Setup
+
+```python
+# Template for new router
+from fastapi import APIRouter, Depends
+from app.routers.auth import get_current_user
+
+router = APIRouter(prefix="/api")  # Set prefix ONCE
+
+@router.get("/resource")          # /api/resource
+@router.get("/resource/")         # /api/resource/ (trailing slash)
+async def get_resource(current_user = Depends(get_current_user)):
+    pass
+```
+
+### Frontend API Calls
+
+```typescript
+// Template for API calls
+import { apiClient } from '@/lib/api/client';
+
+// NO /api prefix in path
+const data = await apiClient.get('/resource');
+const result = await apiClient.post('/resource', payload);
+const updated = await apiClient.put('/resource/{id}', payload);
+await apiClient.delete('/resource/{id}');
+```
+
+### Debugging Checklist
+
+1. ✅ Router has prefix set: `APIRouter(prefix="/api")`
+2. ✅ Routes don't include /api: `@router.get("/me")`
+3. ✅ Trailing slash variants exist: `@router.get("/me")` AND `@router.get("/me/")`
+4. ✅ Frontend calls without /api: `apiClient.get('/me')`
+5. ✅ Check `/docs` for correct URLs
+6. ✅ Test with curl before frontend integration
+
+---
+
+**Remember: Set /api prefix ONCE on the router, NEVER in route paths. Frontend calls without /api prefix. Always support trailing slashes.**
+
+---
+
+**End of EnGarde Development Rules v2.2.0**

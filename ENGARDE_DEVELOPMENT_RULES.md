@@ -1340,4 +1340,472 @@ const TEMP_STUB_DATA = [...];
 
 ---
 
-**End of EnGarde Development Rules v2.0.0**
+# PART 10: DATA MODEL ARCHITECTURE & API CONTRACTS
+
+## 🚨 CRITICAL: Know Your Data Model Before Coding
+
+### The Problem
+
+Developers often assume field names or model relationships without checking the actual database schema. This leads to:
+- API endpoints returning `null` for non-existent fields
+- Frontend displaying "No Plan" when data exists under different field name
+- Wasted time debugging issues that stem from wrong assumptions
+
+**ALWAYS verify the actual database schema before writing ANY code that accesses data.**
+
+---
+
+## 10.1 Core Data Model Hierarchy
+
+### Organization → Tenant → User Structure
+
+```
+Organization (Agency/Enterprise)
+    ├── Tenant (Client/Workspace)
+    │   ├── plan_tier (subscription level)
+    │   ├── settings (JSON)
+    │   ├── brand_guidelines (JSON)
+    │   └── api_quotas (JSON)
+    │
+    └── TenantUser (User Membership)
+        ├── User
+        ├── role (owner/editor/viewer)
+        └── permissions (JSON)
+```
+
+### Key Architectural Facts
+
+1. **Subscription is Tenant-level, NOT User-level**
+   - `Tenant.plan_tier` stores subscription: 'starter', 'professional', 'business', 'enterprise'
+   - Multiple users can belong to same tenant (shared subscription)
+   - User does NOT have `subscription_tier` field
+
+2. **User → Tenant Relationship is Many-to-Many**
+   - `User.tenants` → list of `TenantUser` objects
+   - `TenantUser.tenant` → the actual `Tenant` object
+   - `TenantUser.role` → user's role in that tenant
+
+3. **Organization is Optional**
+   - Standalone tenants: `Tenant.organization_id = None`
+   - Agency clients: `Tenant.organization_id` → parent agency
+
+---
+
+## 10.2 User Model Fields (AUTHORITATIVE)
+
+### ❌ WRONG Assumptions (Fields That DON'T Exist)
+
+```python
+# ❌ WRONG - These fields DO NOT exist on User model
+user.subscription_tier  # Does NOT exist!
+user.plan              # Does NOT exist!
+user.preferences       # Does NOT exist!
+user.company           # Does NOT exist!
+user.avatar            # Does NOT exist!
+```
+
+### ✅ CORRECT User Model Fields
+
+```python
+# User Model (app/models/core.py)
+class User:
+    # Identity
+    id: str                    # UUID
+    email: str                 # Unique email
+    hashed_password: str
+    first_name: str            # Optional
+    last_name: str             # Optional
+
+    # Type & Status
+    user_type: str             # 'brand' or 'publisher'
+    is_active: bool
+    is_superuser: bool
+
+    # Timestamps
+    created_at: datetime
+    updated_at: datetime
+    last_activity: datetime
+
+    # Preferences (CORRECT field names)
+    ui_preferences: JSON       # Dashboard, language, timezone
+    notification_settings: JSON # Email, push, campaign alerts
+    theme_preferences: JSON    # Theme mode, colors, font size
+
+    # Beta Access
+    marketplace_beta_access: bool
+
+    # Relationships
+    tenants: List[TenantUser]  # Many-to-many through TenantUser
+```
+
+### ✅ CORRECT Tenant Model Fields
+
+```python
+# Tenant Model (app/models/core.py)
+class Tenant:
+    # Identity
+    id: str                    # UUID
+    name: str                  # Tenant name
+    slug: str                  # Unique slug
+
+    # Subscription (THIS is where subscription lives!)
+    plan_tier: str             # 'starter' | 'professional' | 'business' | 'enterprise'
+
+    # Organization
+    organization_id: str       # Optional - for agency clients
+
+    # Configuration
+    settings: JSON
+    brand_guidelines: JSON
+    api_quotas: JSON
+    marketplace_enabled: bool
+
+    # Status
+    status: str                # 'active' | 'suspended' | 'cancelled'
+    created_at: datetime
+    updated_at: datetime
+
+    # Relationships
+    users: List[TenantUser]    # Many-to-many through TenantUser
+    organization: Organization
+```
+
+---
+
+## 10.3 Field Name Mapping (Backend ↔ Frontend)
+
+### Rule: Document All Field Transformations
+
+```typescript
+// ✅ CORRECT - Document backend → frontend mapping
+interface UserResponse {
+  // Backend field → Frontend field
+  id: string;                  // user.id
+  email: string;               // user.email
+  firstName: string;           // user.first_name
+  lastName: string;            // user.last_name
+  userType: string;            // user.user_type
+  isActive: boolean;           // user.is_active
+  is_superuser: boolean;       // user.is_superuser
+
+  // FROM TENANT (NOT USER!)
+  subscriptionTier: string;    // user.tenants[0].tenant.plan_tier
+
+  // Preferences
+  preferences: object;         // user.ui_preferences (NOT user.preferences!)
+
+  // Timestamps
+  createdAt: string;           // user.created_at (ISO format)
+  updatedAt: string;           // user.updated_at (ISO format)
+}
+```
+
+### Common Mistakes to Avoid
+
+```python
+# ❌ WRONG - Accessing non-existent field
+user.subscription_tier  # AttributeError!
+
+# ✅ CORRECT - Navigate through relationship
+user.tenants[0].tenant.plan_tier
+
+# ❌ WRONG - Wrong preferences field
+user.preferences  # AttributeError!
+
+# ✅ CORRECT - Use ui_preferences
+user.ui_preferences
+```
+
+---
+
+## 10.4 API Endpoint Design Rules
+
+### Rule: Match Response Schema to Frontend Expectations
+
+```python
+# ✅ CORRECT - /api/me endpoint implementation
+@router.get("/me")
+async def get_current_user_info(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    # 1. Get subscription tier from TENANT (not user!)
+    subscription_tier = None
+    if current_user.tenants and len(current_user.tenants) > 0:
+        tenant_user = current_user.tenants[0]
+        if tenant_user.tenant:
+            subscription_tier = tenant_user.tenant.plan_tier
+
+    # 2. Return camelCase for frontend
+    return {
+        "id": str(current_user.id),
+        "email": current_user.email,
+        "firstName": current_user.first_name,      # snake_case → camelCase
+        "lastName": current_user.last_name,
+        "subscriptionTier": subscription_tier,     # From tenant!
+        "preferences": current_user.ui_preferences, # ui_preferences!
+        "is_superuser": current_user.is_superuser,
+        # ...
+    }
+```
+
+### Rule: Eager Load Relationships to Avoid N+1 Queries
+
+```python
+# ❌ WRONG - Lazy loading causes N+1 queries
+user = db.query(User).filter(User.id == user_id).first()
+tier = user.tenants[0].tenant.plan_tier  # Additional query!
+
+# ✅ CORRECT - Eager load with joinedload
+from sqlalchemy.orm import joinedload
+
+user = db.query(User)\
+    .options(joinedload(User.tenants).joinedload(TenantUser.tenant))\
+    .filter(User.id == user_id)\
+    .first()
+
+tier = user.tenants[0].tenant.plan_tier  # No additional query!
+```
+
+---
+
+## 10.5 Frontend Development Checklist
+
+### Before Building ANY Page That Displays User/Tenant Data:
+
+- [ ] **Step 1: Verify Database Schema**
+  - Read actual model in `app/models/core.py`
+  - List all available fields
+  - Note field types (String, JSON, Boolean, etc.)
+
+- [ ] **Step 2: Check API Endpoint**
+  - Test endpoint with curl/Postman
+  - Verify actual response structure
+  - Document field names in both formats (snake_case/camelCase)
+
+- [ ] **Step 3: Map Relationships**
+  - If accessing tenant data, navigate: `user.tenants[0].tenant.field`
+  - If accessing organization data, navigate: `tenant.organization.field`
+
+- [ ] **Step 4: Define TypeScript Interface**
+  - Match EXACT field names from API response
+  - Document which fields come from which model
+  - Include comments for transformed fields
+
+- [ ] **Step 5: Test with Real Data**
+  - Don't assume field exists
+  - Test with actual database query
+  - Verify data appears correctly in UI
+
+### Example: Building Settings Page
+
+```typescript
+// ❌ WRONG - Assumptions without verification
+const { data: user } = useQuery({
+  queryFn: () => apiClient.get('/me'),
+});
+
+// Assuming fields exist:
+<Text>{user.subscriptionTier}</Text>  // Might be null!
+<Text>{user.company}</Text>           // Might not exist!
+
+// ✅ CORRECT - Verified against API contract
+interface MeResponse {
+  id: string;
+  email: string;
+  firstName: string;        // Verified: user.first_name
+  lastName: string;         // Verified: user.last_name
+  subscriptionTier: string; // Verified: user.tenants[0].tenant.plan_tier
+  preferences: {            // Verified: user.ui_preferences
+    phone?: string;
+    timezone?: string;
+    language?: string;
+    company?: {
+      name?: string;
+      // ...
+    };
+  };
+}
+
+const { data: user } = useQuery<MeResponse>({
+  queryFn: async () => {
+    const res = await apiClient.get('/me');
+    return res.data;
+  },
+});
+
+// Safe access with optional chaining
+<Text>{user?.subscriptionTier || 'No Plan'}</Text>
+<Text>{user?.preferences?.company?.name || 'Not set'}</Text>
+```
+
+---
+
+## 10.6 Debugging Data Issues Checklist
+
+### When Data Doesn't Appear or Shows as "null":
+
+1. **Check Database First**
+   ```bash
+   # Connect to database
+   psql $DATABASE_URL
+
+   # Verify data exists
+   SELECT subscription_tier FROM users WHERE email = 'demo@engarde.com';
+   -- ERROR: column "subscription_tier" does not exist
+
+   # Check correct table
+   SELECT plan_tier FROM tenants WHERE id IN (
+     SELECT tenant_id FROM tenant_users WHERE user_id = (
+       SELECT id FROM users WHERE email = 'demo@engarde.com'
+     )
+   );
+   -- Returns: 'business'
+   ```
+
+2. **Check API Response**
+   ```bash
+   # Test API endpoint
+   curl -H "Authorization: Bearer $TOKEN" https://api.engarde.com/api/me
+
+   # Verify field in response
+   {
+     "subscriptionTier": null  # ❌ Problem!
+   }
+   ```
+
+3. **Check Backend Code**
+   ```python
+   # Find where API constructs response
+   # app/routers/me.py line 55
+   "subscriptionTier": getattr(current_user, 'subscription_tier', None)
+   # ❌ Wrong! User doesn't have subscription_tier
+
+   # Should be:
+   "subscriptionTier": current_user.tenants[0].tenant.plan_tier
+   ```
+
+4. **Check Model Definitions**
+   ```python
+   # app/models/core.py
+   class User(Base):
+       # ... no subscription_tier field!
+
+   class Tenant(Base):
+       plan_tier = Column(String(50))  # ✅ Here it is!
+   ```
+
+---
+
+## 10.7 Required Documentation
+
+### Every API Endpoint Must Have:
+
+```python
+"""
+GET /api/me
+
+Returns current authenticated user information.
+
+Response Schema:
+{
+  "id": "uuid",                    # User.id
+  "email": "string",               # User.email
+  "firstName": "string",           # User.first_name
+  "lastName": "string",            # User.last_name
+  "subscriptionTier": "string",    # User.tenants[0].tenant.plan_tier (NOT User.subscription_tier!)
+  "preferences": {                 # User.ui_preferences (NOT User.preferences!)
+    "phone": "string",
+    "timezone": "string",
+    "company": {
+      "name": "string",
+      ...
+    }
+  }
+}
+
+Data Sources:
+- User fields: Direct from User model
+- subscriptionTier: Fetched from User → TenantUser → Tenant.plan_tier
+- preferences: From User.ui_preferences JSON column
+
+Example:
+  GET /api/me
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "id": "123",
+    "email": "demo@engarde.com",
+    "subscriptionTier": "business",
+    ...
+  }
+"""
+```
+
+---
+
+## 10.8 Code Review Enforcement
+
+### Reviewers MUST Verify:
+
+- [ ] Database schema checked before implementation
+- [ ] API endpoint tested and response verified
+- [ ] Field names match actual backend model
+- [ ] Relationships navigated correctly (user → tenant → field)
+- [ ] No assumptions about non-existent fields
+- [ ] TypeScript interfaces match API contract exactly
+- [ ] Documentation includes data source for each field
+- [ ] Null/undefined cases handled with optional chaining
+
+### Reject PRs That:
+
+- [ ] Access non-existent model fields
+- [ ] Assume field names without verification
+- [ ] Don't document data source for computed fields
+- [ ] Missing null/undefined handling
+- [ ] Don't navigate relationships correctly
+- [ ] Use wrong field names (preferences vs ui_preferences)
+
+---
+
+## 10.9 Reference: Complete Data Model
+
+### Quick Reference Table
+
+| What You Want | Where It Lives | How to Access |
+|--------------|----------------|---------------|
+| Subscription tier | `Tenant.plan_tier` | `user.tenants[0].tenant.plan_tier` |
+| User preferences | `User.ui_preferences` | `user.ui_preferences` |
+| Notification settings | `User.notification_settings` | `user.notification_settings` |
+| Theme preferences | `User.theme_preferences` | `user.theme_preferences` |
+| Tenant name | `Tenant.name` | `user.tenants[0].tenant.name` |
+| Organization | `Tenant.organization` | `user.tenants[0].tenant.organization` |
+| User role in tenant | `TenantUser.role` | `user.tenants[0].role` |
+| Tenant settings | `Tenant.settings` | `user.tenants[0].tenant.settings` |
+
+### Navigation Patterns
+
+```python
+# User → Tenant
+user.tenants[0].tenant.plan_tier
+
+# User → Tenant → Organization
+user.tenants[0].tenant.organization.name
+
+# User → TenantUser → Role
+user.tenants[0].role
+
+# User preferences (direct access)
+user.ui_preferences
+user.notification_settings
+user.theme_preferences
+```
+
+---
+
+**Remember: ALWAYS verify the database schema before writing code. Assumptions about field names lead to bugs. Check the models first!**
+
+---
+
+**End of EnGarde Development Rules v2.1.0**

@@ -1,10 +1,32 @@
 # AGENT SWARM DEPLOYMENT RULES
 ## Definitive Rulebook for Docker Updates & Code Changes
 
-**Document Version:** 1.0.0
-**Last Updated:** October 29, 2025
+**Document Version:** 1.1.0
+**Last Updated:** January 26, 2026
 **Status:** MANDATORY - ALL AGENTS MUST FOLLOW
 **Working Directory:** `/Users/cope/EnGardeHQ`
+
+---
+
+## ⚠️ CRITICAL: READ ENGARDE_DEVELOPMENT_RULES.md FIRST
+
+**Before using this deployment guide, you MUST read the foundational development rules:**
+
+📄 **Location:** `/Users/cope/EnGardeHQ/ENGARDE_DEVELOPMENT_RULES.md`
+
+**This document covers:**
+- Frontend: UI abstractions, semantic colors, spacing, data retrieval patterns
+- Backend: RESTful API standards, database models, service layer, auth, security
+- Third-Party: AI services, social media, e-commerce integrations
+- Security: SOC II compliance, PII protection, input validation
+- Testing: TDD/BDD patterns (Red-Green-Refactor, Given/When/Then)
+
+**Rules Hierarchy:**
+1. **ENGARDE_DEVELOPMENT_RULES.md** ← CODE QUALITY & ARCHITECTURE (read first!)
+2. **AGENT_DEPLOYMENT_RULES.md** ← DEPLOYMENT & DOCKER OPERATIONS (this file)
+
+**When writing application code:** Follow ENGARDE_DEVELOPMENT_RULES.md
+**When deploying/orchestrating:** Follow this document
 
 ---
 

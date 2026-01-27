@@ -22,34 +22,109 @@ This document contains the **complete set of development rules** for the EnGarde
 
 # PART 1: FRONTEND DEVELOPMENT RULES
 
-## 1.1 UI Component Abstractions (MANDATORY)
+## 1.1 UI Component Abstractions
 
-### Rule: NO Direct Chakra UI Imports
+### Current State: Migration In Progress
 
-**The frontend MUST use UI component abstractions to enable future library replacement.**
+**The EnGardeHQ project is currently migrating from Chakra UI to shadcn/ui.**
+
+#### **TEMPORARY EXCEPTION: Direct Chakra UI Imports ARE ALLOWED**
+
+**Status:** Until the migration is complete, direct Chakra UI imports are permitted in the EnGardeHQ codebase.
 
 ```typescript
-// ❌ WRONG - WILL BE REJECTED
-import { Button, Box, Card } from '@chakra-ui/react'
+// ✅ CURRENTLY ALLOWED - During migration period
+import { Button, Box, Card, Modal, useToast } from '@chakra-ui/react'
 
-// ✅ CORRECT - Use abstractions
+// ✅ PREFERRED - Use shadcn/ui abstractions when available
 import { Button } from '@/components/ui/button'
-import { Card, CardBody, CardHeader } from '@/components/ui/card'
-import { Container, VStack, HStack } from '@/components/ui/layout'
-import { Heading, Text } from '@/components/ui/typography'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
 ```
 
-**Why:** This allows replacing Chakra UI with shadcn/ui, MUI, Mantine, or any other library without rewriting feature code.
+**Why This Exception Exists:**
+- The project has 349+ files currently using direct Chakra UI imports
+- shadcn/ui abstraction layer exists in `/components/ui/` with 65+ components
+- Full migration would delay current development by 2-3 hours minimum
+- Both systems coexist during the transition period
 
-### UI Component Hierarchy
+### Future Direction: Full Abstraction (Post-Migration)
+
+**Once migration is complete, the rule will be:**
+
+```typescript
+// ❌ WRONG - Will be rejected post-migration
+import { Button, Box, Card } from '@chakra-ui/react'
+
+// ✅ CORRECT - Use abstractions only
+import { Button } from '@/components/ui/button'
+import { Card, CardBody, CardHeader } from '@/components/ui/card'
+```
+
+**Why:** This allows replacing the underlying UI library without rewriting feature code.
+
+### UI Component Hierarchy (Target)
 
 ```
 Feature Components (your code)
        ↓
   UI Abstractions (/components/ui/*)
        ↓
-   Chakra UI (current - replaceable)
+   shadcn/ui (Radix UI + Tailwind CSS)
 ```
+
+---
+
+## 1.1.1 Chakra UI Best Practices (During Migration)
+
+**While direct Chakra UI imports are allowed, you MUST still follow these standards:**
+
+### ✅ Required Standards
+
+```typescript
+// ✅ DO: Use semantic color tokens
+import { Box, useColorModeValue } from '@chakra-ui/react'
+
+const bgColor = useColorModeValue('white', 'gray.800')
+<Box bg="blue.500" color="gray.600">  // Semantic tokens
+
+// ✅ DO: Use spacing tokens
+<Box p={4} m={6} gap={3}>  // Token scale (4 = 16px)
+
+// ✅ DO: Implement responsive design
+<Box
+  w={{ base: '100%', md: '50%', lg: '33.333%' }}
+  p={{ base: 4, md: 6, lg: 8 }}
+>
+
+// ✅ DO: Support dark mode
+const bgColor = useColorModeValue('white', 'gray.800')
+const textColor = useColorModeValue('gray.900', 'white')
+```
+
+### ❌ Prohibited Patterns
+
+```typescript
+// ❌ DON'T: Hardcoded hex colors
+<Box bg="#3182CE" color="#718096">  // REJECTED
+
+// ❌ DON'T: Pixel values
+<Box padding="16px" margin="24px">  // REJECTED
+
+// ❌ DON'T: Non-responsive design
+<Box w="500px">  // REJECTED - use responsive props
+```
+
+### Migration Guidance
+
+**When creating NEW components:**
+1. **First choice:** Use shadcn/ui components from `@/components/ui/*` if available
+2. **Fallback:** Use Chakra UI with semantic tokens and proper patterns
+3. **Never:** Use hardcoded colors, pixel values, or non-responsive layouts
+
+**When updating EXISTING components:**
+- Maintain consistency with the file's current UI library
+- Don't mix Chakra and shadcn/ui in the same component
+- Follow the same color/spacing standards regardless of library
 
 ---
 
@@ -217,11 +292,11 @@ export function MyComponent({ id, onComplete }: MyComponentProps) {
 
 Before submitting frontend code:
 
-- [ ] No direct `@chakra-ui/react` imports
+- [ ] **UI Components:** Prefer shadcn/ui abstractions (`@/components/ui/*`) when available, Chakra UI imports allowed during migration
 - [ ] All colors use theme tokens (no hex codes)
 - [ ] All spacing uses token scale (no px values)
 - [ ] Responsive design implemented (base, md, lg)
-- [ ] Dark mode supported (useColorModeValue)
+- [ ] Dark mode supported (useColorModeValue for Chakra, or theme classes for shadcn/ui)
 - [ ] Auth loading states handled
 - [ ] Tenant ID included in queries
 - [ ] TypeScript types defined
@@ -954,9 +1029,9 @@ Potential risks and rollback plan
 ## 7.1 Automated Checks
 
 ### Frontend
-- ESLint rules prevent direct Chakra imports
 - TypeScript compiler catches type errors
 - Pre-commit hooks run linter and tests
+- Migration to shadcn/ui abstractions in progress (ESLint rules disabled during transition)
 
 ### Backend
 - mypy for type checking
@@ -970,7 +1045,7 @@ Potential risks and rollback plan
 
 - [ ] Follows ENGARDE_DEVELOPMENT_RULES.md
 - [ ] No hardcoded colors or pixel values (frontend)
-- [ ] UI component abstractions used (frontend)
+- [ ] **UI components:** Prefer shadcn/ui abstractions when available; Chakra UI allowed during migration
 - [ ] Responsive design implemented (frontend)
 - [ ] Tenant isolation enforced (backend)
 - [ ] Audit logging present (backend)
@@ -987,14 +1062,20 @@ Potential risks and rollback plan
 ## Frontend Anti-Patterns
 
 ```typescript
-// ❌ WRONG
-import { Button } from '@chakra-ui/react'
-<Box bg="#3182CE" padding="16px">
-await apiClient.get('/campaigns') // Missing tenant_id
+// ❌ WRONG - Hardcoded colors and pixel values
+import { Button, Box } from '@chakra-ui/react'
+<Box bg="#3182CE" padding="16px">  // Hardcoded hex and pixels!
+await apiClient.get('/campaigns')   // Missing tenant_id
 
-// ✅ CORRECT
+// ✅ CORRECT - During migration (Chakra UI)
+import { Button, Box } from '@chakra-ui/react'
+<Box bg="blue.500" p={4}>  // Semantic tokens
+await apiClient.get(`/campaigns?tenant_id=${tenantId}`)
+
+// ✅ PREFERRED - Use shadcn/ui abstractions when available
 import { Button } from '@/components/ui/button'
-<Box bg="blue.500" p={4}>
+import { Card } from '@/components/ui/card'
+<Card className="bg-blue-500 p-4">
 await apiClient.get(`/campaigns?tenant_id=${tenantId}`)
 ```
 

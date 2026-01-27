@@ -13,7 +13,34 @@ These documents ensure that:
 
 ## Core Documents
 
-### 1. AGENT_DEPLOYMENT_RULES.md (MANDATORY)
+### 0. ENGARDE_DEVELOPMENT_RULES.md (MANDATORY - FOUNDATION)
+**Status:** 🔴 MANDATORY - MUST READ BEFORE ANY ENGARDE WORK
+
+**Location:** `/Users/cope/EnGardeHQ/ENGARDE_DEVELOPMENT_RULES.md`
+
+**Purpose:** Complete development standards for the entire EnGarde platform (frontend + backend)
+
+**When to Use:** ALWAYS - Before starting ANY work on EnGarde application code
+
+**Key Sections:**
+- Part 1: Frontend Development (UI abstractions, colors, spacing, data retrieval)
+- Part 2: Backend Development (RESTful API, database models, service layer, auth)
+- Part 3: Third-Party Integrations (AI, social media, e-commerce)
+- Part 4: Security & Compliance (SOC II, PII protection)
+- Part 5: TDD/BDD & Testing (Red-Green-Refactor, Given/When/Then)
+- Part 6: Git & PR Workflow
+- Part 7: Enforcement & Verification
+- Part 8: Quick Reference (anti-patterns)
+
+**File Size:** 1,054 lines | 24KB
+
+**Last Updated:** January 26, 2026
+
+**CRITICAL:** This document supersedes conflicting rules in other files and is the single source of truth for EnGarde application development.
+
+---
+
+### 1. AGENT_DEPLOYMENT_RULES.md (MANDATORY - DEPLOYMENT)
 **Status:** 🔴 MANDATORY - ALL AGENTS MUST FOLLOW
 
 **Purpose:** Comprehensive rulebook for all Docker deployments and code changes
@@ -54,23 +81,64 @@ These documents ensure that:
 
 ## How to Use These Documents
 
+### Rules Hierarchy
+
+```
+┌─────────────────────────────────────────────────────┐
+│ ENGARDE_DEVELOPMENT_RULES.md (FOUNDATION)           │
+│ - Frontend: UI abstractions, colors, data retrieval │
+│ - Backend: API design, models, auth, security       │
+│ - Testing: TDD/BDD standards                        │
+│ - ALL application code must follow these rules      │
+└─────────────────────────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│ AGENT_DEPLOYMENT_RULES.md (DEPLOYMENT)              │
+│ - Docker operations and hot-reload                  │
+│ - Service orchestration                             │
+│ - Deployment verification                           │
+└─────────────────────────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│ AGENT_CHECKLIST.md (QUICK REFERENCE)                │
+│ - Task execution checklist                          │
+│ - Quick command reference                           │
+└─────────────────────────────────────────────────────┘
+```
+
+**Priority Order:**
+1. **ENGARDE_DEVELOPMENT_RULES.md** - Code quality, architecture, security
+2. **AGENT_DEPLOYMENT_RULES.md** - Deployment and Docker operations
+3. **AGENT_CHECKLIST.md** - Quick verification during execution
+
+**When Rules Conflict:** ENGARDE_DEVELOPMENT_RULES.md always wins for application code.
+
+---
+
 ### For General-Purpose Agents
 
-**Before Starting Any Task:**
-1. Read the user's request completely
-2. Classify the change type using AGENT_DEPLOYMENT_RULES.md Section 2.1
-3. Follow the appropriate workflow from AGENT_DEPLOYMENT_RULES.md Section 3
+**Before Starting Any EnGarde Task:**
+1. **ALWAYS read ENGARDE_DEVELOPMENT_RULES.md relevant section first**
+   - Frontend work? → Read Part 1 (Frontend Rules)
+   - Backend work? → Read Part 2 (Backend Rules)
+   - Third-party integration? → Read Part 3
+   - Database/security? → Read Part 4
+2. Read the user's request completely
+3. Classify the change type using AGENT_DEPLOYMENT_RULES.md Section 2.1
+4. Follow the appropriate workflow from AGENT_DEPLOYMENT_RULES.md Section 3
 
 **During Task Execution:**
-1. Keep AGENT_CHECKLIST.md open for quick reference
-2. Check off items as you complete them
-3. Monitor logs continuously
-4. Document what you're doing
+1. Follow coding standards from ENGARDE_DEVELOPMENT_RULES.md
+2. Keep AGENT_CHECKLIST.md open for quick reference
+3. Check off items as you complete them
+4. Monitor logs continuously
+5. Document what you're doing
 
 **Before Marking Complete:**
-1. Go through the MANDATORY verification checklist (AGENT_CHECKLIST.md Section 3)
-2. Ensure ALL items pass
-3. Document results to user
+1. Verify compliance with ENGARDE_DEVELOPMENT_RULES.md
+2. Go through the MANDATORY verification checklist (AGENT_CHECKLIST.md Section 3)
+3. Ensure ALL items pass
+4. Document results to user
 
 ### For DevOps-Orchestrator Agent
 
@@ -89,7 +157,18 @@ These documents ensure that:
 
 ### For Backend-API-Architect Agent
 
-**Primary Reference:** AGENT_DEPLOYMENT_RULES.md Section 4 (Backend Changes)
+**PRIMARY REFERENCE:** ENGARDE_DEVELOPMENT_RULES.md Part 2 (Backend Development)
+
+**MANDATORY READING BEFORE ANY BACKEND WORK:**
+- RESTful API Standards (naming, methods, responses)
+- Database Models (SQLAlchemy patterns)
+- Service Layer Pattern (business logic separation)
+- Authentication & Authorization (JWT, role checks)
+- Error Handling Standards
+- Database Migrations (Alembic/direct SQL)
+- TDD/BDD Testing Patterns
+
+**Secondary Reference:** AGENT_DEPLOYMENT_RULES.md Section 4 (Backend Changes)
 
 **Focus Areas:**
 - Python code change workflow (hot-reload)
@@ -98,14 +177,36 @@ These documents ensure that:
 - API endpoint testing
 
 **Special Responsibilities:**
+- Follow RESTful API conventions from ENGARDE_DEVELOPMENT_RULES.md
+- Use service layer pattern (never put business logic in routes)
 - Verify Uvicorn reload after Python changes
 - Test API endpoints with curl
 - Apply database migrations safely
+- Write TDD tests (Red → Green → Refactor)
 - Ensure no errors in backend logs
 
 ### For Frontend-UI-Builder Agent
 
-**Primary Reference:** AGENT_DEPLOYMENT_RULES.md Section 4 (Frontend Changes)
+**PRIMARY REFERENCE:** ENGARDE_DEVELOPMENT_RULES.md Part 1 (Frontend Development)
+
+**MANDATORY READING BEFORE ANY FRONTEND WORK:**
+- UI Component Abstractions (NO direct Chakra imports!)
+- Color System (semantic tokens ONLY, NO hex colors)
+- Spacing System (tokens ONLY, NO pixel values)
+- Typography System (Heading, Text components)
+- Responsive Design (mobile-first breakpoints)
+- Data Retrieval Patterns (useAuth, useCurrentBrand)
+- Dark Mode Support (useColorModeValue)
+
+**CRITICAL RULES:**
+- ❌ NEVER import from `@chakra-ui/react` directly
+- ✅ ALWAYS use abstractions from `@/components/ui/*`
+- ❌ NEVER use hardcoded colors like `#3182CE`
+- ✅ ALWAYS use semantic tokens like `color="blue.500"`
+- ❌ NEVER use pixel values like `padding="16px"`
+- ✅ ALWAYS use spacing tokens like `p={4}`
+
+**Secondary Reference:** AGENT_DEPLOYMENT_RULES.md Section 4 (Frontend Changes)
 
 **Focus Areas:**
 - React/TypeScript code changes (Fast Refresh)
@@ -114,9 +215,12 @@ These documents ensure that:
 - Browser cache handling
 
 **Special Responsibilities:**
+- Follow UI abstraction patterns from ENGARDE_DEVELOPMENT_RULES.md
+- Use semantic color tokens and spacing scale
 - Verify Fast Refresh working
 - Check browser console for errors
 - Test UI changes visually
+- Ensure responsive design works on mobile/tablet/desktop
 - Handle Next.js compilation errors
 
 ---
